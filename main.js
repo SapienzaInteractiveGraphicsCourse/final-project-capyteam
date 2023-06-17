@@ -344,8 +344,8 @@ var goal = false;
 function animate() {
   requestAnimationFrame(animate);
 
-  checkCollisions();
-  checkBallCollisions();
+  checkPitchCollisions(box_capy1);
+  checkPitchCollisions(box_ball);
 
   if(isCapyMoving){
     capybara_2.position.z += increment;
@@ -387,11 +387,11 @@ function animate() {
     //box_ball.setFromObject(ball);
   }
 
-  if(ball.position.x >= 10 && !goal){
+  /*if(ball.position.x >= 10 && !goal){
     goal = true;
     alert("GOAL!");
     location.reload();
-  }
+  }*/
 
 
 
@@ -401,56 +401,28 @@ animate();
 
 
 
-function checkCollisions() {
+function checkPitchCollisions(box) {
   // Check collision with the left edge
-  if (box_capy1.intersectsBox(leftEdgeBox.box)) {
+  if (box.intersectsBox(leftEdgeBox.box)) {
     // Collision with left edge detected
     alert("left collision");
   }
 
   // Check collision with the right edge
-  if (box_capy1.intersectsBox(rightEdgeBox.box)) {
+  if (box.intersectsBox(rightEdgeBox.box)) {
     // Collision with right edge detected
     alert("right collision");
   }
 
   // Check collision with the top edge
-  if (box_capy1.intersectsBox(topEdgeBox.box)) {
+  if (box.intersectsBox(topEdgeBox.box)) {
     // Collision with top edge detected
     alert("top collision");
   }
 
   // Check collision with the bottom edge
-  if (box_capy1.intersectsBox(bottomEdgeBox.box)) {
+  if (box.intersectsBox(bottomEdgeBox.box)) {
     // Collision with bottom edge detected
     alert("bottom collision");
-  }
-}
-
-
-
-function checkBallCollisions() {
-  // Check collision with the left edge
-  if (box_ball.intersectsBox(leftEdgeBox.box)) {
-    // Collision with left edge detected
-    alert("left ball collision");
-  }
-
-  // Check collision with the right edge
-  if (box_ball.intersectsBox(rightEdgeBox.box)) {
-    // Collision with right edge detected
-    alert("right ball collision");
-  }
-
-  // Check collision with the top edge
-  if (box_ball.intersectsBox(topEdgeBox.box)) {
-    // Collision with top edge detected
-    alert("top ball collision");
-  }
-
-  // Check collision with the bottom edge
-  if (box_ball.intersectsBox(bottomEdgeBox.box)) {
-    // Collision with bottom edge detected
-    alert("bottom ball collision");
   }
 }
