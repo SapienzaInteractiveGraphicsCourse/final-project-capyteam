@@ -183,13 +183,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 
 
-
-
-
-
-
-
-
 camera.position.x = 15;
 camera.position.y = 15;
 camera.position.z = 15;
