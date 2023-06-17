@@ -204,6 +204,11 @@ var box_capy1;
 var box_capy2;
 var box_ball;
 
+var bottomEdgeBox;
+var topEdgeBox;
+var leftEdgeBox;
+var rightEdgeBox;
+
 loader.load('capybara_low_poly/scene.gltf', function (gltf) {
   capybara_1 = gltf.scene;
   scene.add(capybara_1);
@@ -264,6 +269,39 @@ loader.load('football_pitch/scene.gltf', function (gltf2) {
 
   football_pitch.position.y = -0.05;
 
+  // Create bounding boxes for the edges
+  const pitchSize = new THREE.Box3().setFromObject(football_pitch).getSize(new THREE.Vector3());
+
+  const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+  // Create a bounding box for the left edge
+  leftEdgeBox = new THREE.Box3Helper(new THREE.Box3().setFromCenterAndSize(
+    new THREE.Vector3(-pitchSize.x / 2, 1.8, 0),
+    new THREE.Vector3(0.1, pitchSize.y, pitchSize.z)
+  ), edgeMaterial);
+  scene.add(leftEdgeBox);
+
+  // Create a bounding box for the right edge
+  rightEdgeBox = new THREE.Box3Helper(new THREE.Box3().setFromCenterAndSize(
+    new THREE.Vector3(pitchSize.x / 2, 1.8, 0),
+    new THREE.Vector3(0.1, pitchSize.y, pitchSize.z)
+  ), edgeMaterial);
+  scene.add(rightEdgeBox);
+
+  // Create a bounding box for the top edge
+  topEdgeBox = new THREE.Box3Helper(new THREE.Box3().setFromCenterAndSize(
+    new THREE.Vector3(0, 1.8, -pitchSize.z / 2),
+    new THREE.Vector3(pitchSize.x, pitchSize.y, 0.1)
+  ), edgeMaterial);
+  scene.add(topEdgeBox);
+
+  // Create a bounding box for the bottom edge
+  bottomEdgeBox = new THREE.Box3Helper(new THREE.Box3().setFromCenterAndSize(
+    new THREE.Vector3(0, 1.8, pitchSize.z / 2),
+    new THREE.Vector3(pitchSize.x, pitchSize.y, 0.1)
+  ), edgeMaterial);
+  scene.add(bottomEdgeBox);
+
 }, undefined, function (error) {
   console.error(error);
 });
@@ -305,6 +343,9 @@ var goal = false;
 //while the app is running has to go through the animate loop.
 function animate() {
   requestAnimationFrame(animate);
+
+  checkCollisions();
+  checkBallCollisions();
 
   if(isCapyMoving){
     capybara_2.position.z += increment;
@@ -357,3 +398,59 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
+
+
+
+function checkCollisions() {
+  // Check collision with the left edge
+  if (box_capy1.intersectsBox(leftEdgeBox.box)) {
+    // Collision with left edge detected
+    alert("left collision");
+  }
+
+  // Check collision with the right edge
+  if (box_capy1.intersectsBox(rightEdgeBox.box)) {
+    // Collision with right edge detected
+    alert("right collision");
+  }
+
+  // Check collision with the top edge
+  if (box_capy1.intersectsBox(topEdgeBox.box)) {
+    // Collision with top edge detected
+    alert("top collision");
+  }
+
+  // Check collision with the bottom edge
+  if (box_capy1.intersectsBox(bottomEdgeBox.box)) {
+    // Collision with bottom edge detected
+    alert("bottom collision");
+  }
+}
+
+
+
+function checkBallCollisions() {
+  // Check collision with the left edge
+  if (box_ball.intersectsBox(leftEdgeBox.box)) {
+    // Collision with left edge detected
+    alert("left ball collision");
+  }
+
+  // Check collision with the right edge
+  if (box_ball.intersectsBox(rightEdgeBox.box)) {
+    // Collision with right edge detected
+    alert("right ball collision");
+  }
+
+  // Check collision with the top edge
+  if (box_ball.intersectsBox(topEdgeBox.box)) {
+    // Collision with top edge detected
+    alert("top ball collision");
+  }
+
+  // Check collision with the bottom edge
+  if (box_ball.intersectsBox(bottomEdgeBox.box)) {
+    // Collision with bottom edge detected
+    alert("bottom ball collision");
+  }
+}
