@@ -275,7 +275,7 @@ loader.load('football_pitch/scene.gltf', function (gltf2) {
   console.error(error);
 });
 
-loader.load('ball/scene.gltf', function (gltf3) {
+loader.load('football_ball/scene.gltf', function (gltf3) {
   ball = gltf3.scene;
   scene.add(ball);
 
@@ -286,10 +286,10 @@ loader.load('ball/scene.gltf', function (gltf3) {
     }
   });
 
-  ball.position.x = -0.5;
-  ball.position.y = 0.15;
-  ball.position.z = -0.2;
-  ball.scale.set(0.5, 0.5, 0.5);
+  //ball.position.x = -0.5;
+  ball.position.y = 0.36;
+  //ball.position.z = -0.2;
+  ball.scale.set(0.4, 0.4, 0.4);
 
   //Setup a bounding sphere around ball
   box_ball = new THREE.Box3().setFromObject(ball);
@@ -333,6 +333,7 @@ function animate() {
 
   if(isMoving){
     ball.position.x += 0.1;
+    ball.rotation.z -= 0.2;
     box_ball.setFromObject(ball);
   }
 
