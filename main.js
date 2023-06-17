@@ -387,11 +387,11 @@ function animate() {
     //box_ball.setFromObject(ball);
   }
 
-  /*if(ball.position.x >= 10 && !goal){
+  if(ball.position.x >= 10 && !goal){
     goal = true;
     alert("GOAL!");
     location.reload();
-  }*/
+  }
 
 
 
