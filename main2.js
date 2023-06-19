@@ -262,9 +262,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 
 
-camera.position.x = 15;
-camera.position.y = 15;
-camera.position.z = 15;
+camera.position.set(0, 15, 15);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; // Add smooth damping effect

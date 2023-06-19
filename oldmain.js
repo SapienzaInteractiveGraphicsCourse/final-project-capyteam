@@ -11,10 +11,10 @@ const scene = new THREE.Scene();
 
 
 // Keyboard input variables
-let moveForward = false;
-let moveBackward = false;
-let moveLeft = false;
-let moveRight = false;
+var moveForward = false;
+var moveBackward = false;
+var moveLeft = false;
+var moveRight = false;
 
 // Handle keyboard events
 document.addEventListener('keydown', handleKeyDown);
@@ -45,21 +45,7 @@ function handleKeyUp(event) {
   }
 }
 
-//Add skybox from one image
-/*const t_loader = new THREE.TextureLoader();
-const texture = t_loader.load(
-    'path_to_image',
-    () => {
-        const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
-        rt.fromEquirectangularTexture(renderer, texture);
-        scene.background = rt.texture;
 
-        //adding fog
-        scene.fog = new THREE.FogExp2(0xffe2c6, 0.002);
-        var postFolder = gui.addFolder("Fog")
-        postFolder.open()
-        postFolder.add(scene.fog, "density", 0, 0.01, 0.0001)
-    });*/
 // Add a skybox
 const t_loader = new THREE.CubeTextureLoader();
 const skyboxTextures = [
@@ -102,13 +88,14 @@ var lightProps = {
     "ambientColor": 0xffffff,
     "ambientIntensity": 0.1,
     "lightColor": 0xffffff,
-    "lightIntensity": 2,
+    "lightIntensity": 0.5,
     "distance": 100,
 }
 
 var ambient = new THREE.AmbientLight(lightProps.ambientColor, lightProps.ambientIntensity)
 scene.add(ambient)
 
+//Add first light
 const light = new THREE.DirectionalLight(lightProps.lightColor, lightProps.lightIntensity);
 
 light.position.set(lightProps.distance, lightProps.distance, lightProps.distance);
@@ -126,6 +113,60 @@ light.shadow.bias = -0.0005
 
 scene.add(light);
 
+//Add second light
+const light1 = new THREE.DirectionalLight(lightProps.lightColor, lightProps.lightIntensity);
+
+light1.position.set(-lightProps.distance, lightProps.distance, lightProps.distance);
+light1.castShadow = true;
+
+//Set up shadows
+var lightShadowCastRange = 10;
+light1.shadow.camera.top = lightShadowCastRange;
+light1.shadow.camera.bottom = -lightShadowCastRange;
+light1.shadow.camera.left = -lightShadowCastRange;
+light1.shadow.camera.right = lightShadowCastRange;
+light1.shadow.camera.near = 100;
+light1.shadow.camera.far = 300;
+light1.shadow.bias = -0.0005
+
+scene.add(light1);
+
+//Add third light
+const light2 = new THREE.DirectionalLight(lightProps.lightColor, lightProps.lightIntensity);
+
+light2.position.set(lightProps.distance, lightProps.distance, -lightProps.distance);
+light2.castShadow = true;
+
+//Set up shadows
+var lightShadowCastRange = 10;
+light2.shadow.camera.top = lightShadowCastRange;
+light2.shadow.camera.bottom = -lightShadowCastRange;
+light2.shadow.camera.left = -lightShadowCastRange;
+light2.shadow.camera.right = lightShadowCastRange;
+light2.shadow.camera.near = 100;
+light2.shadow.camera.far = 300;
+light2.shadow.bias = -0.0005
+
+scene.add(light2);
+
+//Add fourth light
+const light3 = new THREE.DirectionalLight(lightProps.lightColor, lightProps.lightIntensity);
+
+light3.position.set(-lightProps.distance, lightProps.distance, -lightProps.distance);
+light3.castShadow = true;
+
+//Set up shadows
+var lightShadowCastRange = 10;
+light3.shadow.camera.top = lightShadowCastRange;
+light3.shadow.camera.bottom = -lightShadowCastRange;
+light3.shadow.camera.left = -lightShadowCastRange;
+light3.shadow.camera.right = lightShadowCastRange;
+light3.shadow.camera.near = 100;
+light3.shadow.camera.far = 300;
+light3.shadow.bias = -0.0005
+
+scene.add(light3);
+
 
 
 
@@ -142,13 +183,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 
 
-
-
-
-
-
-
-
 camera.position.x = 15;
 camera.position.y = 15;
 camera.position.z = 15;
@@ -160,45 +194,127 @@ controls.rotateSpeed = 0.5; // Adjust the rotation speed
 
 //Add 3D models
 const loader = new GLTFLoader();
-var capybara_1;
-var capybara_2;
+var robot_1;
+var robot_2;
 var football_pitch;
 var ball;
 
 //Bounding boxes
-var box_capy1;
-var box_capy2;
+var box_robot1;
+var box_robot2;
 var box_ball;
 
-loader.load('capybara_low_poly/scene.gltf', function (gltf) {
-  capybara_1 = gltf.scene;
-  scene.add(capybara_1);
+var bottomEdgeBox;
+var topEdgeBox;
+var leftEdgeBox;
+var rightEdgeBox;
 
-  capybara_1.position.x = -9;
-  capybara_1.rotation.y = 90 * (Math.PI / 180.0);
-  capybara_1.scale.set(2, 2, 2);
+//Mesh components robot_1
+var torso_1;
+var head_1;
+var footL_1;
+var footR_1;
+var shoulderL_1;
+var armL_1;
+var handL_1;
+var shoulderR_1;
+var armR_1;
+var handR_1;
+var legL_1;
+var lowerLegL_1;
+var legR_1;
+var lowerLegR_1;
 
-  //Setup a bounding box around capybara_1
-  box_capy1 = new THREE.Box3().setFromObject(capybara_1);
-  const siz_capy1 = box_capy1.getSize(new THREE.Vector3()).length();
-  const center_capy1 = box_capy1.getCenter(new THREE.Vector3());
+//Mesh components robot_2
+var torso_2;
+var head_2;
+var footL_2;
+var footR_2;
+var shoulderL_2;
+var armL_2;
+var handL_2;
+var shoulderR_2;
+var armR_2;
+var handR_2;
+var legL_2;
+var lowerLegL_2;
+var legR_2;
+var lowerLegR_2;
+
+
+loader.load('robot/RobotExpressive.glb', function (gltf) {
+  robot_1 = gltf.scene;
+  scene.add(robot_1);
+
+  robot_1.traverse(function (child) {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+
+  robot_1.position.x = -9;
+  robot_1.rotation.y = 90 * (Math.PI / 180.0);
+  robot_1.scale.set(0.5, 0.5, 0.5);
+
+  torso_1 = robot_1.getObjectByName("Torso");
+  head_1 = robot_1.getObjectByName("Head");
+  footL_1 = robot_1.getObjectByName("Foot.L");
+  footR_1 = robot_1.getObjectByName("Foot.R");
+  shoulderL_1 = robot_1.getObjectByName("Shoulder.L");
+  armL_1 = robot_1.getObjectByName("UpperArm.L");
+  handL_1 = robot_1.getObjectByName("Hand.L");
+  shoulderR_1 = robot_1.getObjectByName("Shoulder.R");
+  armR_1 = robot_1.getObjectByName("Arm.R");
+  handR_1 = robot_1.getObjectByName("Hand.R");
+  legL_1 = robot_1.getObjectByName("Leg.L");
+  lowerLegL_1 = robot_1.getObjectByName("LowerLeg.L");
+  legR_1 = robot_1.getObjectByName("Leg.R");
+  lowerLegR_1 = robot_1.getObjectByName("LowerLeg.R");
+
+  //Setup a bounding box around robot_1
+  box_robot1 = new THREE.Box3().setFromObject(robot_1);
+  const siz_robot1 = box_robot1.getSize(new THREE.Vector3()).length();
+  const center_robot1 = box_robot1.getCenter(new THREE.Vector3());
 
 }, undefined, function (error) {
   console.error(error);
 });
 
-loader.load('capybara_low_poly/scene.gltf', function (gltf1) {
-  capybara_2 = gltf1.scene;
-  scene.add(capybara_2);
+loader.load('robot/RobotExpressive.glb', function (gltf1) {
+  robot_2 = gltf1.scene;
+  scene.add(robot_2);
 
-  capybara_2.position.x = 9;
-  capybara_2.rotation.y = -90 * (Math.PI / 180.0);
-  capybara_2.scale.set(2, 2, 2);
+  robot_2.traverse(function (child) {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
 
-  //Setup a bounding box around capybara_2
-  box_capy2 = new THREE.Box3().setFromObject(capybara_2);
-  const size_capy2 = box_capy2.getSize(new THREE.Vector3()).length();
-  const center_capy2 = box_capy2.getCenter(new THREE.Vector3());
+  robot_2.position.x = 9;
+  robot_2.rotation.y = -90 * (Math.PI / 180.0);
+  robot_2.scale.set(0.5, 0.5, 0.5);
+
+  torso_2 = robot_2.getObjectByName("Torso");
+  head_2 = robot_2.getObjectByName("Head");
+  footL_2 = robot_2.getObjectByName("Foot.L");
+  footR_2 = robot_2.getObjectByName("Foot.R");
+  shoulderL_2 = robot_2.getObjectByName("Shoulder.L");
+  armL_2 = robot_2.getObjectByName("Arm.L");
+  handL_2 = robot_2.getObjectByName("Hand.L");
+  shoulderR_2 = robot_2.getObjectByName("Shoulder.R");
+  armR_2 = robot_2.getObjectByName("Arm.R");
+  handR_2 = robot_2.getObjectByName("Hand.R");
+  legL_2 = robot_2.getObjectByName("Leg.L");
+  lowerLegL_2 = robot_2.getObjectByName("LowerLeg.L");
+  legR_2 = robot_2.getObjectByName("Leg.R");
+  lowerLegR_2 = robot_2.getObjectByName("LowerLeg.R");
+
+  //Setup a bounding box around robot_2
+  box_robot2 = new THREE.Box3().setFromObject(robot_2);
+  const size_robot2 = box_robot2.getSize(new THREE.Vector3()).length();
+  const center_robot2 = box_robot2.getCenter(new THREE.Vector3());
 
 }, undefined, function (error) {
   console.error(error);
@@ -208,22 +324,68 @@ loader.load('football_pitch/scene.gltf', function (gltf2) {
   football_pitch = gltf2.scene;
   scene.add(football_pitch);
 
+  football_pitch.traverse(function (child) {
+    if (child.isMesh) {
+      child.receiveShadow = true;
+    }
+  });
+
   football_pitch.position.y = -0.05;
+
+  // Create bounding boxes for the edges
+  const pitchSize = new THREE.Box3().setFromObject(football_pitch).getSize(new THREE.Vector3());
+
+  const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+  // Create a bounding box for the left edge
+  leftEdgeBox = new THREE.Box3Helper(new THREE.Box3().setFromCenterAndSize(
+    new THREE.Vector3(-pitchSize.x / 2, 1.8, 0),
+    new THREE.Vector3(0.1, pitchSize.y, pitchSize.z)
+  ), edgeMaterial);
+  scene.add(leftEdgeBox);
+
+  // Create a bounding box for the right edge
+  rightEdgeBox = new THREE.Box3Helper(new THREE.Box3().setFromCenterAndSize(
+    new THREE.Vector3(pitchSize.x / 2, 1.8, 0),
+    new THREE.Vector3(0.1, pitchSize.y, pitchSize.z)
+  ), edgeMaterial);
+  scene.add(rightEdgeBox);
+
+  // Create a bounding box for the top edge
+  topEdgeBox = new THREE.Box3Helper(new THREE.Box3().setFromCenterAndSize(
+    new THREE.Vector3(0, 1.8, -pitchSize.z / 2),
+    new THREE.Vector3(pitchSize.x, pitchSize.y, 0.1)
+  ), edgeMaterial);
+  scene.add(topEdgeBox);
+
+  // Create a bounding box for the bottom edge
+  bottomEdgeBox = new THREE.Box3Helper(new THREE.Box3().setFromCenterAndSize(
+    new THREE.Vector3(0, 1.8, pitchSize.z / 2),
+    new THREE.Vector3(pitchSize.x, pitchSize.y, 0.1)
+  ), edgeMaterial);
+  scene.add(bottomEdgeBox);
 
 }, undefined, function (error) {
   console.error(error);
 });
 
-loader.load('ball/scene.gltf', function (gltf3) {
+loader.load('football_ball/scene.gltf', function (gltf3) {
   ball = gltf3.scene;
   scene.add(ball);
 
-  ball.position.x = -0.5;
-  ball.position.y = 0.15;
-  ball.position.z = -0.2;
-  ball.scale.set(0.5, 0.5, 0.5);
+  ball.traverse(function (child) {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
 
-  //Setup a bounding box around capybara_1
+  //ball.position.x = -0.5;
+  ball.position.y = 0.36;
+  //ball.position.z = -0.2;
+  ball.scale.set(0.4, 0.4, 0.4);
+
+  //Setup a bounding sphere around ball
   box_ball = new THREE.Box3().setFromObject(ball);
   const size_ball = box_ball.getSize(new THREE.Vector3()).length();
   const center_ball = box_ball.getCenter(new THREE.Vector3());
@@ -235,90 +397,95 @@ loader.load('ball/scene.gltf', function (gltf3) {
 
 
 
-/*
-//Creating an anchor point
-var anchorProps = {
-    size: 1,
-    height: 0.05,
-    points: [
-        new THREE.Vector3(9.5, 0, 10.7),
-        new THREE.Vector3(2.1, 0, 14.4),
-        new THREE.Vector3(-2.3, 0, 9.5),
-        new THREE.Vector3(-13.5, 0, 9.9),
-        new THREE.Vector3(13.8, 0, -0.9),
-        new THREE.Vector3(-14.7, 0, -1.1),
-        new THREE.Vector3(9.4, 0, -13.8),
-        new THREE.Vector3(-0.9, 0, -15.8),
-        new THREE.Vector3(-9.2, 0, -10.5),
-    ],
-    lastAnchorChoice: -1,
-}
-
-var anchorBox3, anchorBoxHelper;
-var anchorSolid;
-{
-    var anchorGeometry = new THREE.BoxGeometry(anchorProps.size, anchorProps.height, anchorProps.size);
-    var anchorMaterial = new THREE.MeshBasicMaterial({
-        color: "#ffffff"
-    })
-    anchorSolid = new THREE.Mesh(anchorGeometry, anchorMaterial);
-    anchorSolid.position.y = -10;
-    scene.add(anchorSolid);
-
-    anchorBox3 = new THREE.Box3().setFromObject(anchorSolid);
-
-}*/
-
 var isMoving = false;
 var isCapyMoving = true;
 var increment = 0.05;
+var goal = false;
 
 //Render the Scene; basically, anything you want to move or change
 //while the app is running has to go through the animate loop.
 function animate() {
   requestAnimationFrame(animate);
 
+
+  //checkPitchCollisions(box_robot1);
+  checkPitchCollisions(box_ball);
+
   if(isCapyMoving){
-    capybara_2.position.z += increment;
-    box_capy2.setFromObject(capybara_2);
+    robot_2.position.z += increment;
+    box_robot2.setFromObject(robot_2);
   }
 
 
+
   // Check if the variable has reached the minimum or maximum value
-  if (capybara_2.position.z >= 3 || capybara_2.position.z <= -3) {
+  if (robot_2.position.z >= 3 || robot_2.position.z <= -3) {
     increment *= -1; // Invert the increment direction
   }
 
   // Move the cube based on keyboard input
-  if (moveForward) capybara_1.position.z -= 0.1;
-  if (moveBackward) capybara_1.position.z += 0.1;
-  if (moveLeft) capybara_1.position.x -= 0.1;
-  if (moveRight) capybara_1.position.x += 0.1;
+  if (moveForward) robot_1.position.z -= 0.1;
+  if (moveBackward) robot_1.position.z += 0.1;
+  if (moveLeft) robot_1.position.x -= 0.1;
+  if (moveRight) robot_1.position.x += 0.1;
+
 
   if(isMoving){
     ball.position.x += 0.1;
+    ball.rotation.z -= 0.2;
     box_ball.setFromObject(ball);
   }
 
   //Update the bounding boxes
-  if(moveForward||moveBackward||moveLeft||moveRight) box_capy1.setFromObject(capybara_1);
+  if(moveForward||moveBackward||moveLeft||moveRight) box_robot1.setFromObject(robot_1);
 
   // Check for collisions
-  if (box_capy1.intersectsBox(box_ball)) {
+  if (box_robot1.intersectsBox(box_ball)) {
     // Collision detected, stop or modify the object's movement
     isMoving = true;
-
-
   }
 
-  if (box_ball.intersectsBox(box_capy2)) {
+  if (box_ball.intersectsBox(box_robot2)) {
     // Collision detected, stop or modify the object's movement
     isMoving = false;
     isCapyMoving = false;
     //box_ball.setFromObject(ball);
+  }
 
+  if(ball.position.x >= 10 && !goal){
+    goal = true;
+    alert("GOAL!");
+    location.reload();
   }
 
   renderer.render(scene, camera);
 }
 animate();
+
+
+
+function checkPitchCollisions(box) {
+  // Check collision with the left edge
+  if (box.intersectsBox(leftEdgeBox.box)) {
+    // Collision with left edge detected
+    alert("left collision");
+  }
+
+  // Check collision with the right edge
+  if (box.intersectsBox(rightEdgeBox.box)) {
+    // Collision with right edge detected
+    alert("right collision");
+  }
+
+  // Check collision with the top edge
+  if (box.intersectsBox(topEdgeBox.box)) {
+    // Collision with top edge detected
+    alert("top collision");
+  }
+
+  // Check collision with the bottom edge
+  if (box.intersectsBox(bottomEdgeBox.box)) {
+    // Collision with bottom edge detected
+    alert("bottom collision");
+  }
+}

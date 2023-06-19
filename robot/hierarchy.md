@@ -1,10 +1,10 @@
 mesh:
 - Torso
   - Head
-  - Foot.L
+  - Foot.L //
   - Foot.R
-  - Shoulder.L
-    - Arm.L
+  - Shoulder.L //
+    - Arm.L //
       - Hand.L
   - Shoulder.R
     - Arm.R

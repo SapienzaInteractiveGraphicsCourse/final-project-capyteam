@@ -9,6 +9,16 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 //Setup the scene
 const scene = new THREE.Scene();
 
+//Camera Keyboard
+// Keyboard input variables
+let moveCameraForward = false;
+let moveCameraBackward = false;
+let moveCameraLeft = false;
+let moveCameraRight = false;
+var arrow;
+var arrowDirection = new THREE.Vector3(1, 0, 0); // Direzione della freccia
+var arrowLength = 10; // Lunghezza della freccia
+var arrowColor = 0xff0000; // Colore della freccia
 
 // Keyboard input variables
 var moveForward = false;
@@ -16,33 +26,115 @@ var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 
-// Handle keyboard events
-document.addEventListener('keydown', handleKeyDown);
-document.addEventListener('keyup', handleKeyUp);
 // Handle key down events
-function handleKeyDown(event) {
-  if (event.key === 'ArrowUp' || event.key === 'w') {
-    moveForward = true;
-  } else if (event.key === 'ArrowDown' || event.key === 's') {
-    moveBackward = true;
-  } else if (event.key === 'ArrowLeft' || event.key === 'a') {
-    moveLeft = true;
-  } else if (event.key === 'ArrowRight' || event.key === 'd') {
-    moveRight = true;
+document.addEventListener('keydown', function(event) {
+  switch (event.code) {
+    case 'ArrowUp':
+      moveCameraForward = true;
+      break;
+    case 'ArrowDown':
+      moveCameraBackward = true;
+      break;
+    case 'ArrowLeft':
+      moveCameraLeft = true;
+      break;
+    case 'ArrowRight':
+      moveCameraRight = true;
+      break;
   }
+
+  // Handle key up events
+  document.addEventListener('keyup', function(event) {
+    switch (event.code) {
+      case 'ArrowUp':
+        moveCameraForward = false;
+        break;
+      case 'ArrowDown':
+        moveCameraBackward = false;
+        break;
+      case 'ArrowLeft':
+        moveCameraLeft = false;
+        break;
+      case 'ArrowRight':
+        moveCameraRight = false;
+        break;
+    }
+  });
+});
+
+
+// Handle mouse events
+var mouseDown = false;
+var endMouseX = 0;
+var endMouseY = 0;
+var line;
+
+var moveUntilX;
+var moveUntilZ;
+
+document.addEventListener('mousedown', handleMouseDown);
+document.addEventListener('mousemove', handleMouseMove);
+document.addEventListener('mouseup', handleMouseUp);
+
+function handleMouseDown(event) {
+  mouseDown = true;
+
+  scene.remove(line);
+
+  endMouseX = event.clientX;
+  endMouseY = event.clientY;
 }
 
-// Handle key up events
-function handleKeyUp(event) {
-  if (event.key === 'ArrowUp' || event.key === 'w') {
-    moveForward = false;
-  } else if (event.key === 'ArrowDown' || event.key === 's') {
-    moveBackward = false;
-  } else if (event.key === 'ArrowLeft' || event.key === 'a') {
-    moveLeft = false;
-  } else if (event.key === 'ArrowRight' || event.key === 'd') {
-    moveRight = false;
-  }
+function handleMouseMove(event) {
+}
+
+function handleMouseUp(event) {
+  mouseDown = false;
+  console.log("Not normalized: "+endMouseX+" "+endMouseY);
+
+  // Convert the viewport coordinates to normalized device coordinates (NDC)
+  const normalizedX = (endMouseX / window.innerWidth) * 2 - 1;
+  const normalizedY = -(endMouseY / window.innerHeight) * 2 + 1;
+
+  // Create a vector with the normalized device coordinates
+  const vector = new THREE.Vector3(normalizedX, normalizedY, 0);
+
+  // Use the unproject method to convert the vector from NDC to world space
+  vector.unproject(camera);
+
+  // Retrieve the camera's position and direction
+  const cameraPosition = camera.position;
+  const cameraDirection = vector.sub(cameraPosition).normalize();
+
+  // Calculate the distance along the camera direction to find the 3D position
+  const distance = -cameraPosition.z / cameraDirection.z;
+  const clickPosition = cameraPosition.clone().add(cameraDirection.multiplyScalar(distance));
+
+  // Use the clickPosition vector to access the x, y, and z coordinates
+  const clickX = clickPosition.x;
+  const clickY = clickPosition.y;
+  const clickZ = clickPosition.z;
+  console.log("Normalized: "+clickX+" "+clickY+" "+clickZ);
+
+  createArrow(robot_1, clickX, -clickY);
+
+  scene.add(line);
+}
+
+function createArrow(object, endPointX, endPointZ) {
+  // Create the start and end points for the line
+  const startPoint = new THREE.Vector3(object.position.x, object.position.y, object.position.z);
+  const endPoint = new THREE.Vector3(endPointX, object.position.y, endPointZ);
+
+  // Create a buffer geometry for the line
+  const lineGeometry = new THREE.BufferGeometry().setFromPoints([startPoint, endPoint]);
+
+  // Create a material for the line
+  const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+  // Create the line using the geometry and material
+  line = new THREE.Line(lineGeometry, lineMaterial);
+
 }
 
 
@@ -183,9 +275,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 
 
-camera.position.x = 15;
-camera.position.y = 15;
-camera.position.z = 15;
+camera.position.set(0, 15, 15);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; // Add smooth damping effect
@@ -208,6 +298,12 @@ var bottomEdgeBox;
 var topEdgeBox;
 var leftEdgeBox;
 var rightEdgeBox;
+
+//Accelleration parameters
+var accellerationx;
+var accellerationz;
+var accellerationballx;
+var accellerationballz;
 
 //Mesh components robot_1
 var torso_1;
@@ -398,7 +494,7 @@ loader.load('football_ball/scene.gltf', function (gltf3) {
 
 
 var isMoving = false;
-var isCapyMoving = true;
+var isRobotMoving = true;
 var increment = 0.05;
 var goal = false;
 
@@ -407,11 +503,29 @@ var goal = false;
 function animate() {
   requestAnimationFrame(animate);
 
+  // Moving the camera
+  if (moveCameraForward) {
+    camera.position.z -= 0.5;
+  }
+  if (moveCameraForward) {
+    camera.position.z += 0.5;
+  }
+  if (moveCameraLeft) {
+    camera.position.x -= 0.5;
+  }
+  if (moveCameraRight) {
+    camera.position.x += 0.5;
+  }
+
+  // Update controls
+  controls.enabled = false;
+
+  controls.update();
 
   //checkPitchCollisions(box_robot1);
   checkPitchCollisions(box_ball);
 
-  if(isCapyMoving){
+  if(isRobotMoving){
     robot_2.position.z += increment;
     box_robot2.setFromObject(robot_2);
   }
@@ -448,7 +562,7 @@ function animate() {
   if (box_ball.intersectsBox(box_robot2)) {
     // Collision detected, stop or modify the object's movement
     isMoving = false;
-    isCapyMoving = false;
+    isRobotMoving = false;
     //box_ball.setFromObject(ball);
   }
 
