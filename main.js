@@ -11,10 +11,10 @@ const scene = new THREE.Scene();
 
 
 // Keyboard input variables
-let moveForward = false;
-let moveBackward = false;
-let moveLeft = false;
-let moveRight = false;
+var moveForward = false;
+var moveBackward = false;
+var moveLeft = false;
+var moveRight = false;
 
 // Handle keyboard events
 document.addEventListener('keydown', handleKeyDown);
@@ -194,14 +194,14 @@ controls.rotateSpeed = 0.5; // Adjust the rotation speed
 
 //Add 3D models
 const loader = new GLTFLoader();
-var capybara_1;
-var capybara_2;
+var robot_1;
+var robot_2;
 var football_pitch;
 var ball;
 
 //Bounding boxes
-var box_capy1;
-var box_capy2;
+var box_robot1;
+var box_robot2;
 var box_ball;
 
 var bottomEdgeBox;
@@ -209,49 +209,112 @@ var topEdgeBox;
 var leftEdgeBox;
 var rightEdgeBox;
 
-loader.load('capybara_low_poly/scene.gltf', function (gltf) {
-  capybara_1 = gltf.scene;
-  scene.add(capybara_1);
+//Mesh components robot_1
+var torso_1;
+var head_1;
+var footL_1;
+var footR_1;
+var shoulderL_1;
+var armL_1;
+var handL_1;
+var shoulderR_1;
+var armR_1;
+var handR_1;
+var legL_1;
+var lowerLegL_1;
+var legR_1;
+var lowerLegR_1;
 
-  capybara_1.traverse(function (child) {
+//Mesh components robot_2
+var torso_2;
+var head_2;
+var footL_2;
+var footR_2;
+var shoulderL_2;
+var armL_2;
+var handL_2;
+var shoulderR_2;
+var armR_2;
+var handR_2;
+var legL_2;
+var lowerLegL_2;
+var legR_2;
+var lowerLegR_2;
+
+
+loader.load('robot/RobotExpressive.glb', function (gltf) {
+  robot_1 = gltf.scene;
+  scene.add(robot_1);
+
+  robot_1.traverse(function (child) {
     if (child.isMesh) {
       child.castShadow = true;
       child.receiveShadow = true;
     }
   });
 
-  capybara_1.position.x = -9;
-  capybara_1.rotation.y = 90 * (Math.PI / 180.0);
-  capybara_1.scale.set(2, 2, 2);
+  robot_1.position.x = -9;
+  robot_1.rotation.y = 90 * (Math.PI / 180.0);
+  robot_1.scale.set(0.5, 0.5, 0.5);
 
-  //Setup a bounding box around capybara_1
-  box_capy1 = new THREE.Box3().setFromObject(capybara_1);
-  const siz_capy1 = box_capy1.getSize(new THREE.Vector3()).length();
-  const center_capy1 = box_capy1.getCenter(new THREE.Vector3());
+  torso_1 = robot_1.getObjectByName("Torso");
+  head_1 = robot_1.getObjectByName("Head");
+  footL_1 = robot_1.getObjectByName("Foot.L");
+  footR_1 = robot_1.getObjectByName("Foot.R");
+  shoulderL_1 = robot_1.getObjectByName("Shoulder.L");
+  armL_1 = robot_1.getObjectByName("UpperArm.L");
+  handL_1 = robot_1.getObjectByName("Hand.L");
+  shoulderR_1 = robot_1.getObjectByName("Shoulder.R");
+  armR_1 = robot_1.getObjectByName("Arm.R");
+  handR_1 = robot_1.getObjectByName("Hand.R");
+  legL_1 = robot_1.getObjectByName("Leg.L");
+  lowerLegL_1 = robot_1.getObjectByName("LowerLeg.L");
+  legR_1 = robot_1.getObjectByName("Leg.R");
+  lowerLegR_1 = robot_1.getObjectByName("LowerLeg.R");
+
+  //Setup a bounding box around robot_1
+  box_robot1 = new THREE.Box3().setFromObject(robot_1);
+  const siz_robot1 = box_robot1.getSize(new THREE.Vector3()).length();
+  const center_robot1 = box_robot1.getCenter(new THREE.Vector3());
 
 }, undefined, function (error) {
   console.error(error);
 });
 
-loader.load('capybara_low_poly/scene.gltf', function (gltf1) {
-  capybara_2 = gltf1.scene;
-  scene.add(capybara_2);
+loader.load('robot/RobotExpressive.glb', function (gltf1) {
+  robot_2 = gltf1.scene;
+  scene.add(robot_2);
 
-  capybara_2.traverse(function (child) {
+  robot_2.traverse(function (child) {
     if (child.isMesh) {
       child.castShadow = true;
       child.receiveShadow = true;
     }
   });
 
-  capybara_2.position.x = 9;
-  capybara_2.rotation.y = -90 * (Math.PI / 180.0);
-  capybara_2.scale.set(2, 2, 2);
+  robot_2.position.x = 9;
+  robot_2.rotation.y = -90 * (Math.PI / 180.0);
+  robot_2.scale.set(0.5, 0.5, 0.5);
 
-  //Setup a bounding box around capybara_2
-  box_capy2 = new THREE.Box3().setFromObject(capybara_2);
-  const size_capy2 = box_capy2.getSize(new THREE.Vector3()).length();
-  const center_capy2 = box_capy2.getCenter(new THREE.Vector3());
+  torso_2 = robot_2.getObjectByName("Torso");
+  head_2 = robot_2.getObjectByName("Head");
+  footL_2 = robot_2.getObjectByName("Foot.L");
+  footR_2 = robot_2.getObjectByName("Foot.R");
+  shoulderL_2 = robot_2.getObjectByName("Shoulder.L");
+  armL_2 = robot_2.getObjectByName("Arm.L");
+  handL_2 = robot_2.getObjectByName("Hand.L");
+  shoulderR_2 = robot_2.getObjectByName("Shoulder.R");
+  armR_2 = robot_2.getObjectByName("Arm.R");
+  handR_2 = robot_2.getObjectByName("Hand.R");
+  legL_2 = robot_2.getObjectByName("Leg.L");
+  lowerLegL_2 = robot_2.getObjectByName("LowerLeg.L");
+  legR_2 = robot_2.getObjectByName("Leg.R");
+  lowerLegR_2 = robot_2.getObjectByName("LowerLeg.R");
+
+  //Setup a bounding box around robot_2
+  box_robot2 = new THREE.Box3().setFromObject(robot_2);
+  const size_robot2 = box_robot2.getSize(new THREE.Vector3()).length();
+  const center_robot2 = box_robot2.getCenter(new THREE.Vector3());
 
 }, undefined, function (error) {
   console.error(error);
@@ -344,25 +407,27 @@ var goal = false;
 function animate() {
   requestAnimationFrame(animate);
 
-  checkPitchCollisions(box_capy1);
+
+  //checkPitchCollisions(box_robot1);
   checkPitchCollisions(box_ball);
 
   if(isCapyMoving){
-    capybara_2.position.z += increment;
-    box_capy2.setFromObject(capybara_2);
+    robot_2.position.z += increment;
+    box_robot2.setFromObject(robot_2);
   }
 
 
+
   // Check if the variable has reached the minimum or maximum value
-  if (capybara_2.position.z >= 3 || capybara_2.position.z <= -3) {
+  if (robot_2.position.z >= 3 || robot_2.position.z <= -3) {
     increment *= -1; // Invert the increment direction
   }
 
   // Move the cube based on keyboard input
-  if (moveForward) capybara_1.position.z -= 0.1;
-  if (moveBackward) capybara_1.position.z += 0.1;
-  if (moveLeft) capybara_1.position.x -= 0.1;
-  if (moveRight) capybara_1.position.x += 0.1;
+  if (moveForward) robot_1.position.z -= 0.1;
+  if (moveBackward) robot_1.position.z += 0.1;
+  if (moveLeft) robot_1.position.x -= 0.1;
+  if (moveRight) robot_1.position.x += 0.1;
 
 
   if(isMoving){
@@ -372,15 +437,15 @@ function animate() {
   }
 
   //Update the bounding boxes
-  if(moveForward||moveBackward||moveLeft||moveRight) box_capy1.setFromObject(capybara_1);
+  if(moveForward||moveBackward||moveLeft||moveRight) box_robot1.setFromObject(robot_1);
 
   // Check for collisions
-  if (box_capy1.intersectsBox(box_ball)) {
+  if (box_robot1.intersectsBox(box_ball)) {
     // Collision detected, stop or modify the object's movement
     isMoving = true;
   }
 
-  if (box_ball.intersectsBox(box_capy2)) {
+  if (box_ball.intersectsBox(box_robot2)) {
     // Collision detected, stop or modify the object's movement
     isMoving = false;
     isCapyMoving = false;
@@ -392,8 +457,6 @@ function animate() {
     alert("GOAL!");
     location.reload();
   }
-
-
 
   renderer.render(scene, camera);
 }

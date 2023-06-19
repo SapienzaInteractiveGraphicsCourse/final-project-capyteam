@@ -1,0 +1,15 @@
+mesh:
+- Torso
+  - Head
+  - Foot.L
+  - Foot.R
+  - Shoulder.L
+    - Arm.L
+      - Hand.L
+  - Shoulder.R
+    - Arm.R
+      - Hand.R
+  - Leg.L
+    - LowerLeg.L
+  - Leg.R
+    - LowerLeg.R
