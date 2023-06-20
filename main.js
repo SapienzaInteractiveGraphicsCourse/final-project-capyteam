@@ -69,8 +69,10 @@ var endMouseX = 0;
 var endMouseY = 0;
 var line;
 
-var moveUntilX;
-var moveUntilZ;
+var moveFrom;
+var moveTo;
+var velocity;
+var readyToMove = false;
 
 document.addEventListener('mousedown', handleMouseDown);
 document.addEventListener('mousemove', handleMouseMove);
@@ -107,7 +109,7 @@ function handleMouseUp(event) {
   const cameraDirection = vector.sub(cameraPosition).normalize();
 
   // Calculate the distance along the camera direction to find the 3D position
-  const distance = -cameraPosition.z / cameraDirection.z;
+  const distance = -cameraPosition.y / cameraDirection.y;
   const clickPosition = cameraPosition.clone().add(cameraDirection.multiplyScalar(distance));
 
   // Use the clickPosition vector to access the x, y, and z coordinates
@@ -116,9 +118,14 @@ function handleMouseUp(event) {
   const clickZ = clickPosition.z;
   console.log("Normalized: "+clickX+" "+clickY+" "+clickZ);
 
-  createArrow(robot_1, clickX, -clickY);
+  createArrow(robot_1, clickX, clickZ);
 
   scene.add(line);
+
+  moveFrom = new THREE.Vector3(robot_1.position.x, robot_1.position.y, robot_1.position.z);
+  moveTo = new THREE.Vector3(clickX, robot_1.position.y, clickZ);
+  velocity = 0.1;
+  readyToMove = true;
 }
 
 function createArrow(object, endPointX, endPointZ) {
@@ -275,7 +282,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 
 
-camera.position.set(0, 15, 15);
+camera.position.set(0, 15, 10);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; // Add smooth damping effect
@@ -572,9 +579,25 @@ function animate() {
     location.reload();
   }
 
+
+  if(readyToMove){
+    /*Implementare una funzione che faccia ruotare il
+    robot sulla direzione della linea, e poi lo faccia spostare
+    su quella direzione con una velocità proporzionale alla
+    lunghezza della linea*/
+    readyToMove = false;
+  }
+
   renderer.render(scene, camera);
 }
 animate();
+
+
+
+
+
+
+
 
 
 
