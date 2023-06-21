@@ -6,6 +6,9 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 //Import orbit controls
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
+//Import tween.js for smooth animation
+import * as TWEEN from '@tweenjs/tween.js'
+
 //Setup the scene
 const scene = new THREE.Scene();
 
@@ -26,6 +29,10 @@ var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 
+var clickX;
+var clickY;
+var clickZ;
+
 // Handle key down events
 document.addEventListener('keydown', function(event) {
   switch (event.code) {
@@ -40,6 +47,20 @@ document.addEventListener('keydown', function(event) {
       break;
     case 'ArrowRight':
       moveCameraRight = true;
+      break;
+    case 'KeyQ':
+      clickX = 0;
+      clickZ = 0;
+      scene.remove(line);
+      isRobotMoving = false;
+      isRobotMoving2 = true;
+      break;
+    case 'KeyE':
+      clickX = 0;
+      clickZ = 0;
+      scene.remove(line);
+      isRobotMoving = true;
+      isRobotMoving2 = false;
       break;
   }
 
@@ -113,19 +134,33 @@ function handleMouseUp(event) {
   const clickPosition = cameraPosition.clone().add(cameraDirection.multiplyScalar(distance));
 
   // Use the clickPosition vector to access the x, y, and z coordinates
-  const clickX = clickPosition.x;
-  const clickY = clickPosition.y;
-  const clickZ = clickPosition.z;
+  clickX = clickPosition.x;
+  clickY = clickPosition.y;
+  clickZ = clickPosition.z;
   console.log("Normalized: "+clickX+" "+clickY+" "+clickZ);
 
-  createArrow(robot_1, clickX, clickZ);
+  if(isRobotMoving){
+    createArrow(robot_1, clickX, clickZ);
 
-  scene.add(line);
+    scene.add(line);
 
-  moveFrom = new THREE.Vector3(robot_1.position.x, robot_1.position.y, robot_1.position.z);
-  moveTo = new THREE.Vector3(clickX, robot_1.position.y, clickZ);
-  velocity = 0.1;
-  readyToMove = true;
+    moveFrom = new THREE.Vector3(robot_1.position.x, robot_1.position.y, robot_1.position.z);
+    moveTo = new THREE.Vector3(clickX, robot_1.position.y, clickZ);
+    velocity = 0.1;
+    readyToMove = true;
+  }
+
+  if(isRobotMoving2){
+    createArrow(robot_2, clickX, clickZ);
+
+    scene.add(line);
+
+    moveFrom = new THREE.Vector3(robot_2.position.x, robot_2.position.y, robot_2.position.z);
+    moveTo = new THREE.Vector3(clickX, robot_2.position.y, clickZ);
+    velocity = 0.1;
+    readyToMove = true;
+  }
+
 }
 
 function createArrow(object, endPointX, endPointZ) {
@@ -296,6 +331,7 @@ var robot_2;
 var football_pitch;
 var ball;
 
+
 //Bounding boxes
 var box_robot1;
 var box_robot2;
@@ -360,20 +396,21 @@ loader.load('robot/RobotExpressive.glb', function (gltf) {
   robot_1.rotation.y = 90 * (Math.PI / 180.0);
   robot_1.scale.set(0.5, 0.5, 0.5);
 
-  torso_1 = robot_1.getObjectByName("Torso");
-  head_1 = robot_1.getObjectByName("Head");
-  footL_1 = robot_1.getObjectByName("Foot.L");
-  footR_1 = robot_1.getObjectByName("Foot.R");
-  shoulderL_1 = robot_1.getObjectByName("Shoulder.L");
-  armL_1 = robot_1.getObjectByName("UpperArm.L");
-  handL_1 = robot_1.getObjectByName("Hand.L");
-  shoulderR_1 = robot_1.getObjectByName("Shoulder.R");
-  armR_1 = robot_1.getObjectByName("Arm.R");
-  handR_1 = robot_1.getObjectByName("Hand.R");
-  legL_1 = robot_1.getObjectByName("Leg.L");
-  lowerLegL_1 = robot_1.getObjectByName("LowerLeg.L");
-  legR_1 = robot_1.getObjectByName("Leg.R");
-  lowerLegR_1 = robot_1.getObjectByName("LowerLeg.R");
+  torso_1 = robot_1.getObjectByName("Torso");//funge
+  head_1 = robot_1.getObjectByName("Head");//funge
+  shoulderL_1 = robot_1.getObjectByName("ShoulderL");//funge
+  armL_1 = robot_1.getObjectByName("UpperArmL");//funge
+  shoulderR_1 = robot_1.getObjectByName("ShoulderR");//funge
+  armR_1 = robot_1.getObjectByName("UpperArmR");//funge
+  legL_1 = robot_1.getObjectByName("UpperLegL");//funge
+  legR_1 = robot_1.getObjectByName("UpperLegR");//funge
+
+  /*legL_1.rotation.x = 90 * (Math.PI / 180.0);
+  legR_1.rotation.x = 90 * (Math.PI / 180.0);
+
+
+  shoulderL_1.rotation.x = 70 * (Math.PI / 180.0);//between -45 and 70
+  shoulderR_1.rotation.x = -45 * (Math.PI / 180.0);*/
 
   //Setup a bounding box around robot_1
   box_robot1 = new THREE.Box3().setFromObject(robot_1);
@@ -399,20 +436,14 @@ loader.load('robot/RobotExpressive.glb', function (gltf1) {
   robot_2.rotation.y = -90 * (Math.PI / 180.0);
   robot_2.scale.set(0.5, 0.5, 0.5);
 
-  torso_2 = robot_2.getObjectByName("Torso");
-  head_2 = robot_2.getObjectByName("Head");
-  footL_2 = robot_2.getObjectByName("Foot.L");
-  footR_2 = robot_2.getObjectByName("Foot.R");
-  shoulderL_2 = robot_2.getObjectByName("Shoulder.L");
-  armL_2 = robot_2.getObjectByName("Arm.L");
-  handL_2 = robot_2.getObjectByName("Hand.L");
-  shoulderR_2 = robot_2.getObjectByName("Shoulder.R");
-  armR_2 = robot_2.getObjectByName("Arm.R");
-  handR_2 = robot_2.getObjectByName("Hand.R");
-  legL_2 = robot_2.getObjectByName("Leg.L");
-  lowerLegL_2 = robot_2.getObjectByName("LowerLeg.L");
-  legR_2 = robot_2.getObjectByName("Leg.R");
-  lowerLegR_2 = robot_2.getObjectByName("LowerLeg.R");
+  torso_2 = robot_2.getObjectByName("Torso");//funge
+  head_2 = robot_2.getObjectByName("Head");//funge
+  shoulderL_2 = robot_2.getObjectByName("ShoulderL");//funge
+  armL_2 = robot_2.getObjectByName("UpperArmL");//funge
+  shoulderR_2 = robot_2.getObjectByName("ShoulderR");//funge
+  armR_2 = robot_2.getObjectByName("UpperArmR");//funge
+  legL_2 = robot_2.getObjectByName("UpperLegL");//funge
+  legR_2 = robot_2.getObjectByName("UpperLegR");//funge
 
   //Setup a bounding box around robot_2
   box_robot2 = new THREE.Box3().setFromObject(robot_2);
@@ -502,6 +533,8 @@ loader.load('football_ball/scene.gltf', function (gltf3) {
 
 var isMoving = false;
 var isRobotMoving = true;
+var isRobotMoving2 = false;
+var done = false;
 var increment = 0.05;
 var goal = false;
 
@@ -532,17 +565,20 @@ function animate() {
   //checkPitchCollisions(box_robot1);
   checkPitchCollisions(box_ball);
 
+
+  if(isRobotMoving2){
+    moveRobot(robot_2, box_robot2);
+  }
+
   if(isRobotMoving){
-    robot_2.position.z += increment;
-    box_robot2.setFromObject(robot_2);
+    moveRobot(robot_1, box_robot1);
   }
 
 
-
-  // Check if the variable has reached the minimum or maximum value
+  /*// Check if the variable has reached the minimum or maximum value
   if (robot_2.position.z >= 3 || robot_2.position.z <= -3) {
     increment *= -1; // Invert the increment direction
-  }
+  }*/
 
   // Move the cube based on keyboard input
   if (moveForward) robot_1.position.z -= 0.1;
@@ -594,7 +630,41 @@ animate();
 
 
 
+function moveRobot(object, box_object){
+  if(clickX != 0 || clickZ != 0){
+    var diff_x = clickX-object.position.x;
+    var diff_y = clickZ-object.position.z;
 
+    var j = Math.sqrt((Math.pow(diff_y, 2)) / (Math.pow(diff_x, 2) + Math.pow(diff_y, 2))) * Math.sign(diff_y);
+    var k = (diff_x / diff_y) * j;
+
+
+    if( object.position.x < clickX ){
+      object.position.x += k;
+      if( object.position.x >= clickX ){
+        object.position.x = clickX;
+      }
+    }else if(object.position.x > clickX  ){
+      object.position.x += k;
+      if( object.position.x <= clickX ){
+        object.position.x = clickX;
+      }
+    }
+
+    if(object.position.z > clickZ  ){
+      object.position.z += j;
+      if( object.position.z <= clickZ ){
+        object.position.z = clickZ;
+      }
+    }else if(  object.position.z < clickZ){
+      object.position.z += j;
+      if( object.position.z >= clickZ ){
+        object.position.z = clickZ;
+      }
+    }
+    box_object.setFromObject(object);
+  }
+}
 
 
 

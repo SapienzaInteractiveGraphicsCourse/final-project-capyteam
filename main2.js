@@ -26,9 +26,9 @@ var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 
-var clickX; 
+var clickX;
 var clickY;
-var clickZ;  
+var clickZ;
 
 // Handle key down events
 document.addEventListener('keydown', function(event) {
@@ -134,7 +134,7 @@ function handleMouseUp(event) {
   if (isRobotMoving){
     scene.add(line);
   }
- 
+
 
   moveFrom = new THREE.Vector3(robot_1.position.x, robot_1.position.y, robot_1.position.z);
   moveTo = new THREE.Vector3(clickX, robot_1.position.y, clickZ);
@@ -551,7 +551,7 @@ function animate() {
   if(isRobotMoving2){
     var diff_x = clickX-robot_2.position.x;
     var diff_y = clickZ-robot_2.position.z;
-    
+
     var j = Math.sqrt((Math.pow(diff_y, 2)) / (Math.pow(diff_x, 2) + Math.pow(diff_y, 2))) * Math.sign(diff_y);
     var k = (diff_x / diff_y) * j;
 
@@ -568,8 +568,8 @@ function animate() {
         robot_2.position.x = clickX;
       }
     }
-    
-     
+
+
       if(robot_2.position.z > clickZ  ){
         robot_2.position.z += j;
         if( robot_2.position.z <= clickZ ){
@@ -587,10 +587,10 @@ function animate() {
 
   //MOVIMENTO ROBOT1
   if(isRobotMoving){
-   
+
     var diff_x = clickX-robot_1.position.x;
     var diff_y = clickZ-robot_1.position.z;
-    
+
     var j = Math.sqrt((Math.pow(diff_y, 2)) / (Math.pow(diff_x, 2) + Math.pow(diff_y, 2))) * Math.sign(diff_y);
     var k = (diff_x / diff_y) * j;
 
@@ -607,8 +607,8 @@ function animate() {
         robot_1.position.x = clickX;
       }
     }
-    
-     
+
+
       if(robot_1.position.z > clickZ  ){
         robot_1.position.z += j;
         if( robot_1.position.z <= clickZ ){
@@ -623,9 +623,9 @@ function animate() {
       }
       box_robot1.setFromObject(robot_1);
     }
-    
-    
-   
+
+
+
 
 
   // Check if the variable has reached the minimum or maximum value
