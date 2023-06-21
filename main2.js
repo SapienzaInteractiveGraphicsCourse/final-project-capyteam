@@ -45,6 +45,14 @@ document.addEventListener('keydown', function(event) {
     case 'ArrowRight':
       moveCameraRight = true;
       break;
+      case 'KeyQ':
+        isRobotMoving = false;
+        isRobotMoving2 = true;
+        break;
+        case 'KeyE':
+          isRobotMoving = true;
+          isRobotMoving2 = false;
+          break;
   }
 
   // Handle key up events
@@ -123,8 +131,10 @@ function handleMouseUp(event) {
   console.log("Normalized: "+clickX+" "+clickY+" "+clickZ);
 
   createArrow(robot_1, clickX, clickZ);
-
-  scene.add(line);
+  if (isRobotMoving){
+    scene.add(line);
+  }
+ 
 
   moveFrom = new THREE.Vector3(robot_1.position.x, robot_1.position.y, robot_1.position.z);
   moveTo = new THREE.Vector3(clickX, robot_1.position.y, clickZ);
@@ -506,6 +516,7 @@ loader.load('football_ball/scene.gltf', function (gltf3) {
 
 var isMoving = false;
 var isRobotMoving = true;
+var isRobotMoving2 = false;
 var done = false;
 var increment = 0.05;
 var goal = false;
@@ -537,8 +548,40 @@ function animate() {
   //checkPitchCollisions(box_robot1);
   checkPitchCollisions(box_ball);
 
-  if(isRobotMoving){
-    robot_2.position.z += increment;
+  if(isRobotMoving2){
+    var diff_x = clickX-robot_2.position.x;
+    var diff_y = clickZ-robot_2.position.z;
+    
+    var j = Math.sqrt((Math.pow(diff_y, 2)) / (Math.pow(diff_x, 2) + Math.pow(diff_y, 2))) * Math.sign(diff_y);
+    var k = (diff_x / diff_y) * j;
+
+
+    if( robot_2.position.x < clickX ){
+      robot_2.position.x += k;
+      if( robot_2.position.x >= clickX ){
+        robot_2.position.x = clickX;
+      }
+    }
+    else if(robot_2.position.x > clickX  ){
+      robot_2.position.x += k;
+      if( robot_2.position.x <= clickX ){
+        robot_2.position.x = clickX;
+      }
+    }
+    
+     
+      if(robot_2.position.z > clickZ  ){
+        robot_2.position.z += j;
+        if( robot_2.position.z <= clickZ ){
+          robot_2.position.z = clickZ;
+        }
+      }
+      else if(  robot_2.position.z < clickZ){
+        robot_2.position.z += j;
+        if( robot_2.position.z >= clickZ ){
+          robot_2.position.z = clickZ;
+        }
+      }
     box_robot2.setFromObject(robot_2);
   }
 
@@ -578,7 +621,7 @@ function animate() {
           robot_1.position.z = clickZ;
         }
       }
-      
+      box_robot1.setFromObject(robot_1);
     }
     
     
@@ -586,9 +629,9 @@ function animate() {
 
 
   // Check if the variable has reached the minimum or maximum value
-  if (robot_2.position.z >= 3 || robot_2.position.z <= -3) {
+  /*if (robot_2.position.z >= 3 || robot_2.position.z <= -3) {
     increment *= -1; // Invert the increment direction
-  }
+  }*/
 
   // Move the cube based on keyboard input
   if (moveForward) robot_1.position.z -= 0.1;
