@@ -354,100 +354,37 @@ var accellerationballx;
 var accellerationballz;
 
 //Mesh components robot_1
-var torso_1;
+var neck_1;
 var head_1;
-var footL_1;
-var footR_1;
-var shoulderL_1;
-var armL_1;
-var handL_1;
-var shoulderR_1;
-var armR_1;
-var handR_1;
-var legL_1;
-var lowerLegL_1;
-var legR_1;
-var lowerLegR_1;
+var left_shoulder_1;
+var left_arm_1;
+var left_fore_arm_1;
+var left_hand_1;
+var right_shoulder_1;
+var right_arm_1;
+var right_fore_arm_1;
+var right_hand_1;
+var left_up_leg_1;
+var left_leg_1;
+var left_foot_1;
+var right_up_leg_1;
+var right_leg_1;
+var right_foot_1;
 
 //Mesh components robot_2
-var torso_2;
-var head_2;
-var footL_2;
-var footR_2;
-var shoulderL_2;
-var armL_2;
-var handL_2;
-var shoulderR_2;
-var armR_2;
-var handR_2;
-var legL_2;
-var lowerLegL_2;
-var legR_2;
-var lowerLegR_2;
+
 
 //Mesh components robot_3
-var torso_3;
-var head_3;
-var footL_3;
-var footR_3;
-var shoulderL_3;
-var armL_3;
-var handL_3;
-var shoulderR_3;
-var armR_3;
-var handR_3;
-var legL_3;
-var lowerLegL_3;
-var legR_3;
-var lowerLegR_3;
+
 
 //Mesh components robot_4
-var torso_4;
-var head_4;
-var footL_4;
-var footR_4;
-var shoulderL_4;
-var armL_4;
-var handL_4;
-var shoulderR_4;
-var armR_4;
-var handR_4;
-var legL_4;
-var lowerLegL_4;
-var legR_4;
-var lowerLegR_4;
+
 
 //Mesh components robot_5
-var torso_5;
-var head_5;
-var footL_5;
-var footR_5;
-var shoulderL_5;
-var armL_5;
-var handL_5;
-var shoulderR_5;
-var armR_5;
-var handR_5;
-var legL_5;
-var lowerLegL_5;
-var legR_5;
-var lowerLegR_5;
+
 
 //Mesh components robot_6
-var torso_6;
-var head_6;
-var footL_6;
-var footR_6;
-var shoulderL_6;
-var armL_6;
-var handL_6;
-var shoulderR_6;
-var armR_6;
-var handR_6;
-var legL_6;
-var lowerLegL_6;
-var legR_6;
-var lowerLegR_6;
+
 
 
 //sinistra in basso
@@ -467,15 +404,26 @@ loader.load('models/blueBot/blueBot.gltf', function (gltf) {
   robot_1.rotation.y = 90 * (Math.PI / 180.0);
   robot_1.scale.set(1.7, 1.7, 1.7);
 
-  torso_1 = robot_1.getObjectByName("Torso");//funge
-  head_1 = robot_1.getObjectByName("Head");//funge
-  shoulderL_1 = robot_1.getObjectByName("ShoulderL");//funge
-  armL_1 = robot_1.getObjectByName("UpperArmL");//funge
-  shoulderR_1 = robot_1.getObjectByName("ShoulderR");//funge
-  armR_1 = robot_1.getObjectByName("UpperArmR");//funge
-  legL_1 = robot_1.getObjectByName("mixamorigLeftUpLeg");//funge
-  legR_1 = robot_1.getObjectByName("UpperLegR");//funge
-
+  neck_1 = robot_1.getObjectByName('mixamorigNeck');
+  head_1 = robot_1.getObjectByName('mixamorigHead');
+  // LEFT ARM
+  left_shoulder_1 = robot_1.getObjectByName('mixamorigLeftShoulder');
+  left_arm_1 = robot_1.getObjectByName('mixamorigLeftArm');
+  left_fore_arm_1 = robot_1.getObjectByName('mixamorigLeftForeArm');
+  left_hand_1 = robot_1.getObjectByName('mixamorigLeftHand');
+  // RIGHT ARM
+  right_shoulder_1 = robot_1.getObjectByName('mixamorigRightShoulder');
+  right_arm_1 = robot_1.getObjectByName('mixamorigRightArm');
+  right_fore_arm_1 = robot_1.getObjectByName('mixamorigRightForeArm');
+  right_hand_1 = robot_1.getObjectByName('mixamorigRightHand');
+  // LEFT LEG
+  left_up_leg_1 = robot_1.getObjectByName('mixamorigLeftUpLeg');
+  left_leg_1 = robot_1.getObjectByName('mixamorigLeftLeg');
+  left_foot_1 = robot_1.getObjectByName('mixamorigLeftFoot');
+  // RIGHT LEG
+  right_up_leg_1 = robot_1.getObjectByName('mixamorigRightUpLeg');
+  right_leg_1 = robot_1.getObjectByName('mixamorigRightLeg');
+  right_foot_1 = robot_1.getObjectByName('mixamorigRightFoot');
 
 
   //Setup a bounding box around robot_1
@@ -504,15 +452,6 @@ loader.load('models/blueBot/blueBot.gltf', function (gltf1) {
   robot_2.rotation.y = 90 * (Math.PI / 180.0);
   robot_2.scale.set(1.7, 1.7, 1.7);
 
-  torso_2 = robot_2.getObjectByName("Torso");//funge
-  head_2 = robot_2.getObjectByName("Head");//funge
-  shoulderL_2 = robot_2.getObjectByName("ShoulderL");//funge
-  armL_2 = robot_2.getObjectByName("UpperArmL");//funge
-  shoulderR_2 = robot_2.getObjectByName("ShoulderR");//funge
-  armR_2 = robot_2.getObjectByName("UpperArmR");//funge
-  legL_2 = robot_2.getObjectByName("UpperLegL");//funge
-  legR_2 = robot_2.getObjectByName("UpperLegR");//funge
-
   //Setup a bounding box around robot_2
   box_robot2 = new THREE.Box3().setFromObject(robot_2);
   const size_robot2 = box_robot2.getSize(new THREE.Vector3()).length();
@@ -538,15 +477,6 @@ loader.load('models/redBot/redBot.gltf', function (gltf2) {
   robot_3.position.z = -3;
   robot_3.rotation.y = -90 * (Math.PI / 180.0);
   robot_3.scale.set(1.7, 1.7, 1.7);
-
-  torso_3 = robot_3.getObjectByName("Torso");//funge
-  head_3 = robot_3.getObjectByName("Head");//funge
-  shoulderL_3 = robot_3.getObjectByName("ShoulderL");//funge
-  armL_3 = robot_3.getObjectByName("UpperArmL");//funge
-  shoulderR_3 = robot_3.getObjectByName("ShoulderR");//funge
-  armR_3 = robot_3.getObjectByName("UpperArmR");//funge
-  legL_3 = robot_3.getObjectByName("UpperLegL");//funge
-  legR_3 = robot_3.getObjectByName("UpperLegR");//funge
 
   //Setup a bounding box around robot_3
   box_robot3 = new THREE.Box3().setFromObject(robot_3);
@@ -574,15 +504,6 @@ loader.load('models/redBot/redBot.gltf', function (gltf3) {
   robot_4.rotation.y = -90 * (Math.PI / 180.0);
   robot_4.scale.set(1.7, 1.7, 1.7);
 
-  torso_4 = robot_4.getObjectByName("Torso");//funge
-  head_4 = robot_4.getObjectByName("Head");//funge
-  shoulderL_4 = robot_4.getObjectByName("ShoulderL");//funge
-  armL_4 = robot_4.getObjectByName("UpperArmL");//funge
-  shoulderR_4 = robot_4.getObjectByName("ShoulderR");//funge
-  armR_4 = robot_4.getObjectByName("UpperArmR");//funge
-  legL_4 = robot_4.getObjectByName("UpperLegL");//funge
-  legR_4 = robot_4.getObjectByName("UpperLegR");//funge
-
   //Setup a bounding box around robot_4
   box_robot4 = new THREE.Box3().setFromObject(robot_4);
   const size_robot4 = box_robot4.getSize(new THREE.Vector3()).length();
@@ -608,15 +529,6 @@ loader.load('models/blueBot/blueBot.gltf', function (gltf4) {
   robot_5.rotation.y = 90 * (Math.PI / 180.0);
   robot_5.scale.set(1.7, 1.7, 1.7);
 
-  torso_5 = robot_5.getObjectByName("Torso");//funge
-  head_5 = robot_5.getObjectByName("Head");//funge
-  shoulderL_5 = robot_5.getObjectByName("ShoulderL");//funge
-  armL_5 = robot_5.getObjectByName("UpperArmL");//funge
-  shoulderR_5 = robot_5.getObjectByName("ShoulderR");//funge
-  armR_5 = robot_5.getObjectByName("UpperArmR");//funge
-  legL_5 = robot_5.getObjectByName("UpperLegL");//funge
-  legR_5 = robot_5.getObjectByName("UpperLegR");//funge
-
   //Setup a bounding box around robot_5
   box_robot5 = new THREE.Box3().setFromObject(robot_5);
   const size_robot5 = box_robot5.getSize(new THREE.Vector3()).length();
@@ -641,15 +553,6 @@ loader.load('models/redBot/redBot.gltf', function (gltf5) {
   robot_6.position.x = 9;
   robot_6.rotation.y = -90 * (Math.PI / 180.0);
   robot_6.scale.set(1.7, 1.7, 1.7);
-
-  torso_6 = robot_6.getObjectByName("Torso");//funge
-  head_6 = robot_6.getObjectByName("Head");//funge
-  shoulderL_6 = robot_6.getObjectByName("ShoulderL");//funge
-  armL_6 = robot_6.getObjectByName("UpperArmL");//funge
-  shoulderR_6 = robot_6.getObjectByName("ShoulderR");//funge
-  armR_6 = robot_6.getObjectByName("UpperArmR");//funge
-  legL_6 = robot_6.getObjectByName("UpperLegL");//funge
-  legR_6 = robot_6.getObjectByName("UpperLegR");//funge
 
   //Setup a bounding box around robot_6
   box_robot6 = new THREE.Box3().setFromObject(robot_6);
@@ -736,8 +639,6 @@ loader.load('models/football_ball/scene.gltf', function (gltf7) {
 });
 
 
-var jj, kk;
-
 var isMoving = false;
 var isRobotMoving = true;
 var isRobotMoving2 = false;
@@ -769,9 +670,10 @@ function animate() {
 
   controls.update();
 
-  //checkPitchCollisions(box_robot1);
+  checkPitchCollisions(box_robot1);
   //checkPitchCollisions(box_ball);
 
+  animation();
 
   if(isRobotMoving2){
     moveRobot(robot_2, box_robot2);
@@ -818,6 +720,7 @@ function animate() {
     location.reload();
   }
 
+  TWEEN.update();
 
 
   renderer.render(scene, camera);
@@ -868,28 +771,34 @@ function moveRobot(object, box_object){
 }
 
 
+function animation(){
+  //var tween = new TWEEN.Tween(ball.position).to({x: 100, y: 100, z: 100}, 3000).start();
+}
 
-function checkPitchCollisions(box) {
+
+
+
+function checkPitchCollisions(box_object) {
   // Check collision with the left edge
-  if (box.intersectsBox(leftEdgeBox.box)) {
+  if (box_object.intersectsBox(leftEdgeBox.box)) {
     // Collision with left edge detected
     alert("left collision");
   }
 
   // Check collision with the right edge
-  if (box.intersectsBox(rightEdgeBox.box)) {
+  if (box_object.intersectsBox(rightEdgeBox.box)) {
     // Collision with right edge detected
     alert("right collision");
   }
 
   // Check collision with the top edge
-  if (box.intersectsBox(topEdgeBox.box)) {
+  if (box_object.intersectsBox(topEdgeBox.box)) {
     // Collision with top edge detected
     alert("top collision");
   }
 
   // Check collision with the bottom edge
-  if (box.intersectsBox(bottomEdgeBox.box)) {
+  if (box_object.intersectsBox(bottomEdgeBox.box)) {
     // Collision with bottom edge detected
     alert("bottom collision");
   }
