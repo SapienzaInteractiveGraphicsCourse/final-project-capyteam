@@ -93,7 +93,6 @@ var line;
 var moveFrom;
 var moveTo;
 var velocity;
-var readyToMove = false;
 
 document.addEventListener('mousedown', handleMouseDown);
 document.addEventListener('mousemove', handleMouseMove);
@@ -147,7 +146,6 @@ function handleMouseUp(event) {
     moveFrom = new THREE.Vector3(robot_1.position.x, robot_1.position.y, robot_1.position.z);
     moveTo = new THREE.Vector3(clickX, robot_1.position.y, clickZ);
     velocity = 0.1;
-    readyToMove = true;
   }
 
   if(isRobotMoving2){
@@ -158,7 +156,6 @@ function handleMouseUp(event) {
     moveFrom = new THREE.Vector3(robot_2.position.x, robot_2.position.y, robot_2.position.z);
     moveTo = new THREE.Vector3(clickX, robot_2.position.y, clickZ);
     velocity = 0.1;
-    readyToMove = true;
   }
 
 }
@@ -328,6 +325,10 @@ controls.rotateSpeed = 0.5; // Adjust the rotation speed
 const loader = new GLTFLoader();
 var robot_1;
 var robot_2;
+var robot_3;
+var robot_4;
+var robot_5;
+var robot_6;
 var football_pitch;
 var ball;
 
@@ -335,6 +336,10 @@ var ball;
 //Bounding boxes
 var box_robot1;
 var box_robot2;
+var box_robot3;
+var box_robot4;
+var box_robot5;
+var box_robot6;
 var box_ball;
 
 var bottomEdgeBox;
@@ -380,8 +385,72 @@ var lowerLegL_2;
 var legR_2;
 var lowerLegR_2;
 
+//Mesh components robot_3
+var torso_3;
+var head_3;
+var footL_3;
+var footR_3;
+var shoulderL_3;
+var armL_3;
+var handL_3;
+var shoulderR_3;
+var armR_3;
+var handR_3;
+var legL_3;
+var lowerLegL_3;
+var legR_3;
+var lowerLegR_3;
 
-loader.load('robot/RobotExpressive.glb', function (gltf) {
+//Mesh components robot_4
+var torso_4;
+var head_4;
+var footL_4;
+var footR_4;
+var shoulderL_4;
+var armL_4;
+var handL_4;
+var shoulderR_4;
+var armR_4;
+var handR_4;
+var legL_4;
+var lowerLegL_4;
+var legR_4;
+var lowerLegR_4;
+
+//Mesh components robot_5
+var torso_5;
+var head_5;
+var footL_5;
+var footR_5;
+var shoulderL_5;
+var armL_5;
+var handL_5;
+var shoulderR_5;
+var armR_5;
+var handR_5;
+var legL_5;
+var lowerLegL_5;
+var legR_5;
+var lowerLegR_5;
+
+//Mesh components robot_6
+var torso_6;
+var head_6;
+var footL_6;
+var footR_6;
+var shoulderL_6;
+var armL_6;
+var handL_6;
+var shoulderR_6;
+var armR_6;
+var handR_6;
+var legL_6;
+var lowerLegL_6;
+var legR_6;
+var lowerLegR_6;
+
+
+loader.load('robot/Soldier.glb', function (gltf) {
   robot_1 = gltf.scene;
   scene.add(robot_1);
 
@@ -392,9 +461,10 @@ loader.load('robot/RobotExpressive.glb', function (gltf) {
     }
   });
 
-  robot_1.position.x = -9;
-  robot_1.rotation.y = 90 * (Math.PI / 180.0);
-  robot_1.scale.set(0.5, 0.5, 0.5);
+  robot_1.position.x = -5;
+  robot_1.position.z = 3;
+  robot_1.rotation.y = -90 * (Math.PI / 180.0);
+  robot_1.scale.set(2, 2, 2);
 
   torso_1 = robot_1.getObjectByName("Torso");//funge
   head_1 = robot_1.getObjectByName("Head");//funge
@@ -404,13 +474,6 @@ loader.load('robot/RobotExpressive.glb', function (gltf) {
   armR_1 = robot_1.getObjectByName("UpperArmR");//funge
   legL_1 = robot_1.getObjectByName("UpperLegL");//funge
   legR_1 = robot_1.getObjectByName("UpperLegR");//funge
-
-  /*legL_1.rotation.x = 90 * (Math.PI / 180.0);
-  legR_1.rotation.x = 90 * (Math.PI / 180.0);
-
-
-  shoulderL_1.rotation.x = 70 * (Math.PI / 180.0);//between -45 and 70
-  shoulderR_1.rotation.x = -45 * (Math.PI / 180.0);*/
 
   //Setup a bounding box around robot_1
   box_robot1 = new THREE.Box3().setFromObject(robot_1);
@@ -432,8 +495,9 @@ loader.load('robot/RobotExpressive.glb', function (gltf1) {
     }
   });
 
-  robot_2.position.x = 9;
-  robot_2.rotation.y = -90 * (Math.PI / 180.0);
+  robot_2.position.x = -5;
+  robot_2.position.z = -3;
+  robot_2.rotation.y = 90 * (Math.PI / 180.0);
   robot_2.scale.set(0.5, 0.5, 0.5);
 
   torso_2 = robot_2.getObjectByName("Torso");//funge
@@ -454,8 +518,143 @@ loader.load('robot/RobotExpressive.glb', function (gltf1) {
   console.error(error);
 });
 
-loader.load('football_pitch/scene.gltf', function (gltf2) {
-  football_pitch = gltf2.scene;
+loader.load('robot/RobotExpressive.glb', function (gltf2) {
+  robot_3 = gltf2.scene;
+  scene.add(robot_3);
+
+  robot_3.traverse(function (child) {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+
+  robot_3.position.x = 5;
+  robot_3.position.z = -3;
+  robot_3.rotation.y = -90 * (Math.PI / 180.0);
+  robot_3.scale.set(0.5, 0.5, 0.5);
+
+  torso_3 = robot_3.getObjectByName("Torso");//funge
+  head_3 = robot_3.getObjectByName("Head");//funge
+  shoulderL_3 = robot_3.getObjectByName("ShoulderL");//funge
+  armL_3 = robot_3.getObjectByName("UpperArmL");//funge
+  shoulderR_3 = robot_3.getObjectByName("ShoulderR");//funge
+  armR_3 = robot_3.getObjectByName("UpperArmR");//funge
+  legL_3 = robot_3.getObjectByName("UpperLegL");//funge
+  legR_3 = robot_3.getObjectByName("UpperLegR");//funge
+
+  //Setup a bounding box around robot_3
+  box_robot3 = new THREE.Box3().setFromObject(robot_3);
+  const size_robot3 = box_robot3.getSize(new THREE.Vector3()).length();
+  const center_robot3 = box_robot3.getCenter(new THREE.Vector3());
+
+}, undefined, function (error) {
+  console.error(error);
+});
+
+loader.load('robot/RobotExpressive.glb', function (gltf3) {
+  robot_4 = gltf3.scene;
+  scene.add(robot_4);
+
+  robot_4.traverse(function (child) {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+
+  robot_4.position.x = 5;
+  robot_4.position.z = 3;
+  robot_4.rotation.y = -90 * (Math.PI / 180.0);
+  robot_4.scale.set(0.5, 0.5, 0.5);
+
+  torso_4 = robot_4.getObjectByName("Torso");//funge
+  head_4 = robot_4.getObjectByName("Head");//funge
+  shoulderL_4 = robot_4.getObjectByName("ShoulderL");//funge
+  armL_4 = robot_4.getObjectByName("UpperArmL");//funge
+  shoulderR_4 = robot_4.getObjectByName("ShoulderR");//funge
+  armR_4 = robot_4.getObjectByName("UpperArmR");//funge
+  legL_4 = robot_4.getObjectByName("UpperLegL");//funge
+  legR_4 = robot_4.getObjectByName("UpperLegR");//funge
+
+  //Setup a bounding box around robot_4
+  box_robot4 = new THREE.Box3().setFromObject(robot_4);
+  const size_robot4 = box_robot4.getSize(new THREE.Vector3()).length();
+  const center_robot4 = box_robot4.getCenter(new THREE.Vector3());
+
+}, undefined, function (error) {
+  console.error(error);
+});
+
+loader.load('robot/RobotExpressive.glb', function (gltf4) {
+  robot_5 = gltf4.scene;
+  scene.add(robot_5);
+
+  robot_5.traverse(function (child) {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+
+  robot_5.position.x = -9;
+  robot_5.rotation.y = 90 * (Math.PI / 180.0);
+  robot_5.scale.set(0.5, 0.5, 0.5);
+
+  torso_5 = robot_5.getObjectByName("Torso");//funge
+  head_5 = robot_5.getObjectByName("Head");//funge
+  shoulderL_5 = robot_5.getObjectByName("ShoulderL");//funge
+  armL_5 = robot_5.getObjectByName("UpperArmL");//funge
+  shoulderR_5 = robot_5.getObjectByName("ShoulderR");//funge
+  armR_5 = robot_5.getObjectByName("UpperArmR");//funge
+  legL_5 = robot_5.getObjectByName("UpperLegL");//funge
+  legR_5 = robot_5.getObjectByName("UpperLegR");//funge
+
+  //Setup a bounding box around robot_5
+  box_robot5 = new THREE.Box3().setFromObject(robot_5);
+  const size_robot5 = box_robot5.getSize(new THREE.Vector3()).length();
+  const center_robot5 = box_robot5.getCenter(new THREE.Vector3());
+
+}, undefined, function (error) {
+  console.error(error);
+});
+
+loader.load('robot/RobotExpressive.glb', function (gltf5) {
+  robot_6 = gltf5.scene;
+  scene.add(robot_6);
+
+  robot_6.traverse(function (child) {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+
+  robot_6.position.x = 9;
+  robot_6.rotation.y = -90 * (Math.PI / 180.0);
+  robot_6.scale.set(0.5, 0.5, 0.5);
+
+  torso_6 = robot_6.getObjectByName("Torso");//funge
+  head_6 = robot_6.getObjectByName("Head");//funge
+  shoulderL_6 = robot_6.getObjectByName("ShoulderL");//funge
+  armL_6 = robot_6.getObjectByName("UpperArmL");//funge
+  shoulderR_6 = robot_6.getObjectByName("ShoulderR");//funge
+  armR_6 = robot_6.getObjectByName("UpperArmR");//funge
+  legL_6 = robot_6.getObjectByName("UpperLegL");//funge
+  legR_6 = robot_6.getObjectByName("UpperLegR");//funge
+
+  //Setup a bounding box around robot_6
+  box_robot6 = new THREE.Box3().setFromObject(robot_6);
+  const size_robot6 = box_robot6.getSize(new THREE.Vector3()).length();
+  const center_robot6 = box_robot6.getCenter(new THREE.Vector3());
+
+}, undefined, function (error) {
+  console.error(error);
+});
+
+
+loader.load('football_pitch/scene.gltf', function (gltf6) {
+  football_pitch = gltf6.scene;
   scene.add(football_pitch);
 
   football_pitch.traverse(function (child) {
@@ -503,8 +702,8 @@ loader.load('football_pitch/scene.gltf', function (gltf2) {
   console.error(error);
 });
 
-loader.load('football_ball/scene.gltf', function (gltf3) {
-  ball = gltf3.scene;
+loader.load('football_ball/scene.gltf', function (gltf7) {
+  ball = gltf7.scene;
   scene.add(ball);
 
   ball.traverse(function (child) {
@@ -529,7 +728,7 @@ loader.load('football_ball/scene.gltf', function (gltf3) {
 });
 
 
-
+var jj, kk;
 
 var isMoving = false;
 var isRobotMoving = true;
@@ -563,7 +762,7 @@ function animate() {
   controls.update();
 
   //checkPitchCollisions(box_robot1);
-  checkPitchCollisions(box_ball);
+  //checkPitchCollisions(box_ball);
 
 
   if(isRobotMoving2){
@@ -589,8 +788,6 @@ function animate() {
 
   if(isMoving){
     ball.position.x += 0.1;
-    ball.rotation.z -= 0.2;
-    box_ball.setFromObject(ball);
   }
 
   //Update the bounding boxes
@@ -605,8 +802,6 @@ function animate() {
   if (box_ball.intersectsBox(box_robot2)) {
     // Collision detected, stop or modify the object's movement
     isMoving = false;
-    isRobotMoving = false;
-    //box_ball.setFromObject(ball);
   }
 
   if(ball.position.x >= 10 && !goal){
@@ -616,13 +811,6 @@ function animate() {
   }
 
 
-  if(readyToMove){
-    /*Implementare una funzione che faccia ruotare il
-    robot sulla direzione della linea, e poi lo faccia spostare
-    su quella direzione con una velocità proporzionale alla
-    lunghezza della linea*/
-    readyToMove = false;
-  }
 
   renderer.render(scene, camera);
 }
@@ -630,10 +818,13 @@ animate();
 
 
 
+
 function moveRobot(object, box_object){
-  if(clickX != 0 || clickZ != 0){
+  if(clickX != 0 && clickZ != 0){
     var diff_x = clickX-object.position.x;
     var diff_y = clickZ-object.position.z;
+
+    //console.log(diff_x+" "+diff_y+" "+clickX+" "+clickZ+" "+object.position.x+" "+object.position.z);
 
     var j = Math.sqrt((Math.pow(diff_y, 2)) / (Math.pow(diff_x, 2) + Math.pow(diff_y, 2))) * Math.sign(diff_y);
     var k = (diff_x / diff_y) * j;
@@ -662,12 +853,10 @@ function moveRobot(object, box_object){
         object.position.z = clickZ;
       }
     }
+
     box_object.setFromObject(object);
   }
 }
-
-
-
 
 
 
