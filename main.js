@@ -450,7 +450,8 @@ var legR_6;
 var lowerLegR_6;
 
 
-loader.load('robot/Soldier.glb', function (gltf) {
+//sinistra in basso
+loader.load('models/blueBot/blueBot.gltf', function (gltf) {
   robot_1 = gltf.scene;
   scene.add(robot_1);
 
@@ -463,8 +464,8 @@ loader.load('robot/Soldier.glb', function (gltf) {
 
   robot_1.position.x = -5;
   robot_1.position.z = 3;
-  robot_1.rotation.y = -90 * (Math.PI / 180.0);
-  robot_1.scale.set(2, 2, 2);
+  robot_1.rotation.y = 90 * (Math.PI / 180.0);
+  robot_1.scale.set(1.7, 1.7, 1.7);
 
   torso_1 = robot_1.getObjectByName("Torso");//funge
   head_1 = robot_1.getObjectByName("Head");//funge
@@ -472,8 +473,10 @@ loader.load('robot/Soldier.glb', function (gltf) {
   armL_1 = robot_1.getObjectByName("UpperArmL");//funge
   shoulderR_1 = robot_1.getObjectByName("ShoulderR");//funge
   armR_1 = robot_1.getObjectByName("UpperArmR");//funge
-  legL_1 = robot_1.getObjectByName("UpperLegL");//funge
+  legL_1 = robot_1.getObjectByName("mixamorigLeftUpLeg");//funge
   legR_1 = robot_1.getObjectByName("UpperLegR");//funge
+
+
 
   //Setup a bounding box around robot_1
   box_robot1 = new THREE.Box3().setFromObject(robot_1);
@@ -484,7 +487,8 @@ loader.load('robot/Soldier.glb', function (gltf) {
   console.error(error);
 });
 
-loader.load('robot/RobotExpressive.glb', function (gltf1) {
+//sinistra in alto
+loader.load('models/blueBot/blueBot.gltf', function (gltf1) {
   robot_2 = gltf1.scene;
   scene.add(robot_2);
 
@@ -498,7 +502,7 @@ loader.load('robot/RobotExpressive.glb', function (gltf1) {
   robot_2.position.x = -5;
   robot_2.position.z = -3;
   robot_2.rotation.y = 90 * (Math.PI / 180.0);
-  robot_2.scale.set(0.5, 0.5, 0.5);
+  robot_2.scale.set(1.7, 1.7, 1.7);
 
   torso_2 = robot_2.getObjectByName("Torso");//funge
   head_2 = robot_2.getObjectByName("Head");//funge
@@ -518,7 +522,8 @@ loader.load('robot/RobotExpressive.glb', function (gltf1) {
   console.error(error);
 });
 
-loader.load('robot/RobotExpressive.glb', function (gltf2) {
+//destra in alto
+loader.load('models/redBot/redBot.gltf', function (gltf2) {
   robot_3 = gltf2.scene;
   scene.add(robot_3);
 
@@ -532,7 +537,7 @@ loader.load('robot/RobotExpressive.glb', function (gltf2) {
   robot_3.position.x = 5;
   robot_3.position.z = -3;
   robot_3.rotation.y = -90 * (Math.PI / 180.0);
-  robot_3.scale.set(0.5, 0.5, 0.5);
+  robot_3.scale.set(1.7, 1.7, 1.7);
 
   torso_3 = robot_3.getObjectByName("Torso");//funge
   head_3 = robot_3.getObjectByName("Head");//funge
@@ -552,7 +557,8 @@ loader.load('robot/RobotExpressive.glb', function (gltf2) {
   console.error(error);
 });
 
-loader.load('robot/RobotExpressive.glb', function (gltf3) {
+//destra in basso
+loader.load('models/redBot/redBot.gltf', function (gltf3) {
   robot_4 = gltf3.scene;
   scene.add(robot_4);
 
@@ -566,7 +572,7 @@ loader.load('robot/RobotExpressive.glb', function (gltf3) {
   robot_4.position.x = 5;
   robot_4.position.z = 3;
   robot_4.rotation.y = -90 * (Math.PI / 180.0);
-  robot_4.scale.set(0.5, 0.5, 0.5);
+  robot_4.scale.set(1.7, 1.7, 1.7);
 
   torso_4 = robot_4.getObjectByName("Torso");//funge
   head_4 = robot_4.getObjectByName("Head");//funge
@@ -586,7 +592,8 @@ loader.load('robot/RobotExpressive.glb', function (gltf3) {
   console.error(error);
 });
 
-loader.load('robot/RobotExpressive.glb', function (gltf4) {
+//sinistra al centro
+loader.load('models/blueBot/blueBot.gltf', function (gltf4) {
   robot_5 = gltf4.scene;
   scene.add(robot_5);
 
@@ -599,7 +606,7 @@ loader.load('robot/RobotExpressive.glb', function (gltf4) {
 
   robot_5.position.x = -9;
   robot_5.rotation.y = 90 * (Math.PI / 180.0);
-  robot_5.scale.set(0.5, 0.5, 0.5);
+  robot_5.scale.set(1.7, 1.7, 1.7);
 
   torso_5 = robot_5.getObjectByName("Torso");//funge
   head_5 = robot_5.getObjectByName("Head");//funge
@@ -619,7 +626,8 @@ loader.load('robot/RobotExpressive.glb', function (gltf4) {
   console.error(error);
 });
 
-loader.load('robot/RobotExpressive.glb', function (gltf5) {
+//destra al centro
+loader.load('models/redBot/redBot.gltf', function (gltf5) {
   robot_6 = gltf5.scene;
   scene.add(robot_6);
 
@@ -632,7 +640,7 @@ loader.load('robot/RobotExpressive.glb', function (gltf5) {
 
   robot_6.position.x = 9;
   robot_6.rotation.y = -90 * (Math.PI / 180.0);
-  robot_6.scale.set(0.5, 0.5, 0.5);
+  robot_6.scale.set(1.7, 1.7, 1.7);
 
   torso_6 = robot_6.getObjectByName("Torso");//funge
   head_6 = robot_6.getObjectByName("Head");//funge
@@ -653,7 +661,7 @@ loader.load('robot/RobotExpressive.glb', function (gltf5) {
 });
 
 
-loader.load('football_pitch/scene.gltf', function (gltf6) {
+loader.load('models/football_pitch/scene.gltf', function (gltf6) {
   football_pitch = gltf6.scene;
   scene.add(football_pitch);
 
@@ -702,7 +710,7 @@ loader.load('football_pitch/scene.gltf', function (gltf6) {
   console.error(error);
 });
 
-loader.load('football_ball/scene.gltf', function (gltf7) {
+loader.load('models/football_ball/scene.gltf', function (gltf7) {
   ball = gltf7.scene;
   scene.add(ball);
 
@@ -814,6 +822,7 @@ function animate() {
 
   renderer.render(scene, camera);
 }
+
 animate();
 
 
