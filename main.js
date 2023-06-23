@@ -732,6 +732,8 @@ function animate() {
 
   checkGoal();
   checkBallCollitions();
+  checkRobotCollitions(robot_1);
+  checkRobotCollitions(robot_2);
 
   TWEEN.update();
 
@@ -782,6 +784,52 @@ function checkBallCollitions(){
   }
 }
 
+function checkRobotCollitions(object){
+  if(object.position.z < -6.5){
+    stopRobot(object);
+    object.position.z += 1;
+    setBound(object);
+  }
+  if(object.position.z > 6.5){
+    stopRobot(object);
+    object.position.z -= 1;
+    setBound(object);
+  }
+  if(object.position.x < -10){
+    stopRobot(object);
+    object.position.x += 1;
+    setBound(object);
+  }
+  if(object.position.x > 10){
+    stopRobot(object);
+    object.position.x -= 1;
+    setBound(object);
+  }
+}
+
+function stopRobot(object){
+  switch(object){
+    case robot_1:
+      isRobotMoving = false;
+      isRobotMoving = true;
+      break;
+    case robot_1:
+      isRobotMoving2 = false;
+      isRobotMoving2 = true;
+      break;
+  }
+}
+
+function setBound(object){
+  switch(object){
+    case robot_1:
+      box_robot1.setFromObject(robot_1);
+      break;
+    case robot_1:
+      box_robot2.setFromObject(robot_2);
+      break;
+  }
+}
 
 
 function moveRobot(object, box_object){
