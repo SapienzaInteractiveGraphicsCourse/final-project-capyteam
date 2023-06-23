@@ -675,8 +675,6 @@ function animate() {
 
   controls.update();
 
-  checkPitchCollisions(box_robot1);
-  //checkPitchCollisions(box_ball);
 
   if(isRobotMoving2){
     moveRobot(robot_2, box_robot2);
