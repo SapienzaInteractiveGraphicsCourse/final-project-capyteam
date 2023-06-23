@@ -33,6 +33,11 @@ var clickX;
 var clickY;
 var clickZ;
 
+var k,j;
+var ballvx, ballvz;
+// TIMES
+var times = 0;
+
 // Handle key down events
 document.addEventListener('keydown', function(event) {
   switch (event.code) {
@@ -673,8 +678,6 @@ function animate() {
   checkPitchCollisions(box_robot1);
   //checkPitchCollisions(box_ball);
 
-  animation();
-
   if(isRobotMoving2){
     moveRobot(robot_2, box_robot2);
   }
@@ -697,7 +700,17 @@ function animate() {
 
 
   if(isMoving){
-    ball.position.x += 0.1;
+    if(times < 5){
+
+      ball.position.x += ballvx*0.5;
+      ball.position.z += ballvz*0.5;
+      times += 1;
+    }
+    else{
+
+      isMoving = false;
+    }
+    box_ball.setFromObject(ball);
   }
 
   //Update the bounding boxes
@@ -706,7 +719,12 @@ function animate() {
   // Check for collisions
   if (box_robot1.intersectsBox(box_ball)) {
     // Collision detected, stop or modify the object's movement
+    console.log("Collisione in z: "+robot_1.position.z+"Collisione in X"+robot_1.position.x);
+    ballvx = clickX - robot_1.position.x;
+    ballvz = clickZ - robot_1.position.z;
+    console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvz);
     isMoving = true;
+    times = 0;
   }
 
   if (box_ball.intersectsBox(box_robot2)) {
@@ -714,20 +732,57 @@ function animate() {
     isMoving = false;
   }
 
-  if(ball.position.x >= 10 && !goal){
-    goal = true;
-    alert("GOAL!");
-    location.reload();
-  }
+  checkGoal();
+  checkBallCollitions();
 
   TWEEN.update();
-
 
   renderer.render(scene, camera);
 }
 
 animate();
 
+
+function checkGoal(){
+  if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x >= 10 && !goal){
+    goal = true;
+
+    location.reload();
+    alert("GOAL! TEAM 1");
+  }
+
+  if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x <= -10 && !goal){
+    goal = true;
+
+    location.reload();
+    alert("GOAL! TEAM 2");
+  }
+}
+
+
+
+function checkBallCollitions(){
+  if(ball.position.z < -5){
+    isMoving = false;
+    ball.position.z += 1;
+    box_ball.setFromObject(ball);
+  }
+  if(ball.position.z > 5){
+    isMoving = false;
+    ball.position.z -= 1;
+    box_ball.setFromObject(ball);
+  }
+  if(ball.position.x < -10){
+    isMoving = false;
+    ball.position.x += 1;
+    box_ball.setFromObject(ball);
+  }
+  if(ball.position.x > 10){
+    isMoving = false;
+    ball.position.x -= 1;
+    box_ball.setFromObject(ball);
+  }
+}
 
 
 
@@ -771,13 +826,10 @@ function moveRobot(object, box_object){
 }
 
 
-function animation(){
-  //var tween = new TWEEN.Tween(ball.position).to({x: 100, y: 100, z: 100}, 3000).start();
-}
 
 
 
-
+/*
 function checkPitchCollisions(box_object) {
   // Check collision with the left edge
   if (box_object.intersectsBox(leftEdgeBox.box)) {
@@ -803,3 +855,4 @@ function checkPitchCollisions(box_object) {
     alert("bottom collision");
   }
 }
+*/

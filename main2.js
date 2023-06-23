@@ -34,7 +34,7 @@ var clickY;
 var clickZ;
 
 var k,j;
-var ballvx,ballvy;
+var ballvx, ballvz;
 // TIMES
 var times = 0;
 
@@ -687,7 +687,7 @@ loader.load('models/football_pitch/scene.gltf', function (gltf6) {
   leftEdgeBox = new THREE.Box3Helper(new THREE.Box3().setFromCenterAndSize(
     new THREE.Vector3(-pitchSize.x / 2, 1.8, 0),
     new THREE.Vector3(0.1, pitchSize.y, pitchSize.z)
-  ), edgeMaterial);
+  ), edgeMaterial);;
   scene.add(leftEdgeBox);
 
   // Create a bounding box for the right edge
@@ -741,14 +741,14 @@ loader.load('models/football_ball/scene.gltf', function (gltf7) {
 });
 
 
-var jj, kk;
-
 var isMoving = false;
 var isRobotMoving = true;
 var isRobotMoving2 = false;
 var done = false;
 var increment = 0.05;
 var goal = false;
+
+
 
 //Render the Scene; basically, anything you want to move or change
 //while the app is running has to go through the animate loop.
@@ -774,8 +774,6 @@ function animate() {
 
   controls.update();
 
-  //checkPitchCollisions(box_robot1);
-  checkPitchCollisions(box_ball);
 
 
   if(isRobotMoving2){
@@ -787,10 +785,6 @@ function animate() {
   }
 
 
-  /*// Check if the variable has reached the minimum or maximum value
-  if (robot_2.position.z >= 3 || robot_2.position.z <= -3) {
-    increment *= -1; // Invert the increment direction
-  }*/
 
   // Move the cube based on keyboard input
   if (moveForward) robot_1.position.z -= 0.1;
@@ -801,13 +795,13 @@ function animate() {
 
   if(isMoving){
     if(times < 5){
-      
+
       ball.position.x += ballvx*0.5;
-      ball.position.z += ballvy*0.5;
+      ball.position.z += ballvz*0.5;
       times += 1;
     }
     else{
-      
+
       isMoving = false;
     }
     box_ball.setFromObject(ball);
@@ -821,8 +815,8 @@ function animate() {
     // Collision detected, stop or modify the object's movement
     console.log("Collisione in z: "+robot_1.position.z+"Collisione in X"+robot_1.position.x);
     ballvx = clickX - robot_1.position.x;
-    ballvy = clickZ - robot_1.position.z;
-    console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
+    ballvz = clickZ - robot_1.position.z;
+    console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvz);
     isMoving = true;
     times = 0;
   }
@@ -832,13 +826,8 @@ function animate() {
     isMoving = false;
   }
 
-
-  if(ball.position.x >= 10 && !goal){
-    goal = true;
-    alert("GOAL!");
-    location.reload();
-  }
-
+  checkGoal();
+  checkBallCollitions();
 
 
   renderer.render(scene, camera);
@@ -846,7 +835,44 @@ function animate() {
 
 animate();
 
+function checkGoal(){
+  if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x >= 10 && !goal){
+    goal = true;
 
+    location.reload();
+    alert("GOAL! TEAM 1");
+  }
+
+  if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x <= -10 && !goal){
+    goal = true;
+
+    location.reload();
+    alert("GOAL! TEAM 2");
+  }
+}
+
+function checkBallCollitions(){
+  if(ball.position.z < -5){
+    isMoving = false;
+    ball.position.z += 1;
+    box_ball.setFromObject(ball);
+  }
+  if(ball.position.z > 5){
+    isMoving = false;
+    ball.position.z -= 1;
+    box_ball.setFromObject(ball);
+  }
+  if(ball.position.x < -10){
+    isMoving = false;
+    ball.position.x += 1;
+    box_ball.setFromObject(ball);
+  }
+  if(ball.position.x > 10){
+    isMoving = false;
+    ball.position.x -= 1;
+    box_ball.setFromObject(ball);
+  }
+}
 
 
 function moveRobot(object, box_object){
@@ -889,67 +915,27 @@ function moveRobot(object, box_object){
 }
 
 
-
-function checkPitchCollisions(box) {
+/*
+function checkPitchCollisions(box, object) {
   // Check collision with the left edge
   if (box.intersectsBox(leftEdgeBox.box)) {
     // Collision with left edge detected
-    ballvx = -ballvx*0.5;
-    ballvy = -ballvy*0.5;
-    times=0;
   }
 
   // Check collision with the right edge
   if (box.intersectsBox(rightEdgeBox.box)) {
     // Collision with right edge detected
-    alert("right collision");
   }
 
   // Check collision with the top edge
   if (box.intersectsBox(topEdgeBox.box)) {
-    alert("top collision");
     // Collision with top edge detected
-    console.log("porcodio urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-    ballvx = -ballvx;
-    ballvy = -ballvy;
-    times=0;
   }
 
   // Check collision with the bottom edge
   if (box.intersectsBox(bottomEdgeBox.box)) {
     // Collision with bottom edge detected
-    alert("bottom collision");
-  }
-  /*
-  
-  if (box_ball.intersectsBox(leftEdgeBox)) {
-    // Collision with left edge detected
-    
-    times=4;
-  }
-  
-  // Check collision with the right edge
-  if (box_ball.intersectsBox(rightEdgeBox)) {
-    // Collision with right edge detected
-    ballvx = -ballvx;
-    ballvy = -ballvy;
-    times=4;
   }
 
-  // Check collision with the top edge
-  if (box_ball.intersectsBox(topEdgeBox)) {
-    // Collision with top edge detected
-    ballvx = -ballvx;
-    ballvy = -ballvy;
-    times=4;
-  }
-
-  // Check collision with the bottom edge
-  if (box_ball.intersectsBox(bottomEdgeBox)) {
-    // Collision with bottom edge detected
-    ballvx = -ballvx;
-    ballvy = -ballvy;
-    times=4;
-  }
-  */
 }
+*/
