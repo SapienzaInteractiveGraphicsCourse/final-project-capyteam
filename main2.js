@@ -29,9 +29,9 @@ var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 
-var clickX;
-var clickY;
-var clickZ;
+var clickX = 0;
+var clickY = 0;
+var clickZ = 0;
 
 var thisrobot = 0;
 
@@ -44,6 +44,10 @@ var turn =1;
 //BALL
 var normball;
 var normball2;
+
+var cameraX = 0;
+var cameraY = 15;
+var cameraZ = 10;
 // Handle key down events
 document.addEventListener('keydown', function(event) {
   switch (event.code) {
@@ -78,7 +82,7 @@ document.addEventListener('keydown', function(event) {
           scene.remove(circle);
           createCircle(robot_2);
           thisrobot=1;
-        }   
+        }
       }else if(turn ==2 ){
         if(thisrobot ==2){
           scene.remove(circle);
@@ -94,7 +98,7 @@ document.addEventListener('keydown', function(event) {
           scene.remove(circle);
           createCircle(robot_4);
           thisrobot=3;
-        }     
+        }
       }
       setThisRobot(thisrobot);
       break;
@@ -117,7 +121,7 @@ document.addEventListener('keydown', function(event) {
           scene.remove(circle);
           createCircle(robot_5);
           thisrobot=4;
-        }  
+        }
       }else if(turn ==2 ){
         if(thisrobot ==5){
           scene.remove(circle);
@@ -133,10 +137,10 @@ document.addEventListener('keydown', function(event) {
           scene.remove(circle);
           createCircle(robot_6);
           thisrobot=5;
-        } 
-        
+        }
+
       }
-      setThisRobot(thisrobot);    
+      setThisRobot(thisrobot);
       break;
 
 
@@ -146,7 +150,7 @@ document.addEventListener('keydown', function(event) {
         turn =1;
         thisrobot=0;
         setThisRobot(thisrobot);
-        
+
       break;
       case 'KeyP':
         clickX = 0;
@@ -496,9 +500,9 @@ var robot_2;
 var robot_3;
 //ROBOT ROSA SOTTO
 var robot_4;
-//ROBOT BLU CENTRO 
+//ROBOT BLU CENTRO
 var robot_5;
-//ROBOT ROSA CENTRO 
+//ROBOT ROSA CENTRO
 var robot_6;
 var football_pitch;
 var ball;
@@ -579,7 +583,6 @@ var right_leg_3;
 var right_foot_3;
 
 //Mesh components robot_4
-
 var neck_4;
 var head_4;
 var left_shoulder_4;
@@ -596,6 +599,7 @@ var left_foot_4;
 var right_up_leg_4;
 var right_leg_4;
 var right_foot_4;
+
 //Mesh components robot_5
 var neck_5;
 var head_5;
@@ -669,6 +673,8 @@ loader.load('models/blueBot/blueBot.gltf', function (gltf) {
   right_leg_1 = robot_1.getObjectByName('mixamorigRightLeg');
   right_foot_1 = robot_1.getObjectByName('mixamorigRightFoot');
 
+  left_arm_1.rotation.z = Math.PI * -0.35;
+  right_arm_1.rotation.z = Math.PI * 0.35;
 
   //Setup a bounding box around robot_1
   box_robot1 = new THREE.Box3().setFromObject(robot_1);
@@ -718,6 +724,9 @@ loader.load('models/blueBot/blueBot.gltf', function (gltf1) {
   right_leg_2 = robot_2.getObjectByName('mixamorigRightLeg');
   right_foot_2 = robot_2.getObjectByName('mixamorigRightFoot');
 
+  left_arm_2.rotation.z = Math.PI * -0.35;
+  right_arm_2.rotation.z = Math.PI * 0.35;
+
   //Setup a bounding box around robot_2
   box_robot2 = new THREE.Box3().setFromObject(robot_2);
   const size_robot2 = box_robot2.getSize(new THREE.Vector3()).length();
@@ -765,7 +774,8 @@ loader.load('models/redBot/redBot.gltf', function (gltf2) {
   right_leg_3 = robot_3.getObjectByName('mixamorigRightLeg');
   right_foot_3 = robot_3.getObjectByName('mixamorigRightFoot');
 
-
+  left_arm_3.rotation.z = Math.PI * -0.35;
+  right_arm_3.rotation.z = Math.PI * 0.35;
 
   //Setup a bounding box around robot_3
   box_robot3 = new THREE.Box3().setFromObject(robot_3);
@@ -813,7 +823,8 @@ loader.load('models/redBot/redBot.gltf', function (gltf3) {
   right_leg_4 = robot_4.getObjectByName('mixamorigRightLeg');
   right_foot_4 = robot_4.getObjectByName('mixamorigRightFoot');
 
-
+  left_arm_4.rotation.z = Math.PI * -0.35;
+  right_arm_4.rotation.z = Math.PI * 0.35;
 
   //Setup a bounding box around robot_4
   box_robot4 = new THREE.Box3().setFromObject(robot_4);
@@ -860,7 +871,8 @@ loader.load('models/blueBot/blueBot.gltf', function (gltf4) {
   right_leg_5 = robot_5.getObjectByName('mixamorigRightLeg');
   right_foot_5 = robot_5.getObjectByName('mixamorigRightFoot');
 
-
+  left_arm_5.rotation.z = Math.PI * -0.35;
+  right_arm_5.rotation.z = Math.PI * 0.35;
 
   //Setup a bounding box around robot_5
   box_robot5 = new THREE.Box3().setFromObject(robot_5);
@@ -907,6 +919,8 @@ loader.load('models/redBot/redBot.gltf', function (gltf5) {
   right_leg_6 = robot_6.getObjectByName('mixamorigRightLeg');
   right_foot_6 = robot_6.getObjectByName('mixamorigRightFoot');
 
+  left_arm_6.rotation.z = Math.PI * -0.35;
+  right_arm_6.rotation.z = Math.PI * 0.35;
 
   //Setup a bounding box around robot_6
   box_robot6 = new THREE.Box3().setFromObject(robot_6);
@@ -1015,7 +1029,7 @@ function animate() {
   if (moveCameraForward) {
     camera.position.z -= 0.5;
   }
-  if (moveCameraForward) {
+  if (moveCameraBackward) {
     camera.position.z += 0.5;
   }
   if (moveCameraLeft) {
@@ -1030,11 +1044,6 @@ function animate() {
 
   controls.update();
 
-  //checkPitchCollisions(box_robot1);
-  //checkPitchCollisions(box_ball);
-
-
-  
 
   if(isRobotMoving){
     moveRobot(robot_1, box_robot1);
@@ -1062,11 +1071,6 @@ function animate() {
   }
 
 
-  /*// Check if the variable has reached the minimum or maximum value
-  if (robot_2.position.z >= 3 || robot_2.position.z <= -3) {
-    increment *= -1; // Invert the increment direction
-  }*/
-
   // Move the cube based on keyboard input
   if (moveForward) robot_1.position.z -= 0.1;
   if (moveBackward) robot_1.position.z += 0.1;
@@ -1084,7 +1088,7 @@ function animate() {
       times += 1;
     }
     else{
-      
+
       isMoving = false;
     }
     ball.rotation.z +=normball2;
@@ -1095,11 +1099,11 @@ function animate() {
 
   //Update the bounding boxes
   if(moveForward||moveBackward||moveLeft||moveRight) box_robot1.setFromObject(robot_1);
-  if(moveForward||moveBackward||moveLeft||moveRight) box_robot2.setFromObject(robot_1);
-  if(moveForward||moveBackward||moveLeft||moveRight) box_robot3.setFromObject(robot_1);
-  if(moveForward||moveBackward||moveLeft||moveRight) box_robot4.setFromObject(robot_1);
-  if(moveForward||moveBackward||moveLeft||moveRight) box_robot5.setFromObject(robot_1);
-  if(moveForward||moveBackward||moveLeft||moveRight) box_robot6.setFromObject(robot_1);
+  if(moveForward||moveBackward||moveLeft||moveRight) box_robot2.setFromObject(robot_2);
+  if(moveForward||moveBackward||moveLeft||moveRight) box_robot3.setFromObject(robot_3);
+  if(moveForward||moveBackward||moveLeft||moveRight) box_robot4.setFromObject(robot_4);
+  if(moveForward||moveBackward||moveLeft||moveRight) box_robot5.setFromObject(robot_5);
+  if(moveForward||moveBackward||moveLeft||moveRight) box_robot6.setFromObject(robot_6);
   // Check for collisions
   if (box_robot1.intersectsBox(box_ball)) {
     // Collision detected, stop or modify the object's movement
@@ -1164,13 +1168,14 @@ function animate() {
     alert("GOAL! TEAM 1");
     location.reload();
   }
-  
+
   if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x <= -10 && !goal){
     goal = true;
     isMoving=false;
     alert("GOAL! TEAM 2");
     location.reload();
   }
+
   checkBallCollisions();
   checkRobotCollisions(robot_1);
   checkRobotCollisions(robot_2);
@@ -1184,8 +1189,6 @@ function animate() {
 }
 
 animate();
-
-
 
 
 function moveRobot(object, box_object){
@@ -1222,22 +1225,26 @@ function moveRobot(object, box_object){
         object.position.z = clickZ;
       }
     }
-
     box_object.setFromObject(object);
+
   }
 }
+
+
 var downarms=true;
 var downlegs=true;
+
+
 function running1(){
-  var diff_x = ball.position.x-robot_1.position.x;
-  var diff_y = ball.position.z-robot_1.position.z;
+  var diff_x = clickX-robot_1.position.x;
+  var diff_y = clickZ-robot_1.position.z;
   var angoloRadianti = Math.atan2(diff_x,diff_y);
   robot_1.rotation.y = angoloRadianti;
 
-  
+
   // ARM RUNNING
   left_arm_1.rotation.z = Math.PI * -0.35;
-  right_arm_1.rotation.z = Math.PI * 0.35; 
+  right_arm_1.rotation.z = Math.PI * 0.35;
   left_fore_arm_1.rotation.y = Math.PI * -0.5;
   right_fore_arm_1.rotation.y =Math.PI * 0.5;
   if(downarms){
@@ -1302,14 +1309,15 @@ function running1(){
   head_1.rotation.x =Math.PI * -0.25;
 }
 
+
 function running2(){
-  var diff_x = ball.position.x-robot_2.position.x;
-  var diff_y = ball.position.z-robot_2.position.z;
+  var diff_x = clickX-robot_2.position.x;
+  var diff_y = clickZ-robot_2.position.z;
   var angoloRadianti = Math.atan2(diff_x,diff_y);
   robot_2.rotation.y = angoloRadianti;
   // ARM RUNNING
   left_arm_2.rotation.z = Math.PI * -0.35;
-  right_arm_2.rotation.z = Math.PI * 0.35; 
+  right_arm_2.rotation.z = Math.PI * 0.35;
   left_fore_arm_2.rotation.y = Math.PI * -0.5;
   right_fore_arm_2.rotation.y =Math.PI * 0.5;
   if(downarms){
@@ -1373,14 +1381,16 @@ function running2(){
   neck_2.rotation.x =Math.PI * 0.25;
   head_2.rotation.x =Math.PI * -0.25;
 }
+
+
 function running3(){
-  var diff_x = ball.position.x-robot_3.position.x;
-  var diff_y = ball.position.z-robot_3.position.z;
+  var diff_x = clickX-robot_3.position.x;
+  var diff_y = clickZ-robot_3.position.z;
   var angoloRadianti = Math.atan2(diff_x,diff_y);
   robot_3.rotation.y = angoloRadianti;
   // ARM RUNNING
   left_arm_3.rotation.z = Math.PI * -0.35;
-  right_arm_3.rotation.z = Math.PI * 0.35; 
+  right_arm_3.rotation.z = Math.PI * 0.35;
   left_fore_arm_3.rotation.y = Math.PI * -0.5;
   right_fore_arm_3.rotation.y =Math.PI * 0.5;
   if(downarms){
@@ -1445,14 +1455,15 @@ function running3(){
   head_3.rotation.x =Math.PI * -0.25;
 }
 
+
 function running4(){
-  var diff_x = ball.position.x-robot_4.position.x;
-  var diff_y = ball.position.z-robot_4.position.z;
+  var diff_x = clickX-robot_4.position.x;
+  var diff_y = clickZ-robot_4.position.z;
   var angoloRadianti = Math.atan2(diff_x,diff_y);
   robot_4.rotation.y = angoloRadianti;
   // ARM RUNNING
   left_arm_4.rotation.z = Math.PI * -0.35;
-  right_arm_4.rotation.z = Math.PI * 0.35; 
+  right_arm_4.rotation.z = Math.PI * 0.35;
   left_fore_arm_4.rotation.y = Math.PI * -0.5;
   right_fore_arm_4.rotation.y =Math.PI * 0.5;
   if(downarms){
@@ -1516,14 +1527,16 @@ function running4(){
   neck_4.rotation.x =Math.PI * 0.25;
   head_4.rotation.x =Math.PI * -0.25;
 }
+
+
 function running5(){
-  var diff_x = ball.position.x-robot_5.position.x;
-  var diff_y = ball.position.z-robot_5.position.z;
+  var diff_x = clickX-robot_5.position.x;
+  var diff_y = clickZ-robot_5.position.z;
   var angoloRadianti = Math.atan2(diff_x,diff_y);
   robot_5.rotation.y = angoloRadianti;
   // ARM RUNNING
   left_arm_5.rotation.z = Math.PI * -0.35;
-  right_arm_5.rotation.z = Math.PI * 0.35; 
+  right_arm_5.rotation.z = Math.PI * 0.35;
   left_fore_arm_5.rotation.y = Math.PI * -0.5;
   right_fore_arm_5.rotation.y =Math.PI * 0.5;
   if(downarms){
@@ -1587,14 +1600,16 @@ function running5(){
   neck_5.rotation.x =Math.PI * 0.25;
   head_5.rotation.x =Math.PI * -0.25;
 }
+
+
 function running6(){
-  var diff_x = ball.position.x-robot_6.position.x;
-  var diff_y = ball.position.z-robot_6.position.z;
+  var diff_x = clickX-robot_6.position.x;
+  var diff_y = clickZ-robot_6.position.z;
   var angoloRadianti = Math.atan2(diff_x,diff_y);
   robot_6.rotation.y = angoloRadianti;
   // ARM RUNNING
   left_arm_6.rotation.z = Math.PI * -0.35;
-  right_arm_6.rotation.z = Math.PI * 0.35; 
+  right_arm_6.rotation.z = Math.PI * 0.35;
   left_fore_arm_6.rotation.y = Math.PI * -0.5;
   right_fore_arm_6.rotation.y =Math.PI * 0.5;
   if(downarms){
@@ -1660,10 +1675,6 @@ function running6(){
 }
 
 
-
-
-
-
 function setThisRobot(thisrobot) {
   if(thisrobot == 0){
     isRobotMoving = true;
@@ -1714,6 +1725,8 @@ function setThisRobot(thisrobot) {
     isRobotMoving6 = true;
   }
 }
+
+
 function checkBallCollisions(){
   if(ball.position.z < -5){
     isMoving = false;
@@ -1736,28 +1749,36 @@ function checkBallCollisions(){
     box_ball.setFromObject(ball);
   }
 }
+
+
 function checkRobotCollisions(object){
   if(object.position.z < -6.5){
+    clickX = 0;
+    clickZ = 0;
     stopRobot(object);
-    object.position.z += 1;
     setBound(object);
   }
   if(object.position.z > 6.5){
+    clickX = 0;
+    clickZ = 0;
     stopRobot(object);
-    object.position.z -= 1;
     setBound(object);
   }
   if(object.position.x < -10){
+    clickX = 0;
+    clickZ = 0;
     stopRobot(object);
-    object.position.x += 1;
     setBound(object);
   }
   if(object.position.x > 10){
+    clickX = 0;
+    clickZ = 0;
     stopRobot(object);
-    object.position.x -= 1;
     setBound(object);
   }
 }
+
+
 function stopRobot(object){
   switch(object){
     case robot_1:
@@ -1770,17 +1791,18 @@ function stopRobot(object){
       isRobotMoving3 = false;
       break;
     case robot_4:
-        isRobotMoving4 = false;
-        break;
-        case robot_5:
+      isRobotMoving4 = false;
+      break;
+    case robot_5:
       isRobotMoving5 = false;
       break;
-      case robot_6:
+    case robot_6:
       isRobotMoving6 = false;
-      break;  
-      
+      break;
   }
 }
+
+
 function setBound(object){
   switch(object){
     case robot_1:
@@ -1791,19 +1813,19 @@ function setBound(object){
       isRobotMoving2 = true;
       box_robot2.setFromObject(robot_2);
       break;
-      case robot_3:
-        isRobotMoving3 = true;
-        box_robot3.setFromObject(robot_3);
-        break;
-        case robot_4:
-          isRobotMoving4 = true;
-          box_robot4.setFromObject(robot_4);
-          break;
-          case robot_5:
+    case robot_3:
+      isRobotMoving3 = true;
+      box_robot3.setFromObject(robot_3);
+      break;
+    case robot_4:
+      isRobotMoving4 = true;
+      box_robot4.setFromObject(robot_4);
+      break;
+    case robot_5:
       isRobotMoving5 = true;
       box_robot5.setFromObject(robot_5);
       break;
-      case robot_6:
+    case robot_6:
       isRobotMoving2 = true;
       box_robot2.setFromObject(robot_6);
       break;

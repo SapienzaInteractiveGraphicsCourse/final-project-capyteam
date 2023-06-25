@@ -29,15 +29,25 @@ var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 
-var clickX;
-var clickY;
-var clickZ;
+var clickX = 0;
+var clickY = 0;
+var clickZ = 0;
+
+var thisrobot = 0;
 
 var k,j;
-var ballvx, ballvz;
+var ballvx,ballvy;
 // TIMES
 var times = 0;
+var circle;
+var turn =1;
+//BALL
+var normball;
+var normball2;
 
+var cameraX = 0;
+var cameraY = 15;
+var cameraZ = 10;
 // Handle key down events
 document.addEventListener('keydown', function(event) {
   switch (event.code) {
@@ -57,15 +67,97 @@ document.addEventListener('keydown', function(event) {
       clickX = 0;
       clickZ = 0;
       scene.remove(line);
-      isRobotMoving = false;
-      isRobotMoving2 = true;
+      if ( turn == 1){
+        if(thisrobot ==0){
+          scene.remove(circle);
+          createCircle(robot_5);
+          thisrobot=4;
+        }
+        else if(thisrobot ==1){
+          scene.remove(circle);
+          createCircle(robot_1);
+          thisrobot=0;
+        }
+        else if(thisrobot ==4){
+          scene.remove(circle);
+          createCircle(robot_2);
+          thisrobot=1;
+        }
+      }else if(turn ==2 ){
+        if(thisrobot ==2){
+          scene.remove(circle);
+          createCircle(robot_6);
+          thisrobot=5;
+        }
+        else if(thisrobot ==3){
+          scene.remove(circle);
+          createCircle(robot_3);
+          thisrobot=2;
+        }
+        else if(thisrobot ==5){
+          scene.remove(circle);
+          createCircle(robot_4);
+          thisrobot=3;
+        }
+      }
+      setThisRobot(thisrobot);
       break;
     case 'KeyE':
       clickX = 0;
       clickZ = 0;
       scene.remove(line);
-      isRobotMoving = true;
-      isRobotMoving2 = false;
+      if ( turn == 1){
+        if(thisrobot ==4){
+          scene.remove(circle);
+          createCircle(robot_1);
+          thisrobot=0;
+        }
+        else if(thisrobot ==0){
+          scene.remove(circle);
+          createCircle(robot_2);
+          thisrobot=1;
+        }
+        else if(thisrobot ==1){
+          scene.remove(circle);
+          createCircle(robot_5);
+          thisrobot=4;
+        }
+      }else if(turn ==2 ){
+        if(thisrobot ==5){
+          scene.remove(circle);
+          createCircle(robot_3);
+          thisrobot=2;
+        }
+        else if(thisrobot ==2){
+          scene.remove(circle);
+          createCircle(robot_4);
+          thisrobot=3;
+        }
+        else if(thisrobot ==3){
+          scene.remove(circle);
+          createCircle(robot_6);
+          thisrobot=5;
+        }
+
+      }
+      setThisRobot(thisrobot);
+      break;
+
+
+      case 'KeyO':
+        clickX = 0;
+        clickZ = 0;
+        turn =1;
+        thisrobot=0;
+        setThisRobot(thisrobot);
+
+      break;
+      case 'KeyP':
+        clickX = 0;
+        clickZ = 0;
+        turn =2;
+        thisrobot=2;
+        setThisRobot(thisrobot);
       break;
   }
 
@@ -144,7 +236,10 @@ function handleMouseUp(event) {
   console.log("Normalized: "+clickX+" "+clickY+" "+clickZ);
 
   if(isRobotMoving){
+    scene.remove(circle);
     createArrow(robot_1, clickX, clickZ);
+    //createCircle(robot_1);
+
 
     scene.add(line);
 
@@ -154,12 +249,60 @@ function handleMouseUp(event) {
   }
 
   if(isRobotMoving2){
+    scene.remove(circle);
     createArrow(robot_2, clickX, clickZ);
+    //createCircle(robot_2);
+
 
     scene.add(line);
 
     moveFrom = new THREE.Vector3(robot_2.position.x, robot_2.position.y, robot_2.position.z);
     moveTo = new THREE.Vector3(clickX, robot_2.position.y, clickZ);
+    velocity = 0.1;
+  }
+  if(isRobotMoving3){
+    scene.remove(circle);
+    createArrow(robot_3, clickX, clickZ);
+    //createCircle(robot_3);
+
+
+    scene.add(line);
+
+    moveFrom = new THREE.Vector3(robot_3.position.x, robot_3.position.y, robot_3.position.z);
+    moveTo = new THREE.Vector3(clickX, robot_3.position.y, clickZ);
+    velocity = 0.1;
+  }
+  if(isRobotMoving4){
+    scene.remove(circle);
+    createArrow(robot_4, clickX, clickZ);
+    //createCircle(robot_4);
+
+
+    scene.add(line);
+
+    moveFrom = new THREE.Vector3(robot_4.position.x, robot_4.position.y, robot_4.position.z);
+    moveTo = new THREE.Vector3(clickX, robot_4.position.y, clickZ);
+    velocity = 0.1;
+  }
+  if(isRobotMoving5){
+    scene.remove(circle);
+    createArrow(robot_5, clickX, clickZ);
+    //createCircle(robot_5);
+
+    scene.add(line);
+
+    moveFrom = new THREE.Vector3(robot_5.position.x, robot_5.position.y, robot_5.position.z);
+    moveTo = new THREE.Vector3(clickX, robot_5.position.y, clickZ);
+    velocity = 0.1;
+  }
+  if(isRobotMoving6){
+    scene.remove(circle);
+    createArrow(robot_6, clickX, clickZ);
+    //createCircle(robot_6);
+    scene.add(line);
+
+    moveFrom = new THREE.Vector3(robot_6.position.x, robot_6.position.y, robot_6.position.z);
+    moveTo = new THREE.Vector3(clickX, robot_6.position.y, clickZ);
     velocity = 0.1;
   }
 
@@ -180,7 +323,27 @@ function createArrow(object, endPointX, endPointZ) {
   line = new THREE.Line(lineGeometry, lineMaterial);
 
 }
+function createCircle(object) {
+  const circleGeometry = new THREE.CircleBufferGeometry(0.5, 32);
+  const circleMaterial = new THREE.MeshBasicMaterial({
+    color: 0x000000 ,
+    side: THREE.DoubleSide,
+    wireframe: false,
+    linewidth: 5
+  });
+  circle = new THREE.Mesh(circleGeometry, circleMaterial);
 
+  circle.position.copy(object.position);
+  circle.position.x += 0.1;
+
+  circle.rotation.x = Math.PI * 0.5;
+
+  // Imposta il materiale per renderlo opaco e senza bordi visibili
+  circleMaterial.transparent = false;
+  circleMaterial.opacity = 1;
+
+  scene.add(circle);
+}
 
 // Add a skybox
 const t_loader = new THREE.CubeTextureLoader();
@@ -328,11 +491,18 @@ controls.rotateSpeed = 0.5; // Adjust the rotation speed
 
 //Add 3D models
 const loader = new GLTFLoader();
+
+//ROBOT BLU SOTTO
 var robot_1;
+//ROBOT BLU SOPRA
 var robot_2;
+//ROBOT ROSA SOPRA
 var robot_3;
+//ROBOT ROSA SOTTO
 var robot_4;
+//ROBOT BLU CENTRO
 var robot_5;
+//ROBOT ROSA CENTRO
 var robot_6;
 var football_pitch;
 var ball;
@@ -377,26 +547,99 @@ var right_leg_1;
 var right_foot_1;
 
 //Mesh components robot_2
-
+var neck_2;
+var head_2;
+var left_shoulder_2;
+var left_arm_2;
+var left_fore_arm_2;
+var left_hand_2;
+var right_shoulder_2;
+var right_arm_2;
+var right_fore_arm_2;
+var right_hand_2;
+var left_up_leg_2;
+var left_leg_2;
+var left_foot_2;
+var right_up_leg_2;
+var right_leg_2;
+var right_foot_2;
 
 //Mesh components robot_3
-
+var neck_3;
+var head_3;
+var left_shoulder_3;
+var left_arm_3;
+var left_fore_arm_3;
+var left_hand_3;
+var right_shoulder_3;
+var right_arm_3;
+var right_fore_arm_3;
+var right_hand_3;
+var left_up_leg_3;
+var left_leg_3;
+var left_foot_3;
+var right_up_leg_3;
+var right_leg_3;
+var right_foot_3;
 
 //Mesh components robot_4
-
+var neck_4;
+var head_4;
+var left_shoulder_4;
+var left_arm_4;
+var left_fore_arm_4;
+var left_hand_4;
+var right_shoulder_4;
+var right_arm_4;
+var right_fore_arm_4;
+var right_hand_4;
+var left_up_leg_4;
+var left_leg_4;
+var left_foot_4;
+var right_up_leg_4;
+var right_leg_4;
+var right_foot_4;
 
 //Mesh components robot_5
-
+var neck_5;
+var head_5;
+var left_shoulder_5;
+var left_arm_5;
+var left_fore_arm_5;
+var left_hand_5;
+var right_shoulder_5;
+var right_arm_5;
+var right_fore_arm_5;
+var right_hand_5;
+var left_up_leg_5;
+var left_leg_5;
+var left_foot_5;
+var right_up_leg_5;
+var right_leg_5;
+var right_foot_5;
 
 //Mesh components robot_6
-
-
+var neck_6;
+var head_6;
+var left_shoulder_6;
+var left_arm_6;
+var left_fore_arm_6;
+var left_hand_6;
+var right_shoulder_6;
+var right_arm_6;
+var right_fore_arm_6;
+var right_hand_6;
+var left_up_leg_6;
+var left_leg_6;
+var left_foot_6;
+var right_up_leg_6;
+var right_leg_6;
+var right_foot_6;
 
 //sinistra in basso
 loader.load('models/blueBot/blueBot.gltf', function (gltf) {
   robot_1 = gltf.scene;
   scene.add(robot_1);
-
   robot_1.traverse(function (child) {
     if (child.isMesh) {
       child.castShadow = true;
@@ -430,11 +673,14 @@ loader.load('models/blueBot/blueBot.gltf', function (gltf) {
   right_leg_1 = robot_1.getObjectByName('mixamorigRightLeg');
   right_foot_1 = robot_1.getObjectByName('mixamorigRightFoot');
 
+  left_arm_1.rotation.z = Math.PI * -0.35;
+  right_arm_1.rotation.z = Math.PI * 0.35;
 
   //Setup a bounding box around robot_1
   box_robot1 = new THREE.Box3().setFromObject(robot_1);
   const siz_robot1 = box_robot1.getSize(new THREE.Vector3()).length();
   const center_robot1 = box_robot1.getCenter(new THREE.Vector3());
+  createCircle(robot_1);
 
 }, undefined, function (error) {
   console.error(error);
@@ -456,6 +702,30 @@ loader.load('models/blueBot/blueBot.gltf', function (gltf1) {
   robot_2.position.z = -3;
   robot_2.rotation.y = 90 * (Math.PI / 180.0);
   robot_2.scale.set(1.7, 1.7, 1.7);
+
+  neck_2 = robot_2.getObjectByName('mixamorigNeck');
+  head_2 = robot_2.getObjectByName('mixamorigHead');
+  // LEFT ARM
+  left_shoulder_2 = robot_2.getObjectByName('mixamorigLeftShoulder');
+  left_arm_2 = robot_2.getObjectByName('mixamorigLeftArm');
+  left_fore_arm_2 = robot_2.getObjectByName('mixamorigLeftForeArm');
+  left_hand_2 = robot_2.getObjectByName('mixamorigLeftHand');
+  // RIGHT ARM
+  right_shoulder_2 = robot_2.getObjectByName('mixamorigRightShoulder');
+  right_arm_2 = robot_2.getObjectByName('mixamorigRightArm');
+  right_fore_arm_2 = robot_2.getObjectByName('mixamorigRightForeArm');
+  right_hand_2 = robot_2.getObjectByName('mixamorigRightHand');
+  // LEFT LEG
+  left_up_leg_2 = robot_2.getObjectByName('mixamorigLeftUpLeg');
+  left_leg_2 = robot_2.getObjectByName('mixamorigLeftLeg');
+  left_foot_2 = robot_2.getObjectByName('mixamorigLeftFoot');
+  // RIGHT LEG
+  right_up_leg_2 = robot_2.getObjectByName('mixamorigRightUpLeg');
+  right_leg_2 = robot_2.getObjectByName('mixamorigRightLeg');
+  right_foot_2 = robot_2.getObjectByName('mixamorigRightFoot');
+
+  left_arm_2.rotation.z = Math.PI * -0.35;
+  right_arm_2.rotation.z = Math.PI * 0.35;
 
   //Setup a bounding box around robot_2
   box_robot2 = new THREE.Box3().setFromObject(robot_2);
@@ -483,6 +753,30 @@ loader.load('models/redBot/redBot.gltf', function (gltf2) {
   robot_3.rotation.y = -90 * (Math.PI / 180.0);
   robot_3.scale.set(1.7, 1.7, 1.7);
 
+  neck_3 = robot_3.getObjectByName('mixamorigNeck');
+  head_3 = robot_3.getObjectByName('mixamorigHead');
+  // LEFT ARM
+  left_shoulder_3 = robot_3.getObjectByName('mixamorigLeftShoulder');
+  left_arm_3 = robot_3.getObjectByName('mixamorigLeftArm');
+  left_fore_arm_3 = robot_3.getObjectByName('mixamorigLeftForeArm');
+  left_hand_3 = robot_3.getObjectByName('mixamorigLeftHand');
+  // RIGHT ARM
+  right_shoulder_3 = robot_3.getObjectByName('mixamorigRightShoulder');
+  right_arm_3 = robot_3.getObjectByName('mixamorigRightArm');
+  right_fore_arm_3 = robot_3.getObjectByName('mixamorigRightForeArm');
+  right_hand_3 = robot_3.getObjectByName('mixamorigRightHand');
+  // LEFT LEG
+  left_up_leg_3 = robot_3.getObjectByName('mixamorigLeftUpLeg');
+  left_leg_3 = robot_3.getObjectByName('mixamorigLeftLeg');
+  left_foot_3 = robot_3.getObjectByName('mixamorigLeftFoot');
+  // RIGHT LEG
+  right_up_leg_3 = robot_3.getObjectByName('mixamorigRightUpLeg');
+  right_leg_3 = robot_3.getObjectByName('mixamorigRightLeg');
+  right_foot_3 = robot_3.getObjectByName('mixamorigRightFoot');
+
+  left_arm_3.rotation.z = Math.PI * -0.35;
+  right_arm_3.rotation.z = Math.PI * 0.35;
+
   //Setup a bounding box around robot_3
   box_robot3 = new THREE.Box3().setFromObject(robot_3);
   const size_robot3 = box_robot3.getSize(new THREE.Vector3()).length();
@@ -508,6 +802,29 @@ loader.load('models/redBot/redBot.gltf', function (gltf3) {
   robot_4.position.z = 3;
   robot_4.rotation.y = -90 * (Math.PI / 180.0);
   robot_4.scale.set(1.7, 1.7, 1.7);
+  neck_4 = robot_4.getObjectByName('mixamorigNeck');
+  head_4 = robot_4.getObjectByName('mixamorigHead');
+  // LEFT ARM
+  left_shoulder_4 = robot_4.getObjectByName('mixamorigLeftShoulder');
+  left_arm_4 = robot_4.getObjectByName('mixamorigLeftArm');
+  left_fore_arm_4 = robot_4.getObjectByName('mixamorigLeftForeArm');
+  left_hand_4 = robot_4.getObjectByName('mixamorigLeftHand');
+  // RIGHT ARM
+  right_shoulder_4 = robot_4.getObjectByName('mixamorigRightShoulder');
+  right_arm_4 = robot_4.getObjectByName('mixamorigRightArm');
+  right_fore_arm_4 = robot_4.getObjectByName('mixamorigRightForeArm');
+  right_hand_4 = robot_4.getObjectByName('mixamorigRightHand');
+  // LEFT LEG
+  left_up_leg_4 = robot_4.getObjectByName('mixamorigLeftUpLeg');
+  left_leg_4 = robot_4.getObjectByName('mixamorigLeftLeg');
+  left_foot_4 = robot_4.getObjectByName('mixamorigLeftFoot');
+  // RIGHT LEG
+  right_up_leg_4 = robot_4.getObjectByName('mixamorigRightUpLeg');
+  right_leg_4 = robot_4.getObjectByName('mixamorigRightLeg');
+  right_foot_4 = robot_4.getObjectByName('mixamorigRightFoot');
+
+  left_arm_4.rotation.z = Math.PI * -0.35;
+  right_arm_4.rotation.z = Math.PI * 0.35;
 
   //Setup a bounding box around robot_4
   box_robot4 = new THREE.Box3().setFromObject(robot_4);
@@ -533,6 +850,29 @@ loader.load('models/blueBot/blueBot.gltf', function (gltf4) {
   robot_5.position.x = -9;
   robot_5.rotation.y = 90 * (Math.PI / 180.0);
   robot_5.scale.set(1.7, 1.7, 1.7);
+  neck_5 = robot_5.getObjectByName('mixamorigNeck');
+  head_5 = robot_5.getObjectByName('mixamorigHead');
+  // LEFT ARM
+  left_shoulder_5 = robot_5.getObjectByName('mixamorigLeftShoulder');
+  left_arm_5 = robot_5.getObjectByName('mixamorigLeftArm');
+  left_fore_arm_5 = robot_5.getObjectByName('mixamorigLeftForeArm');
+  left_hand_5 = robot_5.getObjectByName('mixamorigLeftHand');
+  // RIGHT ARM
+  right_shoulder_5 = robot_5.getObjectByName('mixamorigRightShoulder');
+  right_arm_5 = robot_5.getObjectByName('mixamorigRightArm');
+  right_fore_arm_5 = robot_5.getObjectByName('mixamorigRightForeArm');
+  right_hand_5 = robot_5.getObjectByName('mixamorigRightHand');
+  // LEFT LEG
+  left_up_leg_5 = robot_5.getObjectByName('mixamorigLeftUpLeg');
+  left_leg_5 = robot_5.getObjectByName('mixamorigLeftLeg');
+  left_foot_5 = robot_5.getObjectByName('mixamorigLeftFoot');
+  // RIGHT LEG
+  right_up_leg_5 = robot_5.getObjectByName('mixamorigRightUpLeg');
+  right_leg_5 = robot_5.getObjectByName('mixamorigRightLeg');
+  right_foot_5 = robot_5.getObjectByName('mixamorigRightFoot');
+
+  left_arm_5.rotation.z = Math.PI * -0.35;
+  right_arm_5.rotation.z = Math.PI * 0.35;
 
   //Setup a bounding box around robot_5
   box_robot5 = new THREE.Box3().setFromObject(robot_5);
@@ -558,6 +898,29 @@ loader.load('models/redBot/redBot.gltf', function (gltf5) {
   robot_6.position.x = 9;
   robot_6.rotation.y = -90 * (Math.PI / 180.0);
   robot_6.scale.set(1.7, 1.7, 1.7);
+  neck_6 = robot_6.getObjectByName('mixamorigNeck');
+  head_6 = robot_6.getObjectByName('mixamorigHead');
+  // LEFT ARM
+  left_shoulder_6 = robot_6.getObjectByName('mixamorigLeftShoulder');
+  left_arm_6 = robot_6.getObjectByName('mixamorigLeftArm');
+  left_fore_arm_6 = robot_6.getObjectByName('mixamorigLeftForeArm');
+  left_hand_6 = robot_6.getObjectByName('mixamorigLeftHand');
+  // RIGHT ARM
+  right_shoulder_6 = robot_6.getObjectByName('mixamorigRightShoulder');
+  right_arm_6 = robot_6.getObjectByName('mixamorigRightArm');
+  right_fore_arm_6 = robot_6.getObjectByName('mixamorigRightForeArm');
+  right_hand_6 = robot_6.getObjectByName('mixamorigRightHand');
+  // LEFT LEG
+  left_up_leg_6 = robot_6.getObjectByName('mixamorigLeftUpLeg');
+  left_leg_6 = robot_6.getObjectByName('mixamorigLeftLeg');
+  left_foot_6 = robot_6.getObjectByName('mixamorigLeftFoot');
+  // RIGHT LEG
+  right_up_leg_6 = robot_6.getObjectByName('mixamorigRightUpLeg');
+  right_leg_6 = robot_6.getObjectByName('mixamorigRightLeg');
+  right_foot_6 = robot_6.getObjectByName('mixamorigRightFoot');
+
+  left_arm_6.rotation.z = Math.PI * -0.35;
+  right_arm_6.rotation.z = Math.PI * 0.35;
 
   //Setup a bounding box around robot_6
   box_robot6 = new THREE.Box3().setFromObject(robot_6);
@@ -644,9 +1007,15 @@ loader.load('models/football_ball/scene.gltf', function (gltf7) {
 });
 
 
+var jj, kk;
+
 var isMoving = false;
 var isRobotMoving = true;
 var isRobotMoving2 = false;
+var isRobotMoving3 = false;
+var isRobotMoving4 = false;
+var isRobotMoving5 = false;
+var isRobotMoving6 = false;
 var done = false;
 var increment = 0.05;
 var goal = false;
@@ -660,7 +1029,7 @@ function animate() {
   if (moveCameraForward) {
     camera.position.z -= 0.5;
   }
-  if (moveCameraForward) {
+  if (moveCameraBackward) {
     camera.position.z += 0.5;
   }
   if (moveCameraLeft) {
@@ -676,19 +1045,31 @@ function animate() {
   controls.update();
 
 
-  if(isRobotMoving2){
-    moveRobot(robot_2, box_robot2);
-  }
-
   if(isRobotMoving){
     moveRobot(robot_1, box_robot1);
+    running1();
+  }
+  if(isRobotMoving2){
+    moveRobot(robot_2, box_robot2);
+    running2();
+  }
+  if(isRobotMoving3){
+    moveRobot(robot_3, box_robot2);
+    running3();
+  }
+  if(isRobotMoving4){
+    moveRobot(robot_4, box_robot2);
+    running4();
+  }
+  if(isRobotMoving5){
+    moveRobot(robot_5, box_robot2);
+    running5();
+  }
+  if(isRobotMoving6){
+    moveRobot(robot_6, box_robot2);
+    running6();
   }
 
-
-  /*// Check if the variable has reached the minimum or maximum value
-  if (robot_2.position.z >= 3 || robot_2.position.z <= -3) {
-    increment *= -1; // Invert the increment direction
-  }*/
 
   // Move the cube based on keyboard input
   if (moveForward) robot_1.position.z -= 0.1;
@@ -698,138 +1079,116 @@ function animate() {
 
 
   if(isMoving){
-    if(times < 5){
 
-      ball.position.x += ballvx*0.5;
-      ball.position.z += ballvz*0.5;
+    if(times < 8){
+      normball= (ballvx - 0.1) * (0.5 - 0.1) / (10 - 0.1) + 0.1;
+      normball2 = (ballvy - 0.1) * (0.5 - 0.1) / (10 - 0.1) + 0.1;
+      ball.position.x += normball;
+      ball.position.z += normball2;
       times += 1;
     }
     else{
 
       isMoving = false;
     }
+    ball.rotation.z +=normball2;
+    ball.rotation.x +=normball;
+
     box_ball.setFromObject(ball);
   }
 
   //Update the bounding boxes
   if(moveForward||moveBackward||moveLeft||moveRight) box_robot1.setFromObject(robot_1);
-
+  if(moveForward||moveBackward||moveLeft||moveRight) box_robot2.setFromObject(robot_2);
+  if(moveForward||moveBackward||moveLeft||moveRight) box_robot3.setFromObject(robot_3);
+  if(moveForward||moveBackward||moveLeft||moveRight) box_robot4.setFromObject(robot_4);
+  if(moveForward||moveBackward||moveLeft||moveRight) box_robot5.setFromObject(robot_5);
+  if(moveForward||moveBackward||moveLeft||moveRight) box_robot6.setFromObject(robot_6);
   // Check for collisions
   if (box_robot1.intersectsBox(box_ball)) {
     // Collision detected, stop or modify the object's movement
     console.log("Collisione in z: "+robot_1.position.z+"Collisione in X"+robot_1.position.x);
     ballvx = clickX - robot_1.position.x;
-    ballvz = clickZ - robot_1.position.z;
-    console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvz);
+    ballvy = clickZ - robot_1.position.z;
+    console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
+    isMoving = true;
+    times = 0;
+  }
+  if (box_robot2.intersectsBox(box_ball)) {
+    // Collision detected, stop or modify the object's movement
+    console.log("Collisione in z: "+robot_2.position.z+"Collisione in X"+robot_2.position.x);
+    ballvx = clickX - robot_2.position.x;
+    ballvy = clickZ - robot_2.position.z;
+    console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
+    isMoving = true;
+    times = 0;
+  }
+  if (box_robot3.intersectsBox(box_ball)) {
+    // Collision detected, stop or modify the object's movement
+    console.log("Collisione in z: "+robot_3.position.z+"Collisione in X"+robot_3.position.x);
+    ballvx = clickX - robot_3.position.x;
+    ballvy = clickZ - robot_3.position.z;
+    console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
+    isMoving = true;
+    times = 0;
+  }
+  if (box_robot4.intersectsBox(box_ball)) {
+    // Collision detected, stop or modify the object's movement
+    console.log("Collisione in z: "+robot_4.position.z+"Collisione in X"+robot_4.position.x);
+    ballvx = clickX - robot_4.position.x;
+    ballvy = clickZ - robot_4.position.z;
+    console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
+    isMoving = true;
+    times = 0;
+  }
+  if (box_robot5.intersectsBox(box_ball)) {
+    // Collision detected, stop or modify the object's movement
+    console.log("Collisione in z: "+robot_5.position.z+"Collisione in X"+robot_5.position.x);
+    ballvx = clickX - robot_5.position.x;
+    ballvy = clickZ - robot_5.position.z;
+    console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
+    isMoving = true;
+    times = 0;
+  }
+  if (box_robot6.intersectsBox(box_ball)) {
+    // Collision detected, stop or modify the object's movement
+    console.log("Collisione in z: "+robot_6.position.z+"Collisione in X"+robot_6.position.x);
+    ballvx = clickX - robot_6.position.x;
+    ballvy = clickZ - robot_6.position.z;
+    console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
     isMoving = true;
     times = 0;
   }
 
-  if (box_ball.intersectsBox(box_robot2)) {
-    // Collision detected, stop or modify the object's movement
-    isMoving = false;
+
+
+  if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x >= 9 && !goal){
+    goal = true;
+    isMoving=false;
+    alert("GOAL! TEAM 1");
+    location.reload();
   }
 
-  checkGoal();
-  checkBallCollitions();
-  checkRobotCollitions(robot_1);
-  checkRobotCollitions(robot_2);
+  if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x <= -10 && !goal){
+    goal = true;
+    isMoving=false;
+    alert("GOAL! TEAM 2");
+    location.reload();
+  }
 
-  TWEEN.update();
+  checkBallCollisions();
+  checkRobotCollisions(robot_1);
+  checkRobotCollisions(robot_2);
+  checkRobotCollisions(robot_3);
+  checkRobotCollisions(robot_4);
+  checkRobotCollisions(robot_5);
+  checkRobotCollisions(robot_6);
+
 
   renderer.render(scene, camera);
 }
 
 animate();
-
-
-function checkGoal(){
-  if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x >= 10 && !goal){
-    goal = true;
-
-    location.reload();
-    alert("GOAL! TEAM 1");
-  }
-
-  if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x <= -10 && !goal){
-    goal = true;
-
-    location.reload();
-    alert("GOAL! TEAM 2");
-  }
-}
-
-
-
-function checkBallCollitions(){
-  if(ball.position.z < -5){
-    isMoving = false;
-    ball.position.z += 1;
-    box_ball.setFromObject(ball);
-  }
-  if(ball.position.z > 5){
-    isMoving = false;
-    ball.position.z -= 1;
-    box_ball.setFromObject(ball);
-  }
-  if(ball.position.x < -10){
-    isMoving = false;
-    ball.position.x += 1;
-    box_ball.setFromObject(ball);
-  }
-  if(ball.position.x > 10){
-    isMoving = false;
-    ball.position.x -= 1;
-    box_ball.setFromObject(ball);
-  }
-}
-
-function checkRobotCollitions(object){
-  if(object.position.z < -6.5){
-    stopRobot(object);
-    object.position.z += 1;
-    setBound(object);
-  }
-  if(object.position.z > 6.5){
-    stopRobot(object);
-    object.position.z -= 1;
-    setBound(object);
-  }
-  if(object.position.x < -10){
-    stopRobot(object);
-    object.position.x += 1;
-    setBound(object);
-  }
-  if(object.position.x > 10){
-    stopRobot(object);
-    object.position.x -= 1;
-    setBound(object);
-  }
-}
-
-function stopRobot(object){
-  switch(object){
-    case robot_1:
-      isRobotMoving = false;
-      isRobotMoving = true;
-      break;
-    case robot_1:
-      isRobotMoving2 = false;
-      isRobotMoving2 = true;
-      break;
-  }
-}
-
-function setBound(object){
-  switch(object){
-    case robot_1:
-      box_robot1.setFromObject(robot_1);
-      break;
-    case robot_1:
-      box_robot2.setFromObject(robot_2);
-      break;
-  }
-}
 
 
 function moveRobot(object, box_object){
@@ -839,8 +1198,8 @@ function moveRobot(object, box_object){
 
     //console.log(diff_x+" "+diff_y+" "+clickX+" "+clickZ+" "+object.position.x+" "+object.position.z);
 
-    var j = Math.sqrt((Math.pow(diff_y, 2)) / (Math.pow(diff_x, 2) + Math.pow(diff_y, 2))) * Math.sign(diff_y);
-    var k = (diff_x / diff_y) * j;
+     j = Math.sqrt((Math.pow(diff_y, 2)) / (Math.pow(diff_x, 2) + Math.pow(diff_y, 2))) * Math.sign(diff_y)*0.05;
+     k = (diff_x / diff_y) * j;
 
 
     if( object.position.x < clickX ){
@@ -866,39 +1225,609 @@ function moveRobot(object, box_object){
         object.position.z = clickZ;
       }
     }
-
     box_object.setFromObject(object);
+
   }
 }
 
 
+var downarms=true;
+var downlegs=true;
 
 
+function running1(){
+  var diff_x = clickX-robot_1.position.x;
+  var diff_y = clickZ-robot_1.position.z;
+  var angoloRadianti = Math.atan2(diff_x,diff_y);
+  robot_1.rotation.y = angoloRadianti;
 
-/*
-function checkPitchCollisions(box_object) {
-  // Check collision with the left edge
-  if (box_object.intersectsBox(leftEdgeBox.box)) {
-    // Collision with left edge detected
-    alert("left collision");
+
+  // ARM RUNNING
+  left_arm_1.rotation.z = Math.PI * -0.35;
+  right_arm_1.rotation.z = Math.PI * 0.35;
+  left_fore_arm_1.rotation.y = Math.PI * -0.5;
+  right_fore_arm_1.rotation.y =Math.PI * 0.5;
+  if(downarms){
+    if( left_arm_1.rotation.x >  Math.PI * -0.35){
+      left_arm_1.rotation.x -=0.05;
+    }
+    else {
+      downarms=false;
+    }
+    if( right_arm_1.rotation.x <  Math.PI * 0.35){
+      right_arm_1.rotation.x +=0.05;
+    }
+  }else{
+    if( left_arm_1.rotation.x <  Math.PI * 0.35){
+      left_arm_1.rotation.x +=0.05;
+    }
+    else {
+      downarms=true;
+    }
+    if( right_arm_1.rotation.x >  Math.PI * -0.35){
+      right_arm_1.rotation.x -=0.05;
+    }
   }
+  //LEGS RUNNING
+  if(downlegs){
+    if(  left_up_leg_1.rotation.x > Math.PI * -0.15){
+      left_up_leg_1.rotation.x -=0.01;
+    }
+    else{
+      downlegs =false;
+    }
+    if(  left_leg_1.rotation.x < Math.PI * 0.25){
+      left_leg_1.rotation.x +=0.02;
+    }
 
-  // Check collision with the right edge
-  if (box_object.intersectsBox(rightEdgeBox.box)) {
-    // Collision with right edge detected
-    alert("right collision");
+    if(  right_up_leg_1.rotation.x < 0){
+      right_up_leg_1.rotation.x +=0.01;
+    }
+    if(  right_leg_1.rotation.x > 0){
+      right_leg_1.rotation.x -=0.02;
+    }
   }
+  else{
+    if(  left_up_leg_1.rotation.x < 0){
+      left_up_leg_1.rotation.x +=0.01;
+    }
+    else{
+      downlegs =true;
+    }
+    if(  left_leg_1.rotation.x > 0){
+      left_leg_1.rotation.x -=0.02;
+    }
 
-  // Check collision with the top edge
-  if (box_object.intersectsBox(topEdgeBox.box)) {
-    // Collision with top edge detected
-    alert("top collision");
+    if(  right_up_leg_1.rotation.x > Math.PI * -0.15){
+      right_up_leg_1.rotation.x -=0.01;
+    }
+    if(  right_leg_1.rotation.x < Math.PI * 0.25){
+      right_leg_1.rotation.x +=0.02;
+    }
   }
+  neck_1.rotation.x =Math.PI * 0.25;
+  head_1.rotation.x =Math.PI * -0.25;
+}
 
-  // Check collision with the bottom edge
-  if (box_object.intersectsBox(bottomEdgeBox.box)) {
-    // Collision with bottom edge detected
-    alert("bottom collision");
+
+function running2(){
+  var diff_x = clickX-robot_2.position.x;
+  var diff_y = clickZ-robot_2.position.z;
+  var angoloRadianti = Math.atan2(diff_x,diff_y);
+  robot_2.rotation.y = angoloRadianti;
+  // ARM RUNNING
+  left_arm_2.rotation.z = Math.PI * -0.35;
+  right_arm_2.rotation.z = Math.PI * 0.35;
+  left_fore_arm_2.rotation.y = Math.PI * -0.5;
+  right_fore_arm_2.rotation.y =Math.PI * 0.5;
+  if(downarms){
+    if( left_arm_2.rotation.x >  Math.PI * -0.35){
+      left_arm_2.rotation.x -=0.05;
+    }
+    else {
+      downarms=false;
+    }
+    if( right_arm_2.rotation.x <  Math.PI * 0.35){
+      right_arm_2.rotation.x +=0.05;
+    }
+  }else{
+    if( left_arm_2.rotation.x <  Math.PI * 0.35){
+      left_arm_2.rotation.x +=0.05;
+    }
+    else {
+      downarms=true;
+    }
+    if( right_arm_2.rotation.x >  Math.PI * -0.35){
+      right_arm_2.rotation.x -=0.05;
+    }
+  }
+  //LEGS RUNNING
+  if(downlegs){
+    if(  left_up_leg_2.rotation.x > Math.PI * -0.15){
+      left_up_leg_2.rotation.x -=0.01;
+    }
+    else{
+      downlegs =false;
+    }
+    if(  left_leg_2.rotation.x < Math.PI * 0.25){
+      left_leg_2.rotation.x +=0.02;
+    }
+
+    if(  right_up_leg_2.rotation.x < 0){
+      right_up_leg_2.rotation.x +=0.01;
+    }
+    if(  right_leg_2.rotation.x > 0){
+      right_leg_2.rotation.x -=0.02;
+    }
+  }
+  else{
+    if(  left_up_leg_2.rotation.x < 0){
+      left_up_leg_2.rotation.x +=0.01;
+    }
+    else{
+      downlegs =true;
+    }
+    if(  left_leg_2.rotation.x > 0){
+      left_leg_2.rotation.x -=0.02;
+    }
+
+    if(  right_up_leg_2.rotation.x > Math.PI * -0.15){
+      right_up_leg_2.rotation.x -=0.01;
+    }
+    if(  right_leg_2.rotation.x < Math.PI * 0.25){
+      right_leg_2.rotation.x +=0.02;
+    }
+  }
+  neck_2.rotation.x =Math.PI * 0.25;
+  head_2.rotation.x =Math.PI * -0.25;
+}
+
+
+function running3(){
+  var diff_x = clickX-robot_3.position.x;
+  var diff_y = clickZ-robot_3.position.z;
+  var angoloRadianti = Math.atan2(diff_x,diff_y);
+  robot_3.rotation.y = angoloRadianti;
+  // ARM RUNNING
+  left_arm_3.rotation.z = Math.PI * -0.35;
+  right_arm_3.rotation.z = Math.PI * 0.35;
+  left_fore_arm_3.rotation.y = Math.PI * -0.5;
+  right_fore_arm_3.rotation.y =Math.PI * 0.5;
+  if(downarms){
+    if( left_arm_3.rotation.x >  Math.PI * -0.35){
+      left_arm_3.rotation.x -=0.05;
+    }
+    else {
+      downarms=false;
+    }
+    if( right_arm_3.rotation.x <  Math.PI * 0.35){
+      right_arm_3.rotation.x +=0.05;
+    }
+  }else{
+    if( left_arm_3.rotation.x <  Math.PI * 0.35){
+      left_arm_3.rotation.x +=0.05;
+    }
+    else {
+      downarms=true;
+    }
+    if( right_arm_3.rotation.x >  Math.PI * -0.35){
+      right_arm_3.rotation.x -=0.05;
+    }
+  }
+  //LEGS RUNNING
+  if(downlegs){
+    if(  left_up_leg_3.rotation.x > Math.PI * -0.15){
+      left_up_leg_3.rotation.x -=0.01;
+    }
+    else{
+      downlegs =false;
+    }
+    if(  left_leg_3.rotation.x < Math.PI * 0.25){
+      left_leg_3.rotation.x +=0.02;
+    }
+
+    if(  right_up_leg_3.rotation.x < 0){
+      right_up_leg_3.rotation.x +=0.01;
+    }
+    if(  right_leg_3.rotation.x > 0){
+      right_leg_3.rotation.x -=0.02;
+    }
+  }
+  else{
+    if(  left_up_leg_3.rotation.x < 0){
+      left_up_leg_3.rotation.x +=0.01;
+    }
+    else{
+      downlegs =true;
+    }
+    if(  left_leg_3.rotation.x > 0){
+      left_leg_3.rotation.x -=0.02;
+    }
+
+    if(  right_up_leg_3.rotation.x > Math.PI * -0.15){
+      right_up_leg_3.rotation.x -=0.01;
+    }
+    if(  right_leg_3.rotation.x < Math.PI * 0.25){
+      right_leg_3.rotation.x +=0.02;
+    }
+  }
+  neck_3.rotation.x =Math.PI * 0.25;
+  head_3.rotation.x =Math.PI * -0.25;
+}
+
+
+function running4(){
+  var diff_x = clickX-robot_4.position.x;
+  var diff_y = clickZ-robot_4.position.z;
+  var angoloRadianti = Math.atan2(diff_x,diff_y);
+  robot_4.rotation.y = angoloRadianti;
+  // ARM RUNNING
+  left_arm_4.rotation.z = Math.PI * -0.35;
+  right_arm_4.rotation.z = Math.PI * 0.35;
+  left_fore_arm_4.rotation.y = Math.PI * -0.5;
+  right_fore_arm_4.rotation.y =Math.PI * 0.5;
+  if(downarms){
+    if( left_arm_4.rotation.x >  Math.PI * -0.35){
+      left_arm_4.rotation.x -=0.05;
+    }
+    else {
+      downarms=false;
+    }
+    if( right_arm_4.rotation.x <  Math.PI * 0.35){
+      right_arm_4.rotation.x +=0.05;
+    }
+  }else{
+    if( left_arm_4.rotation.x <  Math.PI * 0.35){
+      left_arm_4.rotation.x +=0.05;
+    }
+    else {
+      downarms=true;
+    }
+    if( right_arm_4.rotation.x >  Math.PI * -0.35){
+      right_arm_4.rotation.x -=0.05;
+    }
+  }
+  //LEGS RUNNING
+  if(downlegs){
+    if(  left_up_leg_4.rotation.x > Math.PI * -0.15){
+      left_up_leg_4.rotation.x -=0.01;
+    }
+    else{
+      downlegs =false;
+    }
+    if(  left_leg_4.rotation.x < Math.PI * 0.25){
+      left_leg_4.rotation.x +=0.02;
+    }
+
+    if(  right_up_leg_4.rotation.x < 0){
+      right_up_leg_4.rotation.x +=0.01;
+    }
+    if(  right_leg_4.rotation.x > 0){
+      right_leg_4.rotation.x -=0.02;
+    }
+  }
+  else{
+    if(  left_up_leg_4.rotation.x < 0){
+      left_up_leg_4.rotation.x +=0.01;
+    }
+    else{
+      downlegs =true;
+    }
+    if(  left_leg_4.rotation.x > 0){
+      left_leg_4.rotation.x -=0.02;
+    }
+
+    if(  right_up_leg_4.rotation.x > Math.PI * -0.15){
+      right_up_leg_4.rotation.x -=0.01;
+    }
+    if(  right_leg_4.rotation.x < Math.PI * 0.25){
+      right_leg_4.rotation.x +=0.02;
+    }
+  }
+  neck_4.rotation.x =Math.PI * 0.25;
+  head_4.rotation.x =Math.PI * -0.25;
+}
+
+
+function running5(){
+  var diff_x = clickX-robot_5.position.x;
+  var diff_y = clickZ-robot_5.position.z;
+  var angoloRadianti = Math.atan2(diff_x,diff_y);
+  robot_5.rotation.y = angoloRadianti;
+  // ARM RUNNING
+  left_arm_5.rotation.z = Math.PI * -0.35;
+  right_arm_5.rotation.z = Math.PI * 0.35;
+  left_fore_arm_5.rotation.y = Math.PI * -0.5;
+  right_fore_arm_5.rotation.y =Math.PI * 0.5;
+  if(downarms){
+    if( left_arm_5.rotation.x >  Math.PI * -0.35){
+      left_arm_5.rotation.x -=0.05;
+    }
+    else {
+      downarms=false;
+    }
+    if( right_arm_5.rotation.x <  Math.PI * 0.35){
+      right_arm_5.rotation.x +=0.05;
+    }
+  }else{
+    if( left_arm_5.rotation.x <  Math.PI * 0.35){
+      left_arm_5.rotation.x +=0.05;
+    }
+    else {
+      downarms=true;
+    }
+    if( right_arm_5.rotation.x >  Math.PI * -0.35){
+      right_arm_5.rotation.x -=0.05;
+    }
+  }
+  //LEGS RUNNING
+  if(downlegs){
+    if(  left_up_leg_5.rotation.x > Math.PI * -0.15){
+      left_up_leg_5.rotation.x -=0.01;
+    }
+    else{
+      downlegs =false;
+    }
+    if(  left_leg_5.rotation.x < Math.PI * 0.25){
+      left_leg_5.rotation.x +=0.02;
+    }
+
+    if(  right_up_leg_5.rotation.x < 0){
+      right_up_leg_5.rotation.x +=0.01;
+    }
+    if(  right_leg_5.rotation.x > 0){
+      right_leg_5.rotation.x -=0.02;
+    }
+  }
+  else{
+    if(  left_up_leg_5.rotation.x < 0){
+      left_up_leg_5.rotation.x +=0.01;
+    }
+    else{
+      downlegs =true;
+    }
+    if(  left_leg_5.rotation.x > 0){
+      left_leg_5.rotation.x -=0.02;
+    }
+
+    if(  right_up_leg_5.rotation.x > Math.PI * -0.15){
+      right_up_leg_5.rotation.x -=0.01;
+    }
+    if(  right_leg_5.rotation.x < Math.PI * 0.25){
+      right_leg_5.rotation.x +=0.02;
+    }
+  }
+  neck_5.rotation.x =Math.PI * 0.25;
+  head_5.rotation.x =Math.PI * -0.25;
+}
+
+
+function running6(){
+  var diff_x = clickX-robot_6.position.x;
+  var diff_y = clickZ-robot_6.position.z;
+  var angoloRadianti = Math.atan2(diff_x,diff_y);
+  robot_6.rotation.y = angoloRadianti;
+  // ARM RUNNING
+  left_arm_6.rotation.z = Math.PI * -0.35;
+  right_arm_6.rotation.z = Math.PI * 0.35;
+  left_fore_arm_6.rotation.y = Math.PI * -0.5;
+  right_fore_arm_6.rotation.y =Math.PI * 0.5;
+  if(downarms){
+    if( left_arm_6.rotation.x >  Math.PI * -0.35){
+      left_arm_6.rotation.x -=0.05;
+    }
+    else {
+      downarms=false;
+    }
+    if( right_arm_6.rotation.x <  Math.PI * 0.35){
+      right_arm_6.rotation.x +=0.05;
+    }
+  }else{
+    if( left_arm_6.rotation.x <  Math.PI * 0.35){
+      left_arm_6.rotation.x +=0.05;
+    }
+    else {
+      downarms=true;
+    }
+    if( right_arm_6.rotation.x >  Math.PI * -0.35){
+      right_arm_6.rotation.x -=0.05;
+    }
+  }
+  //LEGS RUNNING
+  if(downlegs){
+    if(  left_up_leg_6.rotation.x > Math.PI * -0.15){
+      left_up_leg_6.rotation.x -=0.01;
+    }
+    else{
+      downlegs =false;
+    }
+    if(  left_leg_6.rotation.x < Math.PI * 0.25){
+      left_leg_6.rotation.x +=0.02;
+    }
+
+    if(  right_up_leg_6.rotation.x < 0){
+      right_up_leg_6.rotation.x +=0.01;
+    }
+    if(  right_leg_6.rotation.x > 0){
+      right_leg_6.rotation.x -=0.02;
+    }
+  }
+  else{
+    if(  left_up_leg_6.rotation.x < 0){
+      left_up_leg_6.rotation.x +=0.01;
+    }
+    else{
+      downlegs =true;
+    }
+    if(  left_leg_6.rotation.x > 0){
+      left_leg_6.rotation.x -=0.02;
+    }
+
+    if(  right_up_leg_6.rotation.x > Math.PI * -0.15){
+      right_up_leg_6.rotation.x -=0.01;
+    }
+    if(  right_leg_6.rotation.x < Math.PI * 0.25){
+      right_leg_6.rotation.x +=0.02;
+    }
+  }
+  neck_6.rotation.x =Math.PI * 0.25;
+  head_6.rotation.x =Math.PI * -0.25;
+}
+
+
+function setThisRobot(thisrobot) {
+  if(thisrobot == 0){
+    isRobotMoving = true;
+    isRobotMoving2 = false;
+    isRobotMoving3 = false;
+    isRobotMoving4 = false;
+    isRobotMoving5 = false;
+    isRobotMoving6 = false;
+  }
+  if(thisrobot == 1){
+    isRobotMoving = false;
+    isRobotMoving2 = true;
+    isRobotMoving3 = false;
+    isRobotMoving4 = false;
+    isRobotMoving5 = false;
+    isRobotMoving6 = false;
+  }
+  if(thisrobot == 2){
+    isRobotMoving = false;
+    isRobotMoving2 = false;
+    isRobotMoving3 = true;
+    isRobotMoving4 = false;
+    isRobotMoving5 = false;
+    isRobotMoving6 = false;
+  }
+  if(thisrobot == 3){
+    isRobotMoving = false;
+    isRobotMoving2 = false;
+    isRobotMoving3 = false;
+    isRobotMoving4 = true;
+    isRobotMoving5 = false;
+    isRobotMoving6 = false;
+  }
+  if(thisrobot == 4){
+    isRobotMoving = false;
+    isRobotMoving2 = false;
+    isRobotMoving3 = false;
+    isRobotMoving4 = false;
+    isRobotMoving5 = true;
+    isRobotMoving6 = false;
+  }
+  if(thisrobot == 5){
+    isRobotMoving = false;
+    isRobotMoving2 = false;
+    isRobotMoving3 = false;
+    isRobotMoving4 = false;
+    isRobotMoving5 = false;
+    isRobotMoving6 = true;
   }
 }
-*/
+
+
+function checkBallCollisions(){
+  if(ball.position.z < -5){
+    isMoving = false;
+    ball.position.z += 1;
+    box_ball.setFromObject(ball);
+  }
+  if(ball.position.z > 5){
+    isMoving = false;
+    ball.position.z -= 1;
+    box_ball.setFromObject(ball);
+  }
+  if(ball.position.x < -10){
+    isMoving = false;
+    ball.position.x += 1;
+    box_ball.setFromObject(ball);
+  }
+  if(ball.position.x > 10){
+    isMoving = false;
+    ball.position.x -= 1;
+    box_ball.setFromObject(ball);
+  }
+}
+
+
+function checkRobotCollisions(object){
+  if(object.position.z < -6.5){
+    clickX = 0;
+    clickZ = 0;
+    stopRobot(object);
+    setBound(object);
+  }
+  if(object.position.z > 6.5){
+    clickX = 0;
+    clickZ = 0;
+    stopRobot(object);
+    setBound(object);
+  }
+  if(object.position.x < -10){
+    clickX = 0;
+    clickZ = 0;
+    stopRobot(object);
+    setBound(object);
+  }
+  if(object.position.x > 10){
+    clickX = 0;
+    clickZ = 0;
+    stopRobot(object);
+    setBound(object);
+  }
+}
+
+
+function stopRobot(object){
+  switch(object){
+    case robot_1:
+      isRobotMoving = false;
+      break;
+    case robot_2:
+      isRobotMoving2 = false;
+      break;
+    case robot_3:
+      isRobotMoving3 = false;
+      break;
+    case robot_4:
+      isRobotMoving4 = false;
+      break;
+    case robot_5:
+      isRobotMoving5 = false;
+      break;
+    case robot_6:
+      isRobotMoving6 = false;
+      break;
+  }
+}
+
+
+function setBound(object){
+  switch(object){
+    case robot_1:
+      isRobotMoving = true;
+      box_robot1.setFromObject(robot_1);
+      break;
+    case robot_2:
+      isRobotMoving2 = true;
+      box_robot2.setFromObject(robot_2);
+      break;
+    case robot_3:
+      isRobotMoving3 = true;
+      box_robot3.setFromObject(robot_3);
+      break;
+    case robot_4:
+      isRobotMoving4 = true;
+      box_robot4.setFromObject(robot_4);
+      break;
+    case robot_5:
+      isRobotMoving5 = true;
+      box_robot5.setFromObject(robot_5);
+      break;
+    case robot_6:
+      isRobotMoving2 = true;
+      box_robot2.setFromObject(robot_6);
+      break;
+  }
+}

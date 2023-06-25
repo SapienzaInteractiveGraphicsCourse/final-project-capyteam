@@ -6,9 +6,22 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 //Import orbit controls
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
+//Import tween.js for smooth animation
+import * as TWEEN from '@tweenjs/tween.js'
+
 //Setup the scene
 const scene = new THREE.Scene();
 
+//Camera Keyboard
+// Keyboard input variables
+let moveCameraForward = false;
+let moveCameraBackward = false;
+let moveCameraLeft = false;
+let moveCameraRight = false;
+var arrow;
+var arrowDirection = new THREE.Vector3(1, 0, 0); // Direzione della freccia
+var arrowLength = 10; // Lunghezza della freccia
+var arrowColor = 0xff0000; // Colore della freccia
 
 // Keyboard input variables
 var moveForward = false;
@@ -16,33 +29,156 @@ var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 
-// Handle keyboard events
-document.addEventListener('keydown', handleKeyDown);
-document.addEventListener('keyup', handleKeyUp);
+var clickX;
+var clickY;
+var clickZ;
+
+var k,j;
+var ballvx, ballvz;
+// TIMES
+var times = 0;
+
 // Handle key down events
-function handleKeyDown(event) {
-  if (event.key === 'ArrowUp' || event.key === 'w') {
-    moveForward = true;
-  } else if (event.key === 'ArrowDown' || event.key === 's') {
-    moveBackward = true;
-  } else if (event.key === 'ArrowLeft' || event.key === 'a') {
-    moveLeft = true;
-  } else if (event.key === 'ArrowRight' || event.key === 'd') {
-    moveRight = true;
+document.addEventListener('keydown', function(event) {
+  switch (event.code) {
+    case 'ArrowUp':
+      moveCameraForward = true;
+      break;
+    case 'ArrowDown':
+      moveCameraBackward = true;
+      break;
+    case 'ArrowLeft':
+      moveCameraLeft = true;
+      break;
+    case 'ArrowRight':
+      moveCameraRight = true;
+      break;
+    case 'KeyQ':
+      clickX = 0;
+      clickZ = 0;
+      scene.remove(line);
+      isRobotMoving = false;
+      isRobotMoving2 = true;
+      break;
+    case 'KeyE':
+      clickX = 0;
+      clickZ = 0;
+      scene.remove(line);
+      isRobotMoving = true;
+      isRobotMoving2 = false;
+      break;
   }
+
+  // Handle key up events
+  document.addEventListener('keyup', function(event) {
+    switch (event.code) {
+      case 'ArrowUp':
+        moveCameraForward = false;
+        break;
+      case 'ArrowDown':
+        moveCameraBackward = false;
+        break;
+      case 'ArrowLeft':
+        moveCameraLeft = false;
+        break;
+      case 'ArrowRight':
+        moveCameraRight = false;
+        break;
+    }
+  });
+});
+
+
+// Handle mouse events
+var mouseDown = false;
+var endMouseX = 0;
+var endMouseY = 0;
+var line;
+
+var moveFrom;
+var moveTo;
+var velocity;
+
+document.addEventListener('mousedown', handleMouseDown);
+document.addEventListener('mousemove', handleMouseMove);
+document.addEventListener('mouseup', handleMouseUp);
+
+function handleMouseDown(event) {
+  mouseDown = true;
+
+  scene.remove(line);
+
+  endMouseX = event.clientX;
+  endMouseY = event.clientY;
 }
 
-// Handle key up events
-function handleKeyUp(event) {
-  if (event.key === 'ArrowUp' || event.key === 'w') {
-    moveForward = false;
-  } else if (event.key === 'ArrowDown' || event.key === 's') {
-    moveBackward = false;
-  } else if (event.key === 'ArrowLeft' || event.key === 'a') {
-    moveLeft = false;
-  } else if (event.key === 'ArrowRight' || event.key === 'd') {
-    moveRight = false;
+function handleMouseMove(event) {
+}
+
+function handleMouseUp(event) {
+  mouseDown = false;
+  console.log("Not normalized: "+endMouseX+" "+endMouseY);
+
+  // Convert the viewport coordinates to normalized device coordinates (NDC)
+  const normalizedX = (endMouseX / window.innerWidth) * 2 - 1;
+  const normalizedY = -(endMouseY / window.innerHeight) * 2 + 1;
+
+  // Create a vector with the normalized device coordinates
+  const vector = new THREE.Vector3(normalizedX, normalizedY, 0);
+
+  // Use the unproject method to convert the vector from NDC to world space
+  vector.unproject(camera);
+
+  // Retrieve the camera's position and direction
+  const cameraPosition = camera.position;
+  const cameraDirection = vector.sub(cameraPosition).normalize();
+
+  // Calculate the distance along the camera direction to find the 3D position
+  const distance = -cameraPosition.y / cameraDirection.y;
+  const clickPosition = cameraPosition.clone().add(cameraDirection.multiplyScalar(distance));
+
+  // Use the clickPosition vector to access the x, y, and z coordinates
+  clickX = clickPosition.x;
+  clickY = clickPosition.y;
+  clickZ = clickPosition.z;
+  console.log("Normalized: "+clickX+" "+clickY+" "+clickZ);
+
+  if(isRobotMoving){
+    createArrow(robot_1, clickX, clickZ);
+
+    scene.add(line);
+
+    moveFrom = new THREE.Vector3(robot_1.position.x, robot_1.position.y, robot_1.position.z);
+    moveTo = new THREE.Vector3(clickX, robot_1.position.y, clickZ);
+    velocity = 0.1;
   }
+
+  if(isRobotMoving2){
+    createArrow(robot_2, clickX, clickZ);
+
+    scene.add(line);
+
+    moveFrom = new THREE.Vector3(robot_2.position.x, robot_2.position.y, robot_2.position.z);
+    moveTo = new THREE.Vector3(clickX, robot_2.position.y, clickZ);
+    velocity = 0.1;
+  }
+
+}
+
+function createArrow(object, endPointX, endPointZ) {
+  // Create the start and end points for the line
+  const startPoint = new THREE.Vector3(object.position.x, object.position.y, object.position.z);
+  const endPoint = new THREE.Vector3(endPointX, object.position.y, endPointZ);
+
+  // Create a buffer geometry for the line
+  const lineGeometry = new THREE.BufferGeometry().setFromPoints([startPoint, endPoint]);
+
+  // Create a material for the line
+  const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+  // Create the line using the geometry and material
+  line = new THREE.Line(lineGeometry, lineMaterial);
+
 }
 
 
@@ -183,9 +319,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 
 
-camera.position.x = 15;
-camera.position.y = 15;
-camera.position.z = 15;
+camera.position.set(0, 15, 10);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; // Add smooth damping effect
@@ -196,12 +330,21 @@ controls.rotateSpeed = 0.5; // Adjust the rotation speed
 const loader = new GLTFLoader();
 var robot_1;
 var robot_2;
+var robot_3;
+var robot_4;
+var robot_5;
+var robot_6;
 var football_pitch;
 var ball;
+
 
 //Bounding boxes
 var box_robot1;
 var box_robot2;
+var box_robot3;
+var box_robot4;
+var box_robot5;
+var box_robot6;
 var box_ball;
 
 var bottomEdgeBox;
@@ -209,40 +352,48 @@ var topEdgeBox;
 var leftEdgeBox;
 var rightEdgeBox;
 
+//Accelleration parameters
+var accellerationx;
+var accellerationz;
+var accellerationballx;
+var accellerationballz;
+
 //Mesh components robot_1
-var torso_1;
+var neck_1;
 var head_1;
-var footL_1;
-var footR_1;
-var shoulderL_1;
-var armL_1;
-var handL_1;
-var shoulderR_1;
-var armR_1;
-var handR_1;
-var legL_1;
-var lowerLegL_1;
-var legR_1;
-var lowerLegR_1;
+var left_shoulder_1;
+var left_arm_1;
+var left_fore_arm_1;
+var left_hand_1;
+var right_shoulder_1;
+var right_arm_1;
+var right_fore_arm_1;
+var right_hand_1;
+var left_up_leg_1;
+var left_leg_1;
+var left_foot_1;
+var right_up_leg_1;
+var right_leg_1;
+var right_foot_1;
 
 //Mesh components robot_2
-var torso_2;
-var head_2;
-var footL_2;
-var footR_2;
-var shoulderL_2;
-var armL_2;
-var handL_2;
-var shoulderR_2;
-var armR_2;
-var handR_2;
-var legL_2;
-var lowerLegL_2;
-var legR_2;
-var lowerLegR_2;
 
 
-loader.load('robot/RobotExpressive.glb', function (gltf) {
+//Mesh components robot_3
+
+
+//Mesh components robot_4
+
+
+//Mesh components robot_5
+
+
+//Mesh components robot_6
+
+
+
+//sinistra in basso
+loader.load('models/blueBot/blueBot.gltf', function (gltf) {
   robot_1 = gltf.scene;
   scene.add(robot_1);
 
@@ -253,24 +404,32 @@ loader.load('robot/RobotExpressive.glb', function (gltf) {
     }
   });
 
-  robot_1.position.x = -9;
+  robot_1.position.x = -5;
+  robot_1.position.z = 3;
   robot_1.rotation.y = 90 * (Math.PI / 180.0);
-  robot_1.scale.set(0.5, 0.5, 0.5);
+  robot_1.scale.set(1.7, 1.7, 1.7);
 
-  torso_1 = robot_1.getObjectByName("Torso");
-  head_1 = robot_1.getObjectByName("Head");
-  footL_1 = robot_1.getObjectByName("Foot.L");
-  footR_1 = robot_1.getObjectByName("Foot.R");
-  shoulderL_1 = robot_1.getObjectByName("Shoulder.L");
-  armL_1 = robot_1.getObjectByName("UpperArm.L");
-  handL_1 = robot_1.getObjectByName("Hand.L");
-  shoulderR_1 = robot_1.getObjectByName("Shoulder.R");
-  armR_1 = robot_1.getObjectByName("Arm.R");
-  handR_1 = robot_1.getObjectByName("Hand.R");
-  legL_1 = robot_1.getObjectByName("Leg.L");
-  lowerLegL_1 = robot_1.getObjectByName("LowerLeg.L");
-  legR_1 = robot_1.getObjectByName("Leg.R");
-  lowerLegR_1 = robot_1.getObjectByName("LowerLeg.R");
+  neck_1 = robot_1.getObjectByName('mixamorigNeck');
+  head_1 = robot_1.getObjectByName('mixamorigHead');
+  // LEFT ARM
+  left_shoulder_1 = robot_1.getObjectByName('mixamorigLeftShoulder');
+  left_arm_1 = robot_1.getObjectByName('mixamorigLeftArm');
+  left_fore_arm_1 = robot_1.getObjectByName('mixamorigLeftForeArm');
+  left_hand_1 = robot_1.getObjectByName('mixamorigLeftHand');
+  // RIGHT ARM
+  right_shoulder_1 = robot_1.getObjectByName('mixamorigRightShoulder');
+  right_arm_1 = robot_1.getObjectByName('mixamorigRightArm');
+  right_fore_arm_1 = robot_1.getObjectByName('mixamorigRightForeArm');
+  right_hand_1 = robot_1.getObjectByName('mixamorigRightHand');
+  // LEFT LEG
+  left_up_leg_1 = robot_1.getObjectByName('mixamorigLeftUpLeg');
+  left_leg_1 = robot_1.getObjectByName('mixamorigLeftLeg');
+  left_foot_1 = robot_1.getObjectByName('mixamorigLeftFoot');
+  // RIGHT LEG
+  right_up_leg_1 = robot_1.getObjectByName('mixamorigRightUpLeg');
+  right_leg_1 = robot_1.getObjectByName('mixamorigRightLeg');
+  right_foot_1 = robot_1.getObjectByName('mixamorigRightFoot');
+
 
   //Setup a bounding box around robot_1
   box_robot1 = new THREE.Box3().setFromObject(robot_1);
@@ -281,7 +440,8 @@ loader.load('robot/RobotExpressive.glb', function (gltf) {
   console.error(error);
 });
 
-loader.load('robot/RobotExpressive.glb', function (gltf1) {
+//sinistra in alto
+loader.load('models/blueBot/blueBot.gltf', function (gltf1) {
   robot_2 = gltf1.scene;
   scene.add(robot_2);
 
@@ -292,24 +452,10 @@ loader.load('robot/RobotExpressive.glb', function (gltf1) {
     }
   });
 
-  robot_2.position.x = 9;
-  robot_2.rotation.y = -90 * (Math.PI / 180.0);
-  robot_2.scale.set(0.5, 0.5, 0.5);
-
-  torso_2 = robot_2.getObjectByName("Torso");
-  head_2 = robot_2.getObjectByName("Head");
-  footL_2 = robot_2.getObjectByName("Foot.L");
-  footR_2 = robot_2.getObjectByName("Foot.R");
-  shoulderL_2 = robot_2.getObjectByName("Shoulder.L");
-  armL_2 = robot_2.getObjectByName("Arm.L");
-  handL_2 = robot_2.getObjectByName("Hand.L");
-  shoulderR_2 = robot_2.getObjectByName("Shoulder.R");
-  armR_2 = robot_2.getObjectByName("Arm.R");
-  handR_2 = robot_2.getObjectByName("Hand.R");
-  legL_2 = robot_2.getObjectByName("Leg.L");
-  lowerLegL_2 = robot_2.getObjectByName("LowerLeg.L");
-  legR_2 = robot_2.getObjectByName("Leg.R");
-  lowerLegR_2 = robot_2.getObjectByName("LowerLeg.R");
+  robot_2.position.x = -5;
+  robot_2.position.z = -3;
+  robot_2.rotation.y = 90 * (Math.PI / 180.0);
+  robot_2.scale.set(1.7, 1.7, 1.7);
 
   //Setup a bounding box around robot_2
   box_robot2 = new THREE.Box3().setFromObject(robot_2);
@@ -320,8 +466,111 @@ loader.load('robot/RobotExpressive.glb', function (gltf1) {
   console.error(error);
 });
 
-loader.load('football_pitch/scene.gltf', function (gltf2) {
-  football_pitch = gltf2.scene;
+//destra in alto
+loader.load('models/redBot/redBot.gltf', function (gltf2) {
+  robot_3 = gltf2.scene;
+  scene.add(robot_3);
+
+  robot_3.traverse(function (child) {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+
+  robot_3.position.x = 5;
+  robot_3.position.z = -3;
+  robot_3.rotation.y = -90 * (Math.PI / 180.0);
+  robot_3.scale.set(1.7, 1.7, 1.7);
+
+  //Setup a bounding box around robot_3
+  box_robot3 = new THREE.Box3().setFromObject(robot_3);
+  const size_robot3 = box_robot3.getSize(new THREE.Vector3()).length();
+  const center_robot3 = box_robot3.getCenter(new THREE.Vector3());
+
+}, undefined, function (error) {
+  console.error(error);
+});
+
+//destra in basso
+loader.load('models/redBot/redBot.gltf', function (gltf3) {
+  robot_4 = gltf3.scene;
+  scene.add(robot_4);
+
+  robot_4.traverse(function (child) {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+
+  robot_4.position.x = 5;
+  robot_4.position.z = 3;
+  robot_4.rotation.y = -90 * (Math.PI / 180.0);
+  robot_4.scale.set(1.7, 1.7, 1.7);
+
+  //Setup a bounding box around robot_4
+  box_robot4 = new THREE.Box3().setFromObject(robot_4);
+  const size_robot4 = box_robot4.getSize(new THREE.Vector3()).length();
+  const center_robot4 = box_robot4.getCenter(new THREE.Vector3());
+
+}, undefined, function (error) {
+  console.error(error);
+});
+
+//sinistra al centro
+loader.load('models/blueBot/blueBot.gltf', function (gltf4) {
+  robot_5 = gltf4.scene;
+  scene.add(robot_5);
+
+  robot_5.traverse(function (child) {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+
+  robot_5.position.x = -9;
+  robot_5.rotation.y = 90 * (Math.PI / 180.0);
+  robot_5.scale.set(1.7, 1.7, 1.7);
+
+  //Setup a bounding box around robot_5
+  box_robot5 = new THREE.Box3().setFromObject(robot_5);
+  const size_robot5 = box_robot5.getSize(new THREE.Vector3()).length();
+  const center_robot5 = box_robot5.getCenter(new THREE.Vector3());
+
+}, undefined, function (error) {
+  console.error(error);
+});
+
+//destra al centro
+loader.load('models/redBot/redBot.gltf', function (gltf5) {
+  robot_6 = gltf5.scene;
+  scene.add(robot_6);
+
+  robot_6.traverse(function (child) {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+
+  robot_6.position.x = 9;
+  robot_6.rotation.y = -90 * (Math.PI / 180.0);
+  robot_6.scale.set(1.7, 1.7, 1.7);
+
+  //Setup a bounding box around robot_6
+  box_robot6 = new THREE.Box3().setFromObject(robot_6);
+  const size_robot6 = box_robot6.getSize(new THREE.Vector3()).length();
+  const center_robot6 = box_robot6.getCenter(new THREE.Vector3());
+
+}, undefined, function (error) {
+  console.error(error);
+});
+
+
+loader.load('models/football_pitch/scene.gltf', function (gltf6) {
+  football_pitch = gltf6.scene;
   scene.add(football_pitch);
 
   football_pitch.traverse(function (child) {
@@ -369,8 +618,8 @@ loader.load('football_pitch/scene.gltf', function (gltf2) {
   console.error(error);
 });
 
-loader.load('football_ball/scene.gltf', function (gltf3) {
-  ball = gltf3.scene;
+loader.load('models/football_ball/scene.gltf', function (gltf7) {
+  ball = gltf7.scene;
   scene.add(ball);
 
   ball.traverse(function (child) {
@@ -395,10 +644,10 @@ loader.load('football_ball/scene.gltf', function (gltf3) {
 });
 
 
-
-
 var isMoving = false;
-var isCapyMoving = true;
+var isRobotMoving = true;
+var isRobotMoving2 = false;
+var done = false;
 var increment = 0.05;
 var goal = false;
 
@@ -407,21 +656,39 @@ var goal = false;
 function animate() {
   requestAnimationFrame(animate);
 
+  // Moving the camera
+  if (moveCameraForward) {
+    camera.position.z -= 0.5;
+  }
+  if (moveCameraForward) {
+    camera.position.z += 0.5;
+  }
+  if (moveCameraLeft) {
+    camera.position.x -= 0.5;
+  }
+  if (moveCameraRight) {
+    camera.position.x += 0.5;
+  }
 
-  //checkPitchCollisions(box_robot1);
-  checkPitchCollisions(box_ball);
+  // Update controls
+  controls.enabled = false;
 
-  if(isCapyMoving){
-    robot_2.position.z += increment;
-    box_robot2.setFromObject(robot_2);
+  controls.update();
+
+
+  if(isRobotMoving2){
+    moveRobot(robot_2, box_robot2);
+  }
+
+  if(isRobotMoving){
+    moveRobot(robot_1, box_robot1);
   }
 
 
-
-  // Check if the variable has reached the minimum or maximum value
+  /*// Check if the variable has reached the minimum or maximum value
   if (robot_2.position.z >= 3 || robot_2.position.z <= -3) {
     increment *= -1; // Invert the increment direction
-  }
+  }*/
 
   // Move the cube based on keyboard input
   if (moveForward) robot_1.position.z -= 0.1;
@@ -431,8 +698,16 @@ function animate() {
 
 
   if(isMoving){
-    ball.position.x += 0.1;
-    ball.rotation.z -= 0.2;
+    if(times < 5){
+
+      ball.position.x += ballvx*0.5;
+      ball.position.z += ballvz*0.5;
+      times += 1;
+    }
+    else{
+
+      isMoving = false;
+    }
     box_ball.setFromObject(ball);
   }
 
@@ -442,50 +717,188 @@ function animate() {
   // Check for collisions
   if (box_robot1.intersectsBox(box_ball)) {
     // Collision detected, stop or modify the object's movement
+    console.log("Collisione in z: "+robot_1.position.z+"Collisione in X"+robot_1.position.x);
+    ballvx = clickX - robot_1.position.x;
+    ballvz = clickZ - robot_1.position.z;
+    console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvz);
     isMoving = true;
+    times = 0;
   }
 
   if (box_ball.intersectsBox(box_robot2)) {
     // Collision detected, stop or modify the object's movement
     isMoving = false;
-    isCapyMoving = false;
-    //box_ball.setFromObject(ball);
   }
 
-  if(ball.position.x >= 10 && !goal){
-    goal = true;
-    alert("GOAL!");
-    location.reload();
-  }
+  checkGoal();
+  checkBallCollitions();
+  checkRobotCollitions(robot_1);
+  checkRobotCollitions(robot_2);
+
+  TWEEN.update();
 
   renderer.render(scene, camera);
 }
+
 animate();
 
 
+function checkGoal(){
+  if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x >= 10 && !goal){
+    goal = true;
 
-function checkPitchCollisions(box) {
+    location.reload();
+    alert("GOAL! TEAM 1");
+  }
+
+  if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x <= -10 && !goal){
+    goal = true;
+
+    location.reload();
+    alert("GOAL! TEAM 2");
+  }
+}
+
+
+
+function checkBallCollitions(){
+  if(ball.position.z < -5){
+    isMoving = false;
+    ball.position.z += 1;
+    box_ball.setFromObject(ball);
+  }
+  if(ball.position.z > 5){
+    isMoving = false;
+    ball.position.z -= 1;
+    box_ball.setFromObject(ball);
+  }
+  if(ball.position.x < -10){
+    isMoving = false;
+    ball.position.x += 1;
+    box_ball.setFromObject(ball);
+  }
+  if(ball.position.x > 10){
+    isMoving = false;
+    ball.position.x -= 1;
+    box_ball.setFromObject(ball);
+  }
+}
+
+function checkRobotCollitions(object){
+  if(object.position.z < -6.5){
+    stopRobot(object);
+    object.position.z += 1;
+    setBound(object);
+  }
+  if(object.position.z > 6.5){
+    stopRobot(object);
+    object.position.z -= 1;
+    setBound(object);
+  }
+  if(object.position.x < -10){
+    stopRobot(object);
+    object.position.x += 1;
+    setBound(object);
+  }
+  if(object.position.x > 10){
+    stopRobot(object);
+    object.position.x -= 1;
+    setBound(object);
+  }
+}
+
+function stopRobot(object){
+  switch(object){
+    case robot_1:
+      isRobotMoving = false;
+      isRobotMoving = true;
+      break;
+    case robot_1:
+      isRobotMoving2 = false;
+      isRobotMoving2 = true;
+      break;
+  }
+}
+
+function setBound(object){
+  switch(object){
+    case robot_1:
+      box_robot1.setFromObject(robot_1);
+      break;
+    case robot_1:
+      box_robot2.setFromObject(robot_2);
+      break;
+  }
+}
+
+
+function moveRobot(object, box_object){
+  if(clickX != 0 && clickZ != 0){
+    var diff_x = clickX-object.position.x;
+    var diff_y = clickZ-object.position.z;
+
+    //console.log(diff_x+" "+diff_y+" "+clickX+" "+clickZ+" "+object.position.x+" "+object.position.z);
+
+    var j = Math.sqrt((Math.pow(diff_y, 2)) / (Math.pow(diff_x, 2) + Math.pow(diff_y, 2))) * Math.sign(diff_y);
+    var k = (diff_x / diff_y) * j;
+
+
+    if( object.position.x < clickX ){
+      object.position.x += k;
+      if( object.position.x >= clickX ){
+        object.position.x = clickX;
+      }
+    }else if(object.position.x > clickX  ){
+      object.position.x += k;
+      if( object.position.x <= clickX ){
+        object.position.x = clickX;
+      }
+    }
+
+    if(object.position.z > clickZ  ){
+      object.position.z += j;
+      if( object.position.z <= clickZ ){
+        object.position.z = clickZ;
+      }
+    }else if(  object.position.z < clickZ){
+      object.position.z += j;
+      if( object.position.z >= clickZ ){
+        object.position.z = clickZ;
+      }
+    }
+
+    box_object.setFromObject(object);
+  }
+}
+
+
+
+
+
+/*
+function checkPitchCollisions(box_object) {
   // Check collision with the left edge
-  if (box.intersectsBox(leftEdgeBox.box)) {
+  if (box_object.intersectsBox(leftEdgeBox.box)) {
     // Collision with left edge detected
     alert("left collision");
   }
 
   // Check collision with the right edge
-  if (box.intersectsBox(rightEdgeBox.box)) {
+  if (box_object.intersectsBox(rightEdgeBox.box)) {
     // Collision with right edge detected
     alert("right collision");
   }
 
   // Check collision with the top edge
-  if (box.intersectsBox(topEdgeBox.box)) {
+  if (box_object.intersectsBox(topEdgeBox.box)) {
     // Collision with top edge detected
     alert("top collision");
   }
 
   // Check collision with the bottom edge
-  if (box.intersectsBox(bottomEdgeBox.box)) {
+  if (box_object.intersectsBox(bottomEdgeBox.box)) {
     // Collision with bottom edge detected
     alert("bottom collision");
   }
 }
+*/
