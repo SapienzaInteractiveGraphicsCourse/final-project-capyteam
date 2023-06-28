@@ -1019,6 +1019,8 @@ function startGame() {
   var goal_blue = 0;
   var goal_red = 0;
 
+  var n_touch = 0;
+
 
   //Render the Scene; basically, anything you want to move or change
   //while the app is running has to go through the animate loop.
@@ -1143,7 +1145,7 @@ function startGame() {
       clickZ = 0;
       isMoving = true;
       times = 0;
-      nextPlayer()
+      nextPlayer();
     }
 
     if (box_robot3.intersectsBox(box_ball)) {
@@ -1243,6 +1245,7 @@ function startGame() {
   animate();
 
   var next = false;
+
 
   function nextPlayer(){
     scene.remove(line);
