@@ -52,7 +52,8 @@ function startGame() {
   var thisrobot = 0;
 
   var k,j;
-  var ballvx,ballvy;
+  var ballvx = 0;
+  var ballvy = 0;
   // TIMES
   var times = 0;
   var circle;
@@ -324,12 +325,24 @@ function startGame() {
 
   function createCircle(object) {
     const circleGeometry = new THREE.CircleGeometry(0.5, 32);
-    const circleMaterial = new THREE.MeshBasicMaterial({
-      color: 0x000000 ,
-      side: THREE.DoubleSide,
-      wireframe: false,
-      //linewidth: 5
-    });
+    var circleMaterial;
+    if(turn == 1){
+      circleMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00008B ,
+        side: THREE.DoubleSide,
+        wireframe: false,
+        //linewidth: 5
+      });
+    }
+    if(turn == 2){
+      circleMaterial = new THREE.MeshBasicMaterial({
+        color: 0x8B0000 ,
+        side: THREE.DoubleSide,
+        wireframe: false,
+        //linewidth: 5
+      });
+    }
+
     circle = new THREE.Mesh(circleGeometry, circleMaterial);
 
     circle.position.copy(object.position);
@@ -1021,7 +1034,6 @@ function startGame() {
 
   var n_touch = 0;
 
-
   //Render the Scene; basically, anything you want to move or change
   //while the app is running has to go through the animate loop.
   function animate() {
@@ -1058,7 +1070,6 @@ function startGame() {
       createCircle(robot_2);
       moveRobot(robot_2, box_robot2);
       running(robot_2, left_arm_2, right_arm_2, left_fore_arm_2, right_fore_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2, neck_2, head_2);
-
     }
     if(isRobotMoving3){
       scene.remove(circle);
@@ -1103,7 +1114,6 @@ function startGame() {
         times += 1;
       }
       else{
-
         isMoving = false;
       }
       ball.rotation.z += normball2;
@@ -1347,12 +1357,7 @@ function startGame() {
       box_object.setFromObject(object);
 
       if(object.position.x == clickX && object.position.z == clickZ){
-        scene.remove(line);
-        clickX = 0;
-        clickY = 0;
-        clickZ = 0;
-        next = true;
-        nextTurn();
+        nextPlayer();
       }
 
     }
@@ -1494,12 +1499,12 @@ function startGame() {
 
 
   function checkBallCollisions(){
-    if(ball.position.z < -5){
+    if(ball.position.z < -6.5){
       isMoving = false;
       ball.position.z += 1;
       box_ball.setFromObject(ball);
     }
-    if(ball.position.z > 5){
+    if(ball.position.z > 6.5){
       isMoving = false;
       ball.position.z -= 1;
       box_ball.setFromObject(ball);
@@ -1519,26 +1524,30 @@ function startGame() {
 
   function checkRobotCollisions(object){
     if(object.position.z < -6.5){
-      clickX = 0;
-      clickZ = 0;
+      object.position.z += 0.5;
+      clickX = object.position.x;
+      clickZ = object.position.z;
       stopRobot(object);
       setBound(object);
     }
     if(object.position.z > 6.5){
-      clickX = 0;
-      clickZ = 0;
+      object.position.z -= 0.5;
+      clickX = object.position.x;
+      clickZ = object.position.z;
       stopRobot(object);
       setBound(object);
     }
     if(object.position.x < -10){
-      clickX = 0;
-      clickZ = 0;
+      object.position.x += 0.5;
+      clickX = object.position.x;
+      clickZ = object.position.z;
       stopRobot(object);
       setBound(object);
     }
     if(object.position.x > 10){
-      clickX = 0;
-      clickZ = 0;
+      object.position.x -= 0.5;
+      clickX = object.position.x;
+      clickZ = object.position.z;
       stopRobot(object);
       setBound(object);
     }
