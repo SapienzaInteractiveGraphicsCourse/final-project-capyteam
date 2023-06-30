@@ -14,11 +14,59 @@ import * as TWEEN from '@tweenjs/tween.js'
 const menu = document.getElementById('menu');
 const startButton = document.getElementById('startButton');
 const instructionsButton = document.getElementById('instructionsButton');
+const modelsButton = document.getElementById('modelsButton');
 const instructionsContainer = document.getElementById('instructionsContainer');
 
 // Add event listeners to the buttons
 startButton.addEventListener('click', startGame);
 instructionsButton.addEventListener('click', showInstructions);
+modelsButton.addEventListener('click', showModels);
+
+//Function to show the 3D models
+function showModels() {
+  // Hide the menu and start the game
+  menu.style.display = 'none';
+
+  //Setup the scene
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.body.appendChild( renderer.domElement );
+
+
+  //lighting
+
+  var lightProps = {
+      "ambientColor": 0xffffff,
+      "ambientIntensity": 0.1,
+      "lightColor": 0xffffff,
+      "lightIntensity": 0.5,
+      "distance": 100,
+  }
+
+  var ambient = new THREE.AmbientLight(lightProps.ambientColor, lightProps.ambientIntensity)
+  scene.add(ambient)
+
+  //Add 3D models
+  const loader = new GLTFLoader();
+
+  loader.load('models/blueBot/blueBot.gltf', function (gltf) {
+    gltf.scene;
+    scene.add(gltf.scene);
+  }, undefined, function (error) {
+    console.error(error);
+  });
+
+  camera.position.z = 5;
+
+  function animate() {
+	   requestAnimationFrame( animate );
+	    renderer.render( scene, camera );
+  }
+  animate();
+}
 
 // Function to start the game
 function startGame() {
@@ -324,12 +372,24 @@ function startGame() {
 
   function createCircle(object) {
     const circleGeometry = new THREE.CircleGeometry(0.5, 32);
-    const circleMaterial = new THREE.MeshBasicMaterial({
-      color: 0x000000 ,
-      side: THREE.DoubleSide,
-      wireframe: false,
-      //linewidth: 5
-    });
+    var circleMaterial;
+    if(turn == 1){
+      circleMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00008B ,
+        side: THREE.DoubleSide,
+        wireframe: false,
+        //linewidth: 5
+      });
+    }
+    if(turn == 2){
+      circleMaterial = new THREE.MeshBasicMaterial({
+        color: 0x8B0000 ,
+        side: THREE.DoubleSide,
+        wireframe: false,
+        //linewidth: 5
+      });
+    }
+
     circle = new THREE.Mesh(circleGeometry, circleMaterial);
 
     circle.position.copy(object.position);
@@ -746,7 +806,7 @@ function startGame() {
         child.receiveShadow = true;
       }
     });
-   
+
     robot_3.position.x = 5;
     robot_3.position.z = -3;
     robot_3.rotation.y = -90 * (Math.PI / 180.0);
@@ -1056,19 +1116,19 @@ function startGame() {
     if(isRobotMoving2){
       scene.remove(circle);
       createCircle(robot_2);
-      
+
       moveRobot(robot_2, box_robot2);
       running(robot_2, left_arm_2, right_arm_2, left_fore_arm_2, right_fore_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2, neck_2, head_2);
 
     }
     if(isRobotMoving3){
       scene.remove(circle);
-      createCircle(robot_3); 
+      createCircle(robot_3);
       moveRobot(robot_3, box_robot3);
       running(robot_3, left_arm_3, right_arm_3, left_fore_arm_3, right_fore_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3, neck_3, head_3);
-      
-      
-     
+
+
+
     }
     if(isRobotMoving4){
       scene.remove(circle);
@@ -1078,7 +1138,7 @@ function startGame() {
     }
     if(isRobotMoving5){
       scene.remove(circle);
-   
+
       createCircle(robot_5);
       moveRobot(robot_5, box_robot5);
       running(robot_5, left_arm_5, right_arm_5, left_fore_arm_5, right_fore_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5, neck_5, head_5);
@@ -1110,7 +1170,7 @@ function startGame() {
           console.log("CLICK X: "+clickX+" CLICK Z"+clickZ);
           console.log("BALL X: "+ballvx+" BALL Z"+ballvy);
           console.log("NORMBALL X: "+normball+" NORMBALL Z"+normball2);
-        }  
+        }
         ball.position.x += normball;
         ball.position.z += normball2;
         times += 1;
@@ -1164,10 +1224,10 @@ function startGame() {
     if (box_robot3.intersectsBox(box_ball)) {
       // Collision detected, stop or modify the object's movement
       //console.log("Collisione in z: "+robot_3.position.z+"Collisione in X"+robot_3.position.x);
-      
+
         ballvx = clickX - robot_3.position.x;
         ballvy = clickZ - robot_3.position.z;
-       
+
       //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
       /*clickX = 0;
       clickY = 0;
@@ -1229,7 +1289,7 @@ function startGame() {
         alert("TEAM BLUE WINS");
         location.reload();
       }else{
-       // reset();
+        reset();
       }
     }
 
@@ -1241,7 +1301,7 @@ function startGame() {
         alert("TEAM RED WINS");
         location.reload();
       }else{
-       // reset();
+        reset();
       }
     }
 
@@ -1264,9 +1324,9 @@ function startGame() {
 
   function nextPlayer(){
     scene.remove(line);
-    /*clickX = 0;
+    clickX = 0;
     clickY = 0;
-    clickZ = 0;*/
+    clickZ = 0;
     next = true;
     nextTurn();
   }
@@ -1509,12 +1569,12 @@ function startGame() {
 
 
   function checkBallCollisions(){
-    if(ball.position.z < -5){
+    if(ball.position.z < -6.5){
       isMoving = false;
       ball.position.z += 1;
       box_ball.setFromObject(ball);
     }
-    if(ball.position.z > 5){
+    if(ball.position.z > 6.5){
       isMoving = false;
       ball.position.z -= 1;
       box_ball.setFromObject(ball);
@@ -1531,7 +1591,7 @@ function startGame() {
     }
   }
 
-
+/*
   function checkRobotCollisions(object){
     if(object.position.z < -6.5){
       clickX = 0;
@@ -1558,7 +1618,37 @@ function startGame() {
       setBound(object);
     }
   }
-
+*/
+function checkRobotCollisions(object){
+  if(object.position.z < -6.5){
+    object.position.z += 0.5;
+    clickX = object.position.x;
+    clickZ = object.position.z;
+    stopRobot(object);
+    setBound(object);
+  }
+  if(object.position.z > 6.5){
+    object.position.z -= 0.5;
+    clickX = object.position.x;
+    clickZ = object.position.z;
+    stopRobot(object);
+    setBound(object);
+  }
+  if(object.position.x < -10){
+    object.position.x += 0.5;
+    clickX = object.position.x;
+    clickZ = object.position.z;
+    stopRobot(object);
+    setBound(object);
+  }
+  if(object.position.x > 10){
+    object.position.x -= 0.5;
+    clickX = object.position.x;
+    clickZ = object.position.z;
+    stopRobot(object);
+    setBound(object);
+  }
+}
 
   function stopRobot(object){
     switch(object){

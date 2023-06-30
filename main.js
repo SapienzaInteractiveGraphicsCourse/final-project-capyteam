@@ -14,11 +14,59 @@ import * as TWEEN from '@tweenjs/tween.js'
 const menu = document.getElementById('menu');
 const startButton = document.getElementById('startButton');
 const instructionsButton = document.getElementById('instructionsButton');
+const modelsButton = document.getElementById('modelsButton');
 const instructionsContainer = document.getElementById('instructionsContainer');
 
 // Add event listeners to the buttons
 startButton.addEventListener('click', startGame);
 instructionsButton.addEventListener('click', showInstructions);
+modelsButton.addEventListener('click', showModels);
+
+//Function to show the 3D models
+function showModels() {
+  // Hide the menu and start the game
+  menu.style.display = 'none';
+
+  //Setup the scene
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.body.appendChild( renderer.domElement );
+
+
+  //lighting
+
+  var lightProps = {
+      "ambientColor": 0xffffff,
+      "ambientIntensity": 0.1,
+      "lightColor": 0xffffff,
+      "lightIntensity": 0.5,
+      "distance": 100,
+  }
+
+  var ambient = new THREE.AmbientLight(lightProps.ambientColor, lightProps.ambientIntensity)
+  scene.add(ambient)
+
+  //Add 3D models
+  const loader = new GLTFLoader();
+
+  loader.load('models/blueBot/blueBot.gltf', function (gltf) {
+    gltf.scene;
+    scene.add(gltf.scene);
+  }, undefined, function (error) {
+    console.error(error);
+  });
+
+  camera.position.z = 5;
+
+  function animate() {
+	   requestAnimationFrame( animate );
+	    renderer.render( scene, camera );
+  }
+  animate();
+}
 
 // Function to start the game
 function startGame() {
@@ -52,8 +100,7 @@ function startGame() {
   var thisrobot = 0;
 
   var k,j;
-  var ballvx = 0;
-  var ballvy = 0;
+  var ballvx,ballvy;
   // TIMES
   var times = 0;
   var circle;
@@ -211,7 +258,7 @@ function startGame() {
 
   function handleMouseUp(event) {
     mouseDown = false;
-    console.log("Not normalized: "+endMouseX+" "+endMouseY);
+   // console.log("Not normalized: "+endMouseX+" "+endMouseY);
 
     // Convert the viewport coordinates to normalized device coordinates (NDC)
     const normalizedX = (endMouseX / window.innerWidth) * 2 - 1;
@@ -235,7 +282,7 @@ function startGame() {
     clickX = clickPosition.x;
     clickY = clickPosition.y;
     clickZ = clickPosition.z;
-    console.log("Normalized: "+clickX+" "+clickY+" "+clickZ);
+    //console.log("Normalized: "+clickX+" "+clickY+" "+clickZ);
 
     if(isRobotMoving){
       scene.remove(circle);
@@ -1034,6 +1081,7 @@ function startGame() {
 
   var n_touch = 0;
 
+
   //Render the Scene; basically, anything you want to move or change
   //while the app is running has to go through the animate loop.
   function animate() {
@@ -1068,31 +1116,37 @@ function startGame() {
     if(isRobotMoving2){
       scene.remove(circle);
       createCircle(robot_2);
+
       moveRobot(robot_2, box_robot2);
       running(robot_2, left_arm_2, right_arm_2, left_fore_arm_2, right_fore_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2, neck_2, head_2);
+
     }
     if(isRobotMoving3){
       scene.remove(circle);
       createCircle(robot_3);
-      moveRobot(robot_3, box_robot2);
+      moveRobot(robot_3, box_robot3);
       running(robot_3, left_arm_3, right_arm_3, left_fore_arm_3, right_fore_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3, neck_3, head_3);
+
+
+
     }
     if(isRobotMoving4){
       scene.remove(circle);
       createCircle(robot_4);
-      moveRobot(robot_4, box_robot2);
+      moveRobot(robot_4, box_robot4);
       running(robot_4, left_arm_4, right_arm_4, left_fore_arm_4, right_fore_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4, neck_4, head_4);
     }
     if(isRobotMoving5){
       scene.remove(circle);
+
       createCircle(robot_5);
-      moveRobot(robot_5, box_robot2);
+      moveRobot(robot_5, box_robot5);
       running(robot_5, left_arm_5, right_arm_5, left_fore_arm_5, right_fore_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5, neck_5, head_5);
     }
     if(isRobotMoving6){
       scene.remove(circle);
       createCircle(robot_6);
-      moveRobot(robot_6, box_robot2);
+      moveRobot(robot_6, box_robot6);
       running(robot_6, left_arm_6, right_arm_6, left_fore_arm_6, right_fore_arm_6, left_up_leg_6, left_leg_6, right_up_leg_6, right_leg_6, neck_6, head_6);
     }
 
@@ -1107,13 +1161,22 @@ function startGame() {
     if(isMoving){
 
       if(times < 8){
-        normball = (ballvx - 0.1) * (0.5 - 0.1) / (10 - 0.1) + 0.1;
-        normball2 = (ballvy - 0.1) * (0.5 - 0.1) / (10 - 0.1) + 0.1;
+        normball =  Math.sign(ballvx)*(Math.sqrt(ballvx*ballvx - 0.1*0.1) * (0.4) / 9);
+        normball2 = Math.sign(ballvy)*Math.sqrt(ballvy*ballvy - 0.1*0.1) * (0.4) / 9;
+        if (times == 0){
+          var positionx= clickX-ballvx;
+          var positiony= clickZ-ballvy;
+          console.log("Position X: "+positionx+" Position Y"+positiony);
+          console.log("CLICK X: "+clickX+" CLICK Z"+clickZ);
+          console.log("BALL X: "+ballvx+" BALL Z"+ballvy);
+          console.log("NORMBALL X: "+normball+" NORMBALL Z"+normball2);
+        }
         ball.position.x += normball;
         ball.position.z += normball2;
         times += 1;
       }
       else{
+
         isMoving = false;
       }
       ball.rotation.z += normball2;
@@ -1132,13 +1195,13 @@ function startGame() {
     // Check for collisions
     if (box_robot1.intersectsBox(box_ball)) {
       // Collision detected, stop or modify the object's movement
-      console.log("Collisione in z: "+robot_1.position.z+"Collisione in X"+robot_1.position.x);
+      //console.log("Collisione in z: "+robot_1.position.z+"Collisione in X"+robot_1.position.x);
       ballvx = clickX - robot_1.position.x;
       ballvy = clickZ - robot_1.position.z;
-      console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-      clickX = 0;
+     // console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
+      /*clickX = 0;
       clickY = 0;
-      clickZ = 0;
+      clickZ = 0;*/
       isMoving = true;
       times = 0;
       nextPlayer();
@@ -1146,13 +1209,13 @@ function startGame() {
 
     if (box_robot2.intersectsBox(box_ball)) {
       // Collision detected, stop or modify the object's movement
-      console.log("Collisione in z: "+robot_2.position.z+"Collisione in X"+robot_2.position.x);
+    //  console.log("Collisione in z: "+robot_2.position.z+"Collisione in X"+robot_2.position.x);
       ballvx = clickX - robot_2.position.x;
       ballvy = clickZ - robot_2.position.z;
-      console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-      clickX = 0;
+     // console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
+      /*clickX = 0;
       clickY = 0;
-      clickZ = 0;
+      clickZ = 0;*/
       isMoving = true;
       times = 0;
       nextPlayer();
@@ -1160,13 +1223,15 @@ function startGame() {
 
     if (box_robot3.intersectsBox(box_ball)) {
       // Collision detected, stop or modify the object's movement
-      console.log("Collisione in z: "+robot_3.position.z+"Collisione in X"+robot_3.position.x);
-      ballvx = -(clickX - robot_3.position.x);
-      ballvy = clickZ - robot_3.position.z;
-      console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-      clickX = 0;
+      //console.log("Collisione in z: "+robot_3.position.z+"Collisione in X"+robot_3.position.x);
+
+        ballvx = clickX - robot_3.position.x;
+        ballvy = clickZ - robot_3.position.z;
+
+      //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
+      /*clickX = 0;
       clickY = 0;
-      clickZ = 0;
+      clickZ = 0;*/
       isMoving = true;
       times = 0;
       nextPlayer();
@@ -1174,13 +1239,13 @@ function startGame() {
 
     if (box_robot4.intersectsBox(box_ball)) {
       // Collision detected, stop or modify the object's movement
-      console.log("Collisione in z: "+robot_4.position.z+"Collisione in X"+robot_4.position.x);
-      ballvx = -(clickX - robot_4.position.x);
+      //console.log("Collisione in z: "+robot_4.position.z+"Collisione in X"+robot_4.position.x);
+      ballvx = clickX - robot_4.position.x;
       ballvy = clickZ - robot_4.position.z;
-      console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-      clickX = 0;
+      //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
+      /*clickX = 0;
       clickY = 0;
-      clickZ = 0;
+      clickZ = 0;*/
       isMoving = true;
       times = 0;
       nextPlayer();
@@ -1188,13 +1253,13 @@ function startGame() {
 
     if (box_robot5.intersectsBox(box_ball)) {
       // Collision detected, stop or modify the object's movement
-      console.log("Collisione in z: "+robot_5.position.z+"Collisione in X"+robot_5.position.x);
+      //console.log("Collisione in z: "+robot_5.position.z+"Collisione in X"+robot_5.position.x);
       ballvx = clickX - robot_5.position.x;
       ballvy = clickZ - robot_5.position.z;
-      console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-      clickX = 0;
+      //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
+      /*clickX = 0;
       clickY = 0;
-      clickZ = 0;
+      clickZ = 0;*/
       isMoving = true;
       times = 0;
       nextPlayer();
@@ -1202,13 +1267,13 @@ function startGame() {
 
     if (box_robot6.intersectsBox(box_ball)) {
       // Collision detected, stop or modify the object's movement
-      console.log("Collisione in z: "+robot_6.position.z+"Collisione in X"+robot_6.position.x);
-      ballvx = -(clickX - robot_6.position.x);
+      //console.log("Collisione in z: "+robot_6.position.z+"Collisione in X"+robot_6.position.x);
+      ballvx = clickX - robot_6.position.x;
       ballvy = clickZ - robot_6.position.z;
-      console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-      clickX = 0;
+      //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
+      /*clickX = 0;
       clickY = 0;
-      clickZ = 0;
+      clickZ = 0;*/
       isMoving = true;
       times = 0;
       nextPlayer();
@@ -1268,7 +1333,7 @@ function startGame() {
 
   function nextTurn(){
     if(next){
-      console.log(thisrobot);
+      //console.log(thisrobot);
       if(thisrobot == 0 || thisrobot == 1 || thisrobot == 4){ //blue team
         turn = 2;
         thisrobot = 2;
@@ -1357,7 +1422,12 @@ function startGame() {
       box_object.setFromObject(object);
 
       if(object.position.x == clickX && object.position.z == clickZ){
-        nextPlayer();
+        scene.remove(line);
+        clickX = 0;
+        clickY = 0;
+        clickZ = 0;
+        next = true;
+        nextTurn();
       }
 
     }
@@ -1521,38 +1591,64 @@ function startGame() {
     }
   }
 
-
+/*
   function checkRobotCollisions(object){
     if(object.position.z < -6.5){
-      object.position.z += 0.5;
-      clickX = object.position.x;
-      clickZ = object.position.z;
+      clickX = 0;
+      clickZ = 0;
       stopRobot(object);
       setBound(object);
     }
     if(object.position.z > 6.5){
-      object.position.z -= 0.5;
-      clickX = object.position.x;
-      clickZ = object.position.z;
+      clickX = 0;
+      clickZ = 0;
       stopRobot(object);
       setBound(object);
     }
     if(object.position.x < -10){
-      object.position.x += 0.5;
-      clickX = object.position.x;
-      clickZ = object.position.z;
+      clickX = 0;
+      clickZ = 0;
       stopRobot(object);
       setBound(object);
     }
     if(object.position.x > 10){
-      object.position.x -= 0.5;
-      clickX = object.position.x;
-      clickZ = object.position.z;
+      clickX = 0;
+      clickZ = 0;
       stopRobot(object);
       setBound(object);
     }
   }
-
+*/
+function checkRobotCollisions(object){
+  if(object.position.z < -6.5){
+    object.position.z += 0.5;
+    clickX = object.position.x;
+    clickZ = object.position.z;
+    stopRobot(object);
+    setBound(object);
+  }
+  if(object.position.z > 6.5){
+    object.position.z -= 0.5;
+    clickX = object.position.x;
+    clickZ = object.position.z;
+    stopRobot(object);
+    setBound(object);
+  }
+  if(object.position.x < -10){
+    object.position.x += 0.5;
+    clickX = object.position.x;
+    clickZ = object.position.z;
+    stopRobot(object);
+    setBound(object);
+  }
+  if(object.position.x > 10){
+    object.position.x -= 0.5;
+    clickX = object.position.x;
+    clickZ = object.position.z;
+    stopRobot(object);
+    setBound(object);
+  }
+}
 
   function stopRobot(object){
     switch(object){
