@@ -1161,7 +1161,7 @@ function startGame() {
     if (box_robot3.intersectsBox(box_ball)) {
       // Collision detected, stop or modify the object's movement
       console.log("Collisione in z: "+robot_3.position.z+"Collisione in X"+robot_3.position.x);
-      ballvx = clickX - robot_3.position.x;
+      ballvx = -(clickX - robot_3.position.x);
       ballvy = clickZ - robot_3.position.z;
       console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
       clickX = 0;
@@ -1175,7 +1175,7 @@ function startGame() {
     if (box_robot4.intersectsBox(box_ball)) {
       // Collision detected, stop or modify the object's movement
       console.log("Collisione in z: "+robot_4.position.z+"Collisione in X"+robot_4.position.x);
-      ballvx = clickX - robot_4.position.x;
+      ballvx = -(clickX - robot_4.position.x);
       ballvy = clickZ - robot_4.position.z;
       console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
       clickX = 0;
@@ -1203,7 +1203,7 @@ function startGame() {
     if (box_robot6.intersectsBox(box_ball)) {
       // Collision detected, stop or modify the object's movement
       console.log("Collisione in z: "+robot_6.position.z+"Collisione in X"+robot_6.position.x);
-      ballvx = clickX - robot_6.position.x;
+      ballvx = -(clickX - robot_6.position.x);
       ballvy = clickZ - robot_6.position.z;
       console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
       clickX = 0;
