@@ -1131,7 +1131,8 @@ function startGame() {
       createCircle(robot_1);
       moveRobot(robot_1, box_robot1);
       //running(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1);
-      running(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1);
+      //running(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1);
+      esultanza(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1,spine_1, spine1_1, spine2_1);
 
     }
     if(isRobotMoving2){
@@ -1458,6 +1459,8 @@ function startGame() {
 
   var downarms=true;
   var downlegs=true;
+  var spinelegs=true;
+
   function running(object, left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head){
     var diff_x = clickX-object.position.x;
     var diff_y = clickZ-object.position.z;
@@ -1530,6 +1533,104 @@ function startGame() {
     }
     neck.rotation.x =Math.PI * 0.35;
     head.rotation.x =Math.PI * -0.25;
+    
+  }
+
+  function esultanza(object, left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head, spine_1, spine1, spine2){
+    var diff_x = clickX-object.position.x;
+    var diff_y = clickZ-object.position.z;
+    var angoloRadianti = Math.atan2(diff_x,diff_y);
+    object.rotation.y = angoloRadianti;
+    
+   
+    // ARM RUNNING
+    right_fore_arm.rotation.z = Math.PI*0.15;
+    left_fore_arm.rotation.z = -Math.PI*0.15;
+    left_arm.rotation.x = Math.PI;
+    right_arm.rotation.x =-Math.PI;
+    //left_arm.rotation.z = Math.PI*-0.5;
+    //right_arm.rotation.z = Math.PI*0.5;
+
+    if(downarms){
+      if( left_arm.rotation.z >  -Math.PI*0.5){
+        left_arm.rotation.z -=0.1;
+        right_arm.rotation.z -= 0.1;
+
+        
+      }
+      else {
+        downarms = false;
+      }
+    }else{
+      if( left_arm.rotation.z < 0 ){
+        left_arm.rotation.z += 0.1;
+        right_arm.rotation.z +=0.1;
+
+
+      }
+      else {
+        downarms = true;
+      }
+    }
+
+    //LEGS RUNNING
+    if(spinelegs){
+      if(  spine_1.rotation.z > Math.PI * -0.15){
+        spine_1.rotation.z -=0.02;
+      }
+      else{
+        spinelegs = false;
+      }
+
+      
+    }
+    else{
+      if(  spine_1.rotation.z < 0.15){
+        spine_1.rotation.z +=0.02;
+      }
+      else{
+        spinelegs = true;
+      }
+      
+
+      
+    }
+    if(downlegs){
+      if(  left_up_leg.rotation.x > Math.PI * -0.15){
+        left_up_leg.rotation.x -=0.02;
+      }
+      else{
+        downlegs = false;
+      }
+      if(  left_leg.rotation.x < Math.PI * 0.3){
+        left_leg.rotation.x +=0.08;
+      }
+
+      if(  right_up_leg.rotation.x < 0.15){
+        right_up_leg.rotation.x +=0.02;
+      }
+      if(  right_leg.rotation.x > 0){
+        right_leg.rotation.x -=0.08;
+      }
+    }
+    else{
+      if(  left_up_leg.rotation.x < 0.15){
+        left_up_leg.rotation.x +=0.02;
+      }
+      else{
+        downlegs = true;
+      }
+      if(  left_leg.rotation.x > 0){
+        left_leg.rotation.x -=0.08;
+      }
+
+      if(  right_up_leg.rotation.x > Math.PI * -0.15){
+        right_up_leg.rotation.x -=0.02;
+      }
+      if(  right_leg.rotation.x < Math.PI * 0.3){
+        right_leg.rotation.x +=0.04;
+      }
+    }
     
   }
 
