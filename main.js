@@ -592,6 +592,9 @@ function startGame() {
   var accellerationballz;
 
   //Mesh components robot_1
+  var spine_1;
+  var spine1_1;
+  var spine2_1;
   var neck_1;
   var head_1;
   var left_shoulder_1;
@@ -610,6 +613,9 @@ function startGame() {
   var right_foot_1;
 
   //Mesh components robot_2
+  var spine_2;
+  var spine1_2;
+  var spine2_2;
   var neck_2;
   var head_2;
   var left_shoulder_2;
@@ -628,6 +634,9 @@ function startGame() {
   var right_foot_2;
 
   //Mesh components robot_3
+  var spine_3;
+  var spine1_3;
+  var spine2_3;
   var neck_3;
   var head_3;
   var left_shoulder_3;
@@ -646,6 +655,9 @@ function startGame() {
   var right_foot_3;
 
   //Mesh components robot_4
+  var spine_4;
+  var spine1_4;
+  var spine2_4;
   var neck_4;
   var head_4;
   var left_shoulder_4;
@@ -664,6 +676,9 @@ function startGame() {
   var right_foot_4;
 
   //Mesh components robot_5
+  var spine_5;
+  var spine1_5;
+  var spine2_5;
   var neck_5;
   var head_5;
   var left_shoulder_5;
@@ -682,6 +697,9 @@ function startGame() {
   var right_foot_5;
 
   //Mesh components robot_6
+  var spine_6;
+  var spine1_6;
+  var spine2_6;
   var neck_6;
   var head_6;
   var left_shoulder_6;
@@ -715,6 +733,11 @@ function startGame() {
     robot_1.rotation.y = 90 * (Math.PI / 180.0);
     robot_1.scale.set(1.7, 1.7, 1.7);
 
+    //SPINE
+    spine_1 = robot_1.getObjectByName('mixamorigSpine');
+    spine1_1 = robot_1.getObjectByName('mixamorigSpine1');
+    spine2_1 = robot_1.getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
     neck_1 = robot_1.getObjectByName('mixamorigNeck');
     head_1 = robot_1.getObjectByName('mixamorigHead');
     // LEFT ARM
@@ -766,6 +789,11 @@ function startGame() {
     robot_2.rotation.y = 90 * (Math.PI / 180.0);
     robot_2.scale.set(1.7, 1.7, 1.7);
 
+    //SPINE
+    spine_2 = robot_2.getObjectByName('mixamorigSpine');
+    spine1_2 = robot_2.getObjectByName('mixamorigSpine1');
+    spine2_2 = robot_2.getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
     neck_2 = robot_2.getObjectByName('mixamorigNeck');
     head_2 = robot_2.getObjectByName('mixamorigHead');
     // LEFT ARM
@@ -816,6 +844,11 @@ function startGame() {
     robot_3.rotation.y = -90 * (Math.PI / 180.0);
     robot_3.scale.set(1.7, 1.7, 1.7);
 
+    //SPINE
+    spine_3 = robot_3.getObjectByName('mixamorigSpine');
+    spine1_3 = robot_3.getObjectByName('mixamorigSpine1');
+    spine2_3 = robot_3.getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
     neck_3 = robot_3.getObjectByName('mixamorigNeck');
     head_3 = robot_3.getObjectByName('mixamorigHead');
     // LEFT ARM
@@ -865,6 +898,12 @@ function startGame() {
     robot_4.position.z = 3;
     robot_4.rotation.y = -90 * (Math.PI / 180.0);
     robot_4.scale.set(1.7, 1.7, 1.7);
+
+    //SPINE
+    spine_4 = robot_4.getObjectByName('mixamorigSpine');
+    spine1_4 = robot_4.getObjectByName('mixamorigSpine1');
+    spine2_4 = robot_4.getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
     neck_4 = robot_4.getObjectByName('mixamorigNeck');
     head_4 = robot_4.getObjectByName('mixamorigHead');
     // LEFT ARM
@@ -913,6 +952,12 @@ function startGame() {
     robot_5.position.x = -9;
     robot_5.rotation.y = 90 * (Math.PI / 180.0);
     robot_5.scale.set(1.7, 1.7, 1.7);
+
+    //SPINE
+    spine_5 = robot_5.getObjectByName('mixamorigSpine');
+    spine1_5 = robot_5.getObjectByName('mixamorigSpine1');
+    spine2_5 = robot_5.getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
     neck_5 = robot_5.getObjectByName('mixamorigNeck');
     head_5 = robot_5.getObjectByName('mixamorigHead');
     // LEFT ARM
@@ -961,6 +1006,12 @@ function startGame() {
     robot_6.position.x = 9;
     robot_6.rotation.y = -90 * (Math.PI / 180.0);
     robot_6.scale.set(1.7, 1.7, 1.7);
+
+    //SPINE
+    spine_6 = robot_6.getObjectByName('mixamorigSpine');
+    spine1_6 = robot_6.getObjectByName('mixamorigSpine1');
+    spine2_6 = robot_6.getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
     neck_6 = robot_6.getObjectByName('mixamorigNeck');
     head_6 = robot_6.getObjectByName('mixamorigHead');
     // LEFT ARM
