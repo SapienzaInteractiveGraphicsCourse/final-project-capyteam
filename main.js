@@ -738,6 +738,7 @@ function startGame() {
   var right_leg_6;
   var right_foot_6;
 
+
   //sinistra in basso
   loader.load('models/blueBot/blueBot.gltf', function (gltf) {
     robot_1 = gltf.scene;
@@ -750,6 +751,7 @@ function startGame() {
     });
 
     robot_1.position.x = -5;
+    robot_1.position.y = 0;
     robot_1.position.z = 3;
     robot_1.rotation.y = 90 * (Math.PI / 180.0);
     robot_1.scale.set(1.7, 1.7, 1.7);
@@ -806,6 +808,7 @@ function startGame() {
     });
 
     robot_2.position.x = -5;
+    robot_2.position.y = 0;
     robot_2.position.z = -3;
     robot_2.rotation.y = 90 * (Math.PI / 180.0);
     robot_2.scale.set(1.7, 1.7, 1.7);
@@ -861,6 +864,7 @@ function startGame() {
     });
 
     robot_3.position.x = 5;
+    robot_3.position.y = 0;
     robot_3.position.z = -3;
     robot_3.rotation.y = -90 * (Math.PI / 180.0);
     robot_3.scale.set(1.7, 1.7, 1.7);
@@ -916,6 +920,7 @@ function startGame() {
     });
 
     robot_4.position.x = 5;
+    robot_4.position.y = 0;
     robot_4.position.z = 3;
     robot_4.rotation.y = -90 * (Math.PI / 180.0);
     robot_4.scale.set(1.7, 1.7, 1.7);
@@ -971,6 +976,8 @@ function startGame() {
     });
 
     robot_5.position.x = -9;
+    robot_5.position.y = 0;
+    robot_5.position.z = 0;
     robot_5.rotation.y = 90 * (Math.PI / 180.0);
     robot_5.scale.set(1.7, 1.7, 1.7);
 
@@ -1025,6 +1032,8 @@ function startGame() {
     });
 
     robot_6.position.x = 9;
+    robot_6.position.y = 0;
+    robot_6.position.z = 0;
     robot_6.rotation.y = -90 * (Math.PI / 180.0);
     robot_6.scale.set(1.7, 1.7, 1.7);
 
@@ -1402,6 +1411,8 @@ function startGame() {
   var flagBlueWin = false;
   var flagRedWin = false;
 
+  var exultationBlue = false;
+
   var goal_time = 0;
 
 
@@ -1629,7 +1640,7 @@ function startGame() {
       scene.remove(text_Score);
       scene.remove(text_GoalRed);
       scene.add(text_VictoryBlue);
-      reset();
+      setVictoryBlue();
       endgame = true;
       if(goal_time > 300){
         location.reload();
@@ -1637,13 +1648,14 @@ function startGame() {
       goal_time += 1;
     }
 
+
     //Show red victory screen
     if(flagRedWin){
       scene.remove(text_GoalBlue);
       scene.remove(text_Score);
       scene.remove(text_GoalRed);
       scene.add(text_VictoryRed);
-      reset();
+      setVictoryRed();
       endgame = true;
       if(goal_time > 300){
         location.reload();
@@ -1688,6 +1700,79 @@ function startGame() {
   }
 
   animate();
+
+
+  function setVictoryBlue(){
+    ball.position.x = 0;
+    ball.position.z = 1;
+
+    //Winners positions
+    robot_1.position.x = 0;
+    robot_1.position.z = 0;
+    robot_1.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_2.position.x = -2;
+    robot_2.position.z = 0;
+    robot_2.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_5.position.x = 2;
+    robot_5.position.z = 0;
+    robot_5.rotation.y = 0 * (Math.PI / 180.0);
+
+    //Defeated positions
+    robot_3.position.x = -7;
+    robot_3.position.z = -3;
+    robot_3.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_4.position.x = -9;
+    robot_4.position.z = -3;
+    robot_4.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_6.position.x = -5;
+    robot_6.position.z = -3;
+    robot_6.rotation.y = 0 * (Math.PI / 180.0);
+
+    //Exultation animation
+    exultation(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1, spine_1);
+    exultation(robot_2, left_arm_2, right_arm_2, left_fore_arm_2, right_fore_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2, neck_2, head_2, spine_2);
+    exultation(robot_5, left_arm_5, right_arm_5, left_fore_arm_5, right_fore_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5, neck_5, head_5, spine_5);
+  }
+
+  function setVictoryRed(){
+    ball.position.x = 0;
+    ball.position.z = 1;
+
+    //Winners positions
+    robot_3.position.x = 0;
+    robot_3.position.z = 0;
+    robot_3.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_4.position.x = -2;
+    robot_4.position.z = 0;
+    robot_4.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_6.position.x = 2;
+    robot_6.position.z = 0;
+    robot_6.rotation.y = 0 * (Math.PI / 180.0);
+
+    //Defeated positions
+    robot_1.position.x = -7;
+    robot_1.position.z = -3;
+    robot_1.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_2.position.x = -9;
+    robot_2.position.z = -3;
+    robot_2.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_5.position.x = -5;
+    robot_5.position.z = -3;
+    robot_5.rotation.y = 0 * (Math.PI / 180.0);
+
+    //Exultation animation
+    exultation(robot_3, left_arm_3, right_arm_3, left_fore_arm_3, right_fore_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3, neck_3, head_3, spine_3);
+    exultation(robot_4, left_arm_4, right_arm_4, left_fore_arm_4, right_fore_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4, neck_4, head_4, spine_4);
+    exultation(robot_6, left_arm_6, right_arm_6, left_fore_arm_6, right_fore_arm_6, left_up_leg_6, left_leg_6, right_up_leg_6, right_leg_6, neck_6, head_6, spine_6);
+  }
 
 
 
@@ -1806,6 +1891,7 @@ function startGame() {
 
   var downarms = true;
   var downlegs = true;
+  var spinelegs = true;
 
   function running(object, left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head){
     var diff_x = clickX-object.position.x;
@@ -1879,6 +1965,104 @@ function startGame() {
     }
     neck.rotation.x = Math.PI * 0.35;
     head.rotation.x = Math.PI * -0.25;
+  }
+
+  function exultation(object, left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head, spine){
+    var diff_x = clickX-object.position.x;
+    var diff_y = clickZ-object.position.z;
+    var angoloRadianti = Math.atan2(diff_x,diff_y);
+    object.rotation.y = angoloRadianti;
+
+
+    // ARM RUNNING
+    right_fore_arm.rotation.z = Math.PI*0.15;
+    left_fore_arm.rotation.z = -Math.PI*0.15;
+    left_arm.rotation.x = Math.PI;
+    right_arm.rotation.x =-Math.PI;
+    //left_arm.rotation.z = Math.PI*-0.5;
+    //right_arm.rotation.z = Math.PI*0.5;
+
+    if(downarms){
+      if( left_arm.rotation.z >  -Math.PI*0.5){
+        left_arm.rotation.z -=0.1;
+        right_arm.rotation.z -= 0.1;
+
+
+      }
+      else {
+        downarms = false;
+      }
+    }else{
+      if( left_arm.rotation.z < 0 ){
+        left_arm.rotation.z += 0.1;
+        right_arm.rotation.z +=0.1;
+
+
+      }
+      else {
+        downarms = true;
+      }
+    }
+
+    //LEGS RUNNING
+    if(spinelegs){
+      if(  spine.rotation.z > Math.PI * -0.15){
+        spine.rotation.z -=0.02;
+      }
+      else{
+        spinelegs = false;
+      }
+
+
+    }
+    else{
+      if(  spine.rotation.z < 0.15){
+        spine.rotation.z +=0.02;
+      }
+      else{
+        spinelegs = true;
+      }
+
+
+
+    }
+    if(downlegs){
+      if(  left_up_leg.rotation.x > Math.PI * -0.15){
+        left_up_leg.rotation.x -=0.02;
+      }
+      else{
+        downlegs = false;
+      }
+      if(  left_leg.rotation.x < Math.PI * 0.3){
+        left_leg.rotation.x +=0.08;
+      }
+
+      if(  right_up_leg.rotation.x < 0.15){
+        right_up_leg.rotation.x +=0.02;
+      }
+      if(  right_leg.rotation.x > 0){
+        right_leg.rotation.x -=0.08;
+      }
+    }
+    else{
+      if(  left_up_leg.rotation.x < 0.15){
+        left_up_leg.rotation.x +=0.02;
+      }
+      else{
+        downlegs = true;
+      }
+      if(  left_leg.rotation.x > 0){
+        left_leg.rotation.x -=0.08;
+      }
+
+      if(  right_up_leg.rotation.x > Math.PI * -0.15){
+        right_up_leg.rotation.x -=0.02;
+      }
+      if(  right_leg.rotation.x < Math.PI * 0.3){
+        right_leg.rotation.x +=0.04;
+      }
+    }
+
   }
 
 
