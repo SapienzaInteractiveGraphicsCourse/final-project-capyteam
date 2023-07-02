@@ -16,12 +16,12 @@ const startButton = document.getElementById('startButton');
 const instructionsButton = document.getElementById('instructionsButton');
 const modelsButton = document.getElementById('modelsButton');
 const instructionsContainer = document.getElementById('instructionsContainer');
+const victoryScreen = document.getElementById('victoryScreen');
 
 // Add event listeners to the buttons
 startButton.addEventListener('click', startGame);
 instructionsButton.addEventListener('click', showInstructions);
 modelsButton.addEventListener('click', showModels);
-
 
 //Function to show the 3D models
 function showModels() {
@@ -729,7 +729,7 @@ function startGame() {
       spine_1 = robot_1.getObjectByName('mixamorigSpine');
       spine1_1 = robot_1.getObjectByName('mixamorigSpine1');
       spine2_1 = robot_1.getObjectByName('mixamorigSpine2');
-      
+
     neck_1 = robot_1.getObjectByName('mixamorigNeck');
     head_1 = robot_1.getObjectByName('mixamorigHead');
     // LEFT ARM
@@ -1466,8 +1466,8 @@ function startGame() {
     var diff_y = clickZ-object.position.z;
     var angoloRadianti = Math.atan2(diff_x,diff_y);
     object.rotation.y = angoloRadianti;
-    
-   
+
+
     // ARM RUNNING
     left_arm.rotation.z = Math.PI * -0.35;
     right_arm.rotation.z = Math.PI * 0.35;
@@ -1533,7 +1533,7 @@ function startGame() {
     }
     neck.rotation.x =Math.PI * 0.35;
     head.rotation.x =Math.PI * -0.25;
-    
+
   }
 
   function esultanza(object, left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head, spine_1, spine1, spine2){
