@@ -61,9 +61,13 @@ function showModels() {
 
   camera.position.z = 5;
 
+  // Create OrbitControls and attach them to the camera
+  const controls = new OrbitControls(camera, renderer.domElement);
+
   function animate() {
 	   requestAnimationFrame( animate );
-	    renderer.render( scene, camera );
+     controls.update();
+	   renderer.render( scene, camera );
   }
   animate();
 }
