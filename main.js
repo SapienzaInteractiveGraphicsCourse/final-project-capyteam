@@ -126,6 +126,9 @@ function startGame() {
   var clickX = 0;
   var clickY = 0;
   var clickZ = 0;
+  var mouseX = 0;
+  var mouseY = 0;
+  var mouseZ = 0;
 
   var endgame = false;
 
@@ -272,9 +275,12 @@ function startGame() {
   var moveTo;
   var velocity;
 
+  //var mousePos = { x: undefined, y: undefined };
+
   document.addEventListener('mousedown', handleMouseDown);
-  document.addEventListener('mousemove', handleMouseMove);
+  document.addEventListener('mousemove', handleMouseMove, true);
   document.addEventListener('mouseup', handleMouseUp);
+
 
   function handleMouseDown(event) {
     mouseDown = true;
@@ -1703,6 +1709,8 @@ function startGame() {
 
 
   function setVictoryBlue(){
+    scene.remove(circle);
+
     ball.position.x = 0;
     ball.position.z = 1;
 
@@ -1739,6 +1747,8 @@ function startGame() {
   }
 
   function setVictoryRed(){
+    scene.remove(circle);
+
     ball.position.x = 0;
     ball.position.z = 1;
 

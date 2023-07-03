@@ -310,7 +310,7 @@ function startGame() {
     mouseX = mousePosition.x;
     mouseY = mousePosition.y;
     mouseZ = mousePosition.z;
-    createArrow(robot_1, mouseX, mouseZ);
+    createArrow(thisrobot, mouseX, mouseZ);
     scene.add(line);
   }
 
