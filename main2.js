@@ -7,8 +7,10 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 //Import tween.js for smooth animation
-import * as TWEEN from '@tweenjs/tween.js'
+import * as TWEEN from '@tweenjs/tween.js';
 
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 // Get references to the menu elements
 const menu = document.getElementById('menu');
@@ -16,12 +18,13 @@ const startButton = document.getElementById('startButton');
 const instructionsButton = document.getElementById('instructionsButton');
 const modelsButton = document.getElementById('modelsButton');
 const instructionsContainer = document.getElementById('instructionsContainer');
-const victoryScreen = document.getElementById('victoryScreen');
 
 // Add event listeners to the buttons
 startButton.addEventListener('click', startGame);
 instructionsButton.addEventListener('click', showInstructions);
 modelsButton.addEventListener('click', showModels);
+
+
 
 //Function to show the 3D models
 function showModels() {
@@ -38,7 +41,6 @@ function showModels() {
 
 
   //lighting
-
   var lightProps = {
       "ambientColor": 0xffffff,
       "ambientIntensity": 0.1,
@@ -49,7 +51,7 @@ function showModels() {
 
   var ambient = new THREE.AmbientLight(lightProps.ambientColor, lightProps.ambientIntensity)
   scene.add(ambient)
-
+  /*
   //Add 3D models
   const loader = new GLTFLoader();
 
@@ -58,6 +60,29 @@ function showModels() {
     scene.add(gltf.scene);
   }, undefined, function (error) {
     console.error(error);
+  });*/
+
+  // Create the text geometry
+  const fontLoader = new FontLoader();
+
+  // Load the font file
+  fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+    const textGeometry = new TextGeometry('Hello, 3D World!', {
+      font: font,
+      size: 80,
+      height: 5,
+      curveSegments: 12,
+      bevelEnabled: true,
+      bevelThickness: 10,
+      bevelSize: 8,
+      bevelOffset: 0,
+      bevelSegments: 5
+    });
+
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+
+    scene.add(textMesh);
   });
 
   camera.position.z = 5;
@@ -101,18 +126,25 @@ function startGame() {
   var clickX = 0;
   var clickY = 0;
   var clickZ = 0;
+  var mouseX = 0;
+  var mouseY = 0;
+  var mouseZ = 0;
+
+
+  var endgame = false;
 
   var thisrobot = 0;
 
   var k,j;
-  var ballvx,ballvy;
+  var ballvx = 0;
+  var ballvy = 0;
   // TIMES
   var times = 0;
   var circle;
   var turn =1;
   //BALL
-  var normball;
-  var normball2;
+  var normball = 0;
+  var normball2 = 0;
 
   var cameraX = 0;
   var cameraY = 15;
@@ -255,46 +287,62 @@ function startGame() {
 
     endMouseX = event.clientX;
     endMouseY = event.clientY;
-
   }
 
   function handleMouseMove(event) {
-    /*const mouseX = event.clientX;
-    const mouseY = event.clientY;
-    if(isRobotMoving){
-      createArrow(robot_1,mouseX,mouseY);
-    }*/
+    scene.remove(line);
+    const normalizedX = (event.clientX / window.innerWidth) * 2 - 1;
+    const normalizedY = -(event.clientY / window.innerHeight) * 2 + 1;
+    console.log("Normalized x"+normalizedX);
+    console.log("Normalized y"+normalizedY);
+    const vector = new THREE.Vector3(normalizedX, normalizedY, 0);
+
+    //Use the unproject method to convert the vector from NDC to world space
+    vector.unproject(camera);
+
+    //Retrieve the camera's position and direction
+    const cameraPosition = camera.position;
+    const cameraDirection = vector.sub(cameraPosition).normalize();
+
+    //Calculate the distance along the camera direction to find the 3D position
+    const mousedistance = -cameraPosition.y / cameraDirection.y;
+    const mousePosition = cameraPosition.clone().add(cameraDirection.multiplyScalar(mousedistance))
+    mouseX = mousePosition.x;
+    mouseY = mousePosition.y;
+    mouseZ = mousePosition.z;
+    createArrow(robot_1, mouseX, mouseZ);
+    scene.add(line);
   }
 
   function handleMouseUp(event) {
     mouseDown = false;
-   // console.log("Not normalized: "+endMouseX+" "+endMouseY);
+    // console.log("Not normalized: "+endMouseX+" "+endMouseY);
 
-    // Convert the viewport coordinates to normalized device coordinates (NDC)
+    //Convert the viewport coordinates to normalized device coordinates (NDC)
     const normalizedX = (endMouseX / window.innerWidth) * 2 - 1;
     const normalizedY = -(endMouseY / window.innerHeight) * 2 + 1;
 
-    // Create a vector with the normalized device coordinates
+    //Create a vector with the normalized device coordinates
     const vector = new THREE.Vector3(normalizedX, normalizedY, 0);
 
-    // Use the unproject method to convert the vector from NDC to world space
+    //Use the unproject method to convert the vector from NDC to world space
     vector.unproject(camera);
 
-    // Retrieve the camera's position and direction
+    //Retrieve the camera's position and direction
     const cameraPosition = camera.position;
     const cameraDirection = vector.sub(cameraPosition).normalize();
 
-    // Calculate the distance along the camera direction to find the 3D position
+    //Calculate the distance along the camera direction to find the 3D position
     const distance = -cameraPosition.y / cameraDirection.y;
     const clickPosition = cameraPosition.clone().add(cameraDirection.multiplyScalar(distance));
 
-    // Use the clickPosition vector to access the x, y, and z coordinates
+    //Use the clickPosition vector to access the x, y, and z coordinates
     clickX = clickPosition.x;
     clickY = clickPosition.y;
     clickZ = clickPosition.z;
     //console.log("Normalized: "+clickX+" "+clickY+" "+clickZ);
 
-    if(isRobotMoving){
+    if(isRobotMoving && !endgame){
       scene.remove(circle);
       createArrow(robot_1, clickX, clickZ);
       //createCircle(robot_1);
@@ -306,7 +354,7 @@ function startGame() {
       velocity = 0.1;
     }
 
-    if(isRobotMoving2){
+    if(isRobotMoving2 && !endgame){
       scene.remove(circle);
       createArrow(robot_2, clickX, clickZ);
       //createCircle(robot_2);
@@ -317,7 +365,7 @@ function startGame() {
       moveTo = new THREE.Vector3(clickX, robot_2.position.y, clickZ);
       velocity = 0.1;
     }
-    if(isRobotMoving3){
+    if(isRobotMoving3 && !endgame){
       scene.remove(circle);
       createArrow(robot_3, clickX, clickZ);
       //createCircle(robot_3);
@@ -328,7 +376,7 @@ function startGame() {
       moveTo = new THREE.Vector3(clickX, robot_3.position.y, clickZ);
       velocity = 0.1;
     }
-    if(isRobotMoving4){
+    if(isRobotMoving4 && !endgame){
       scene.remove(circle);
       createArrow(robot_4, clickX, clickZ);
       //createCircle(robot_4);
@@ -339,7 +387,7 @@ function startGame() {
       moveTo = new THREE.Vector3(clickX, robot_4.position.y, clickZ);
       velocity = 0.1;
     }
-    if(isRobotMoving5){
+    if(isRobotMoving5 && !endgame){
       scene.remove(circle);
       createArrow(robot_5, clickX, clickZ);
       //createCircle(robot_5);
@@ -350,7 +398,7 @@ function startGame() {
       moveTo = new THREE.Vector3(clickX, robot_5.position.y, clickZ);
       velocity = 0.1;
     }
-    if(isRobotMoving6){
+    if(isRobotMoving6 && !endgame){
       scene.remove(circle);
       createArrow(robot_6, clickX, clickZ);
       //createCircle(robot_6);
@@ -377,7 +425,6 @@ function startGame() {
 
     // Create the line using the geometry and material
     line = new THREE.Line(lineGeometry, lineMaterial);
-
   }
 
   function createCircle(object) {
@@ -428,7 +475,6 @@ function startGame() {
   scene.background = skyboxTexture;
 
 
-
   //camera
 
   var camera;
@@ -441,13 +487,10 @@ function startGame() {
   window.addEventListener('resize', resizeCanvas);
 
   function resizeCanvas() {
-
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-
   }
-
 
 
   //lighting
@@ -536,8 +579,6 @@ function startGame() {
   scene.add(light3);
 
 
-
-
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
@@ -549,14 +590,13 @@ function startGame() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 
 
-
-
   camera.position.set(0, 15, 10);
 
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true; // Add smooth damping effect
   controls.dampingFactor = 0.05; // Adjust the damping factor (0.05 is the default)
   controls.rotateSpeed = 0.5; // Adjust the rotation speed
+
 
   //Add 3D models
   const loader = new GLTFLoader();
@@ -573,9 +613,9 @@ function startGame() {
   var robot_5;
   //ROBOT ROSA CENTRO
   var robot_6;
+
   var football_pitch;
   var ball;
-
 
   //Bounding boxes
   var box_robot1;
@@ -601,7 +641,6 @@ function startGame() {
   var spine_1;
   var spine1_1;
   var spine2_1;
-
   var neck_1;
   var head_1;
   var left_shoulder_1;
@@ -620,6 +659,9 @@ function startGame() {
   var right_foot_1;
 
   //Mesh components robot_2
+  var spine_2;
+  var spine1_2;
+  var spine2_2;
   var neck_2;
   var head_2;
   var left_shoulder_2;
@@ -638,6 +680,9 @@ function startGame() {
   var right_foot_2;
 
   //Mesh components robot_3
+  var spine_3;
+  var spine1_3;
+  var spine2_3;
   var neck_3;
   var head_3;
   var left_shoulder_3;
@@ -656,6 +701,9 @@ function startGame() {
   var right_foot_3;
 
   //Mesh components robot_4
+  var spine_4;
+  var spine1_4;
+  var spine2_4;
   var neck_4;
   var head_4;
   var left_shoulder_4;
@@ -674,6 +722,9 @@ function startGame() {
   var right_foot_4;
 
   //Mesh components robot_5
+  var spine_5;
+  var spine1_5;
+  var spine2_5;
   var neck_5;
   var head_5;
   var left_shoulder_5;
@@ -692,6 +743,9 @@ function startGame() {
   var right_foot_5;
 
   //Mesh components robot_6
+  var spine_6;
+  var spine1_6;
+  var spine2_6;
   var neck_6;
   var head_6;
   var left_shoulder_6;
@@ -709,6 +763,7 @@ function startGame() {
   var right_leg_6;
   var right_foot_6;
 
+
   //sinistra in basso
   loader.load('models/blueBot/blueBot.gltf', function (gltf) {
     robot_1 = gltf.scene;
@@ -721,15 +776,16 @@ function startGame() {
     });
 
     robot_1.position.x = -5;
+    robot_1.position.y = 0;
     robot_1.position.z = 3;
     robot_1.rotation.y = 90 * (Math.PI / 180.0);
     robot_1.scale.set(1.7, 1.7, 1.7);
 
-      //SPINE
-      spine_1 = robot_1.getObjectByName('mixamorigSpine');
-      spine1_1 = robot_1.getObjectByName('mixamorigSpine1');
-      spine2_1 = robot_1.getObjectByName('mixamorigSpine2');
-
+    //SPINE
+    spine_1 = robot_1.getObjectByName('mixamorigSpine');
+    spine1_1 = robot_1.getObjectByName('mixamorigSpine1');
+    spine2_1 = robot_1.getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
     neck_1 = robot_1.getObjectByName('mixamorigNeck');
     head_1 = robot_1.getObjectByName('mixamorigHead');
     // LEFT ARM
@@ -777,10 +833,16 @@ function startGame() {
     });
 
     robot_2.position.x = -5;
+    robot_2.position.y = 0;
     robot_2.position.z = -3;
     robot_2.rotation.y = 90 * (Math.PI / 180.0);
     robot_2.scale.set(1.7, 1.7, 1.7);
 
+    //SPINE
+    spine_2 = robot_2.getObjectByName('mixamorigSpine');
+    spine1_2 = robot_2.getObjectByName('mixamorigSpine1');
+    spine2_2 = robot_2.getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
     neck_2 = robot_2.getObjectByName('mixamorigNeck');
     head_2 = robot_2.getObjectByName('mixamorigHead');
     // LEFT ARM
@@ -827,10 +889,16 @@ function startGame() {
     });
 
     robot_3.position.x = 5;
+    robot_3.position.y = 0;
     robot_3.position.z = -3;
     robot_3.rotation.y = -90 * (Math.PI / 180.0);
     robot_3.scale.set(1.7, 1.7, 1.7);
 
+    //SPINE
+    spine_3 = robot_3.getObjectByName('mixamorigSpine');
+    spine1_3 = robot_3.getObjectByName('mixamorigSpine1');
+    spine2_3 = robot_3.getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
     neck_3 = robot_3.getObjectByName('mixamorigNeck');
     head_3 = robot_3.getObjectByName('mixamorigHead');
     // LEFT ARM
@@ -877,9 +945,16 @@ function startGame() {
     });
 
     robot_4.position.x = 5;
+    robot_4.position.y = 0;
     robot_4.position.z = 3;
     robot_4.rotation.y = -90 * (Math.PI / 180.0);
     robot_4.scale.set(1.7, 1.7, 1.7);
+
+    //SPINE
+    spine_4 = robot_4.getObjectByName('mixamorigSpine');
+    spine1_4 = robot_4.getObjectByName('mixamorigSpine1');
+    spine2_4 = robot_4.getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
     neck_4 = robot_4.getObjectByName('mixamorigNeck');
     head_4 = robot_4.getObjectByName('mixamorigHead');
     // LEFT ARM
@@ -926,8 +1001,16 @@ function startGame() {
     });
 
     robot_5.position.x = -9;
+    robot_5.position.y = 0;
+    robot_5.position.z = 0;
     robot_5.rotation.y = 90 * (Math.PI / 180.0);
     robot_5.scale.set(1.7, 1.7, 1.7);
+
+    //SPINE
+    spine_5 = robot_5.getObjectByName('mixamorigSpine');
+    spine1_5 = robot_5.getObjectByName('mixamorigSpine1');
+    spine2_5 = robot_5.getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
     neck_5 = robot_5.getObjectByName('mixamorigNeck');
     head_5 = robot_5.getObjectByName('mixamorigHead');
     // LEFT ARM
@@ -974,8 +1057,16 @@ function startGame() {
     });
 
     robot_6.position.x = 9;
+    robot_6.position.y = 0;
+    robot_6.position.z = 0;
     robot_6.rotation.y = -90 * (Math.PI / 180.0);
     robot_6.scale.set(1.7, 1.7, 1.7);
+
+    //SPINE
+    spine_6 = robot_6.getObjectByName('mixamorigSpine');
+    spine1_6 = robot_6.getObjectByName('mixamorigSpine1');
+    spine2_6 = robot_6.getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
     neck_6 = robot_6.getObjectByName('mixamorigNeck');
     head_6 = robot_6.getObjectByName('mixamorigHead');
     // LEFT ARM
@@ -1009,8 +1100,7 @@ function startGame() {
     console.error(error);
   });
 
-
-  loader.load('models/football_pitch/scene.gltf', function (gltf6) {
+  loader.load('models/football_pitch/pitch.gltf', function (gltf6) {
     football_pitch = gltf6.scene;
     scene.add(football_pitch);
 
@@ -1073,7 +1163,7 @@ function startGame() {
     //ball.position.x = -0.5;
     ball.position.y = 0.36;
     //ball.position.z = -0.2;
-    ball.scale.set(0.3, 0.3, 0.3);
+    ball.scale.set(0.4, 0.4, 0.4);
 
     //Setup a bounding sphere around ball
     box_ball = new THREE.Box3().setFromObject(ball);
@@ -1082,6 +1172,249 @@ function startGame() {
 
   }, undefined, function (error) {
     console.error(error);
+  });
+
+  //GENERATE 3D TEXT FOR GOAL AND WIN
+
+  // Create the text geometry
+  const fontLoader = new FontLoader();
+
+  //Define 3D text variables
+  var text_GoalBlue;
+  var text_GoalRed;
+  var text_Score;
+
+  var text_ExultationBlue;
+  var text_ExultationRed;
+
+  var text_VictoryBlue;
+  var text_VictoryRed;
+
+  var goal_blue = 0;
+  var goal_red = 0;
+
+  function writeScore(){
+    // Create the 3D text for Blue score
+    fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+      const textGeometry = new TextGeometry(goal_blue.toString(), {
+        font: font,
+        size: 4,
+        height: 0.1,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 0.03,
+        bevelSize: 0.02,
+        bevelOffset: 0,
+        bevelSegments: 5
+      });
+
+      // Center the text geometry
+      textGeometry.computeBoundingBox();
+      const textBoundingBox = textGeometry.boundingBox;
+      const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
+      textGeometry.translate(-textWidth*1.5, 5, 0);
+
+      const textMaterial = new THREE.MeshBasicMaterial({ color: 0x00008B });
+      text_GoalBlue = new THREE.Mesh(textGeometry, textMaterial);
+
+      // Rotate the text to face the camera
+      text_GoalBlue.rotation.setFromRotationMatrix(camera.matrix);
+
+      // Make the text always face the camera
+      text_GoalBlue.lookAt(camera.position);
+
+      scene.add(text_GoalBlue);
+    });
+
+    // Create the 3D text for - symbol
+    fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+      const textGeometry = new TextGeometry('-', {
+        font: font,
+        size: 4,
+        height: 0.1,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 0.03,
+        bevelSize: 0.02,
+        bevelOffset: 0,
+        bevelSegments: 5
+      });
+
+      // Center the text geometry
+      textGeometry.computeBoundingBox();
+      const textBoundingBox = textGeometry.boundingBox;
+      const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
+      textGeometry.translate(-textWidth / 2, 5, 0);
+
+      const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      text_Score = new THREE.Mesh(textGeometry, textMaterial);
+
+      // Rotate the text to face the camera
+      text_Score.rotation.setFromRotationMatrix(camera.matrix);
+
+      // Make the text always face the camera
+      text_Score.lookAt(camera.position);
+
+      scene.add(text_Score);
+    });
+
+    // Create the 3D text for Red score
+    fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+      const textGeometry = new TextGeometry(goal_red.toString(), {
+        font: font,
+        size: 4,
+        height: 0.1,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 0.03,
+        bevelSize: 0.02,
+        bevelOffset: 0,
+        bevelSegments: 5
+      });
+
+      // Center the text geometry
+      textGeometry.computeBoundingBox();
+      const textBoundingBox = textGeometry.boundingBox;
+      const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
+      textGeometry.translate(textWidth*0.5, 5, 0);
+
+      const textMaterial = new THREE.MeshBasicMaterial({ color: 0x8B0000 });
+      text_GoalRed = new THREE.Mesh(textGeometry, textMaterial);
+
+      // Rotate the text to face the camera
+      text_GoalRed.rotation.setFromRotationMatrix(camera.matrix);
+
+      // Make the text always face the camera
+      text_GoalRed.lookAt(camera.position);
+
+      scene.add(text_GoalRed);
+    });
+  }
+
+  writeScore();
+
+  // Create the 3D text for blue goal
+  fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+    const textGeometry = new TextGeometry('GOAL!', {
+      font: font,
+      size: 4,
+      height: 0.1,
+      curveSegments: 12,
+      bevelEnabled: true,
+      bevelThickness: 0.03,
+      bevelSize: 0.02,
+      bevelOffset: 0,
+      bevelSegments: 5
+    });
+
+    // Center the text geometry
+    textGeometry.computeBoundingBox();
+    const textBoundingBox = textGeometry.boundingBox;
+    const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
+    textGeometry.translate(-textWidth / 2, 5, 0);
+
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x00008B });
+    text_ExultationBlue = new THREE.Mesh(textGeometry, textMaterial);
+
+    // Rotate the text to face the camera
+    text_ExultationBlue.rotation.setFromRotationMatrix(camera.matrix);
+
+    // Make the text always face the camera
+    text_ExultationBlue.lookAt(camera.position);
+
+  });
+
+  // Create the 3D text for red goal
+  fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+    const textGeometry = new TextGeometry('GOAL!', {
+      font: font,
+      size: 4,
+      height: 0.1,
+      curveSegments: 12,
+      bevelEnabled: true,
+      bevelThickness: 0.03,
+      bevelSize: 0.02,
+      bevelOffset: 0,
+      bevelSegments: 5
+    });
+
+    // Center the text geometry
+    textGeometry.computeBoundingBox();
+    const textBoundingBox = textGeometry.boundingBox;
+    const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
+    textGeometry.translate(-textWidth / 2, 5, 0);
+
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x8B0000 });
+    text_ExultationRed = new THREE.Mesh(textGeometry, textMaterial);
+
+    // Rotate the text to face the camera
+    text_ExultationRed.rotation.setFromRotationMatrix(camera.matrix);
+
+    // Make the text always face the camera
+    text_ExultationRed.lookAt(camera.position);
+
+  });
+
+  // Create the 3D text for blue victory
+  fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+    const textGeometry = new TextGeometry('BLUE WINS!', {
+      font: font,
+      size: 4,
+      height: 0.1,
+      curveSegments: 12,
+      bevelEnabled: true,
+      bevelThickness: 0.03,
+      bevelSize: 0.02,
+      bevelOffset: 0,
+      bevelSegments: 5
+    });
+
+    // Center the text geometry
+    textGeometry.computeBoundingBox();
+    const textBoundingBox = textGeometry.boundingBox;
+    const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
+    textGeometry.translate(-textWidth / 2, 5, 0);
+
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x00008B });
+    text_VictoryBlue = new THREE.Mesh(textGeometry, textMaterial);
+
+    // Rotate the text to face the camera
+    text_VictoryBlue.rotation.setFromRotationMatrix(camera.matrix);
+
+    // Make the text always face the camera
+    text_VictoryBlue.lookAt(camera.position);
+
+  });
+
+  // Create the 3D text for red victory
+  fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+    const textGeometry = new TextGeometry('RED WINS!', {
+      font: font,
+      size: 4,
+      height: 0.1,
+      curveSegments: 12,
+      bevelEnabled: true,
+      bevelThickness: 0.03,
+      bevelSize: 0.02,
+      bevelOffset: 0,
+      bevelSegments: 5
+    });
+
+    // Center the text geometry
+    textGeometry.computeBoundingBox();
+    const textBoundingBox = textGeometry.boundingBox;
+    const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
+    textGeometry.translate(-textWidth / 2, 5, 0);
+
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x8B0000 });
+    text_VictoryRed = new THREE.Mesh(textGeometry, textMaterial);
+
+    // Rotate the text to face the camera
+    text_VictoryRed.rotation.setFromRotationMatrix(camera.matrix);
+
+    // Make the text always face the camera
+    text_VictoryRed.lookAt(camera.position);
+
   });
 
 
@@ -1095,10 +1428,17 @@ function startGame() {
   var isRobotMoving6 = false;
   var done = false;
   var increment = 0.05;
-  var goal_blue = 0;
-  var goal_red = 0;
-
   var n_touch = 0;
+
+  var flagBlueGoal = false;
+  var flagRedGoal = false;
+
+  var flagBlueWin = false;
+  var flagRedWin = false;
+
+  var exultationBlue = false;
+
+  var goal_time = 0;
 
 
   //Render the Scene; basically, anything you want to move or change
@@ -1130,27 +1470,19 @@ function startGame() {
       scene.remove(circle);
       createCircle(robot_1);
       moveRobot(robot_1, box_robot1);
-      //running(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1);
-      //running(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1);
-      esultanza(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1,spine_1, spine1_1, spine2_1);
-
+      running(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1);
     }
     if(isRobotMoving2){
       scene.remove(circle);
       createCircle(robot_2);
-
       moveRobot(robot_2, box_robot2);
       running(robot_2, left_arm_2, right_arm_2, left_fore_arm_2, right_fore_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2, neck_2, head_2);
-
     }
     if(isRobotMoving3){
       scene.remove(circle);
       createCircle(robot_3);
       moveRobot(robot_3, box_robot3);
       running(robot_3, left_arm_3, right_arm_3, left_fore_arm_3, right_fore_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3, neck_3, head_3);
-
-
-
     }
     if(isRobotMoving4){
       scene.remove(circle);
@@ -1160,7 +1492,6 @@ function startGame() {
     }
     if(isRobotMoving5){
       scene.remove(circle);
-
       createCircle(robot_5);
       moveRobot(robot_5, box_robot5);
       running(robot_5, left_arm_5, right_arm_5, left_fore_arm_5, right_fore_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5, neck_5, head_5);
@@ -1173,15 +1504,17 @@ function startGame() {
     }
 
 
-    // Move the cube based on keyboard input
+    // Move the robot based on mouse input
     if (moveForward) robot_1.position.z -= 0.1;
     if (moveBackward) robot_1.position.z += 0.1;
     if (moveLeft) robot_1.position.x -= 0.1;
     if (moveRight) robot_1.position.x += 0.1;
 
 
-    if(isMoving){
 
+    if(isMoving){
+      normball=0;
+      normball2=0;
       if(times < 8){
         normball =  Math.sign(ballvx)*(Math.sqrt(ballvx*ballvx - 0.1*0.1) * (0.4) / 9);
         normball2 = Math.sign(ballvy)*Math.sqrt(ballvy*ballvy - 0.1*0.1) * (0.4) / 9;
@@ -1193,17 +1526,20 @@ function startGame() {
           console.log("BALL X: "+ballvx+" BALL Z"+ballvy);
           console.log("NORMBALL X: "+normball+" NORMBALL Z"+normball2);
         }
+        if(isNaN(normball)){
+          normball = 0;
+        }
+        if(isNaN(normball2)){
+          normball2 = 0;
+        }
         ball.position.x += normball;
         ball.position.z += normball2;
         times += 1;
-      }
-      else{
-
+      }else{
         isMoving = false;
       }
       ball.rotation.z += normball2;
       ball.rotation.x += normball;
-
       box_ball.setFromObject(ball);
     }
 
@@ -1216,112 +1552,161 @@ function startGame() {
     if(moveForward||moveBackward||moveLeft||moveRight) box_robot6.setFromObject(robot_6);
     // Check for collisions
     if (box_robot1.intersectsBox(box_ball)) {
-      // Collision detected, stop or modify the object's movement
+      //Collision detected, stop or modify the object's movement
       //console.log("Collisione in z: "+robot_1.position.z+"Collisione in X"+robot_1.position.x);
+      ballvx = 0;
+      ballvy = 0;
       ballvx = clickX - robot_1.position.x;
       ballvy = clickZ - robot_1.position.z;
-     // console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-      /*clickX = 0;
-      clickY = 0;
-      clickZ = 0;*/
+      //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
       isMoving = true;
       times = 0;
       nextPlayer();
     }
 
     if (box_robot2.intersectsBox(box_ball)) {
-      // Collision detected, stop or modify the object's movement
-    //  console.log("Collisione in z: "+robot_2.position.z+"Collisione in X"+robot_2.position.x);
+      //Collision detected, stop or modify the object's movement
+      //console.log("Collisione in z: "+robot_2.position.z+"Collisione in X"+robot_2.position.x);
+      ballvx = 0;
+      ballvy = 0;
       ballvx = clickX - robot_2.position.x;
       ballvy = clickZ - robot_2.position.z;
-     // console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-      /*clickX = 0;
-      clickY = 0;
-      clickZ = 0;*/
+      //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
       isMoving = true;
       times = 0;
       nextPlayer();
     }
 
     if (box_robot3.intersectsBox(box_ball)) {
-      // Collision detected, stop or modify the object's movement
+      //Collision detected, stop or modify the object's movement
       //console.log("Collisione in z: "+robot_3.position.z+"Collisione in X"+robot_3.position.x);
-
-        ballvx = clickX - robot_3.position.x;
-        ballvy = clickZ - robot_3.position.z;
-
+      ballvx = 0;
+      ballvy = 0;
+      ballvx = clickX - robot_3.position.x;
+      ballvy = clickZ - robot_3.position.z;
       //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-      /*clickX = 0;
-      clickY = 0;
-      clickZ = 0;*/
       isMoving = true;
       times = 0;
       nextPlayer();
     }
 
     if (box_robot4.intersectsBox(box_ball)) {
-      // Collision detected, stop or modify the object's movement
+      //Collision detected, stop or modify the object's movement
       //console.log("Collisione in z: "+robot_4.position.z+"Collisione in X"+robot_4.position.x);
+      ballvx = 0;
+      ballvy = 0;
       ballvx = clickX - robot_4.position.x;
       ballvy = clickZ - robot_4.position.z;
       //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-      /*clickX = 0;
-      clickY = 0;
-      clickZ = 0;*/
       isMoving = true;
       times = 0;
       nextPlayer();
     }
 
     if (box_robot5.intersectsBox(box_ball)) {
-      // Collision detected, stop or modify the object's movement
+      //Collision detected, stop or modify the object's movement
       //console.log("Collisione in z: "+robot_5.position.z+"Collisione in X"+robot_5.position.x);
+      ballvx = 0;
+      ballvy = 0;
       ballvx = clickX - robot_5.position.x;
       ballvy = clickZ - robot_5.position.z;
       //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-      /*clickX = 0;
-      clickY = 0;
-      clickZ = 0;*/
       isMoving = true;
       times = 0;
       nextPlayer();
     }
 
     if (box_robot6.intersectsBox(box_ball)) {
-      // Collision detected, stop or modify the object's movement
+      //Collision detected, stop or modify the object's movement
       //console.log("Collisione in z: "+robot_6.position.z+"Collisione in X"+robot_6.position.x);
+      ballvx = 0;
+      ballvy = 0;
       ballvx = clickX - robot_6.position.x;
       ballvy = clickZ - robot_6.position.z;
       //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
-      /*clickX = 0;
-      clickY = 0;
-      clickZ = 0;*/
       isMoving = true;
       times = 0;
       nextPlayer();
     }
 
+    //Show blue goal screen and update score
+    if(flagBlueGoal && goal_blue != 3){
+      scene.remove(text_GoalBlue);
+      scene.remove(text_Score);
+      scene.remove(text_GoalRed);
+      scene.add(text_ExultationBlue);
+      if(goal_time > 100){
+        scene.remove(text_ExultationBlue);
+        writeScore();
+        goal_time = 0;
+        flagBlueGoal = false;
+      }
+      goal_time += 1;
+    }
+
+    //Show red goal screen and update score
+    if(flagRedGoal && goal_red != 3){
+      scene.remove(text_GoalBlue);
+      scene.remove(text_Score);
+      scene.remove(text_GoalRed);
+      scene.add(text_ExultationRed);
+      if(goal_time > 100){
+        scene.remove(text_ExultationRed);
+        writeScore();
+        goal_time = 0;
+        flagRedGoal = false;
+      }
+      goal_time += 1;
+    }
+
+    //Show blue victory screen
+    if(flagBlueWin){
+      scene.remove(text_GoalBlue);
+      scene.remove(text_Score);
+      scene.remove(text_GoalRed);
+      scene.add(text_VictoryBlue);
+      setVictoryBlue();
+      endgame = true;
+      if(goal_time > 300){
+        location.reload();
+      }
+      goal_time += 1;
+    }
 
 
+    //Show red victory screen
+    if(flagRedWin){
+      scene.remove(text_GoalBlue);
+      scene.remove(text_Score);
+      scene.remove(text_GoalRed);
+      scene.add(text_VictoryRed);
+      setVictoryRed();
+      endgame = true;
+      if(goal_time > 300){
+        location.reload();
+      }
+      goal_time += 1;
+    }
+
+    //Check blue goal
     if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x >= 10){
       isMoving = false;
       goal_blue += 1;
-      alert("GOAL! TEAM BLUE");
+      flagBlueGoal = true;
       if(goal_blue == 3){
-        alert("TEAM BLUE WINS");
-        location.reload();
+        flagBlueWin = true;
       }else{
         reset();
       }
     }
 
+    //Check red goal
     if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x <= -10){
       isMoving=false;
       goal_red += 1;
-      alert("GOAL! TEAM RED");
+      flagRedGoal = true;
       if(goal_red == 3){
-        alert("TEAM RED WINS");
-        location.reload();
+        flagRedWin = true;
       }else{
         reset();
       }
@@ -1340,6 +1725,81 @@ function startGame() {
   }
 
   animate();
+
+
+  function setVictoryBlue(){
+    ball.position.x = 0;
+    ball.position.z = 1;
+
+    //Winners positions
+    robot_1.position.x = 0;
+    robot_1.position.z = 0;
+    robot_1.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_2.position.x = -2;
+    robot_2.position.z = 0;
+    robot_2.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_5.position.x = 2;
+    robot_5.position.z = 0;
+    robot_5.rotation.y = 0 * (Math.PI / 180.0);
+
+    //Defeated positions
+    robot_3.position.x = -7;
+    robot_3.position.z = -3;
+    robot_3.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_4.position.x = -9;
+    robot_4.position.z = -3;
+    robot_4.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_6.position.x = -5;
+    robot_6.position.z = -3;
+    robot_6.rotation.y = 0 * (Math.PI / 180.0);
+
+    //Exultation animation
+    exultation(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1, spine_1);
+    exultation(robot_2, left_arm_2, right_arm_2, left_fore_arm_2, right_fore_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2, neck_2, head_2, spine_2);
+    exultation(robot_5, left_arm_5, right_arm_5, left_fore_arm_5, right_fore_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5, neck_5, head_5, spine_5);
+  }
+
+  function setVictoryRed(){
+    ball.position.x = 0;
+    ball.position.z = 1;
+
+    //Winners positions
+    robot_3.position.x = 0;
+    robot_3.position.z = 0;
+    robot_3.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_4.position.x = -2;
+    robot_4.position.z = 0;
+    robot_4.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_6.position.x = 2;
+    robot_6.position.z = 0;
+    robot_6.rotation.y = 0 * (Math.PI / 180.0);
+
+    //Defeated positions
+    robot_1.position.x = -7;
+    robot_1.position.z = -3;
+    robot_1.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_2.position.x = -9;
+    robot_2.position.z = -3;
+    robot_2.rotation.y = 0 * (Math.PI / 180.0);
+
+    robot_5.position.x = -5;
+    robot_5.position.z = -3;
+    robot_5.rotation.y = 0 * (Math.PI / 180.0);
+
+    //Exultation animation
+    exultation(robot_3, left_arm_3, right_arm_3, left_fore_arm_3, right_fore_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3, neck_3, head_3, spine_3);
+    exultation(robot_4, left_arm_4, right_arm_4, left_fore_arm_4, right_fore_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4, neck_4, head_4, spine_4);
+    exultation(robot_6, left_arm_6, right_arm_6, left_fore_arm_6, right_fore_arm_6, left_up_leg_6, left_leg_6, right_up_leg_6, right_leg_6, neck_6, head_6, spine_6);
+  }
+
+
 
   var next = false;
 
@@ -1413,9 +1873,8 @@ function startGame() {
 
       //console.log(diff_x+" "+diff_y+" "+clickX+" "+clickZ+" "+object.position.x+" "+object.position.z);
 
-       j = Math.sqrt((Math.pow(diff_y, 2)) / (Math.pow(diff_x, 2) + Math.pow(diff_y, 2))) * Math.sign(diff_y)*0.05;
-       k = (diff_x / diff_y) * j;
-
+      j = Math.sqrt((Math.pow(diff_y, 2)) / (Math.pow(diff_x, 2) + Math.pow(diff_y, 2))) * Math.sign(diff_y)*0.05;
+      k = (diff_x / diff_y) * j;
 
       if( object.position.x < clickX ){
         object.position.x += k;
@@ -1451,15 +1910,13 @@ function startGame() {
         next = true;
         nextTurn();
       }
-
     }
-
   }
 
 
-  var downarms=true;
-  var downlegs=true;
-  var spinelegs=true;
+  var downarms = true;
+  var downlegs = true;
+  var spinelegs = true;
 
   function running(object, left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head){
     var diff_x = clickX-object.position.x;
@@ -1531,18 +1988,17 @@ function startGame() {
         right_leg.rotation.x +=0.04;
       }
     }
-    neck.rotation.x =Math.PI * 0.35;
-    head.rotation.x =Math.PI * -0.25;
-
+    neck.rotation.x = Math.PI * 0.35;
+    head.rotation.x = Math.PI * -0.25;
   }
 
-  function esultanza(object, left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head, spine_1, spine1, spine2){
+  function exultation(object, left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head, spine){
     var diff_x = clickX-object.position.x;
     var diff_y = clickZ-object.position.z;
     var angoloRadianti = Math.atan2(diff_x,diff_y);
     object.rotation.y = angoloRadianti;
-    
-   
+
+
     // ARM RUNNING
     right_fore_arm.rotation.z = Math.PI*0.15;
     left_fore_arm.rotation.z = -Math.PI*0.15;
@@ -1556,7 +2012,7 @@ function startGame() {
         left_arm.rotation.z -=0.1;
         right_arm.rotation.z -= 0.1;
 
-        
+
       }
       else {
         downarms = false;
@@ -1575,25 +2031,25 @@ function startGame() {
 
     //LEGS RUNNING
     if(spinelegs){
-      if(  spine_1.rotation.z > Math.PI * -0.15){
-        spine_1.rotation.z -=0.02;
+      if(  spine.rotation.z > Math.PI * -0.15){
+        spine.rotation.z -=0.02;
       }
       else{
         spinelegs = false;
       }
 
-      
+
     }
     else{
-      if(  spine_1.rotation.z < 0.15){
-        spine_1.rotation.z +=0.02;
+      if(  spine.rotation.z < 0.15){
+        spine.rotation.z +=0.02;
       }
       else{
         spinelegs = true;
       }
-      
 
-      
+
+
     }
     if(downlegs){
       if(  left_up_leg.rotation.x > Math.PI * -0.15){
@@ -1631,7 +2087,7 @@ function startGame() {
         right_leg.rotation.x +=0.04;
       }
     }
-    
+
   }
 
 
@@ -1712,64 +2168,37 @@ function startGame() {
     }
   }
 
-/*
+
   function checkRobotCollisions(object){
     if(object.position.z < -6.5){
-      clickX = 0;
-      clickZ = 0;
+      object.position.z += 0.5;
+      clickX = object.position.x;
+      clickZ = object.position.z;
       stopRobot(object);
       setBound(object);
     }
     if(object.position.z > 6.5){
-      clickX = 0;
-      clickZ = 0;
+      object.position.z -= 0.5;
+      clickX = object.position.x;
+      clickZ = object.position.z;
       stopRobot(object);
       setBound(object);
     }
     if(object.position.x < -10){
-      clickX = 0;
-      clickZ = 0;
+      object.position.x += 0.5;
+      clickX = object.position.x;
+      clickZ = object.position.z;
       stopRobot(object);
       setBound(object);
     }
     if(object.position.x > 10){
-      clickX = 0;
-      clickZ = 0;
+      object.position.x -= 0.5;
+      clickX = object.position.x;
+      clickZ = object.position.z;
       stopRobot(object);
       setBound(object);
     }
   }
-*/
-function checkRobotCollisions(object){
-  if(object.position.z < -6.5){
-    object.position.z += 0.5;
-    clickX = object.position.x;
-    clickZ = object.position.z;
-    stopRobot(object);
-    setBound(object);
-  }
-  if(object.position.z > 6.5){
-    object.position.z -= 0.5;
-    clickX = object.position.x;
-    clickZ = object.position.z;
-    stopRobot(object);
-    setBound(object);
-  }
-  if(object.position.x < -10){
-    object.position.x += 0.5;
-    clickX = object.position.x;
-    clickZ = object.position.z;
-    stopRobot(object);
-    setBound(object);
-  }
-  if(object.position.x > 10){
-    object.position.x -= 0.5;
-    clickX = object.position.x;
-    clickZ = object.position.z;
-    stopRobot(object);
-    setBound(object);
-  }
-}
 
   function stopRobot(object){
     switch(object){
