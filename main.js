@@ -1573,6 +1573,7 @@ function startGame() {
       }else{
         isMoving = false;
         n_touch = 0;
+        //n_click = 1;
       }
       ball.rotation.z += normball2;
       ball.rotation.x += normball;
@@ -1592,7 +1593,6 @@ function startGame() {
       isMoving = true;
       times = 0;
       n_touch += 1;
-      //console.log(n_touch);
       if(n_touch == 1){
         nextPlayer();
       }
@@ -1610,7 +1610,6 @@ function startGame() {
       isMoving = true;
       times = 0;
       n_touch += 1;
-      //console.log(n_touch);
       if(n_touch == 1){
         nextPlayer();
       }
@@ -1628,7 +1627,6 @@ function startGame() {
       isMoving = true;
       times = 0;
       n_touch += 1;
-      //console.log(n_touch);
       if(n_touch == 1){
         nextPlayer();
       }
@@ -1646,7 +1644,6 @@ function startGame() {
       isMoving = true;
       times = 0;
       n_touch += 1;
-      //console.log(n_touch);
       if(n_touch == 1){
         nextPlayer();
       }
@@ -1664,7 +1661,6 @@ function startGame() {
       isMoving = true;
       times = 0;
       n_touch += 1;
-      //console.log(n_touch);
       if(n_touch == 1){
         nextPlayer();
       }
@@ -1682,7 +1678,6 @@ function startGame() {
       isMoving = true;
       times = 0;
       n_touch += 1;
-      //console.log(n_touch);
       if(n_touch == 1){
         nextPlayer();
       }
@@ -1721,6 +1716,7 @@ function startGame() {
 
     //Show blue victory screen
     if(flagBlueWin){
+      scene.remove(circle);
       scene.remove(text_GoalBlue);
       scene.remove(text_Score);
       scene.remove(text_GoalRed);
@@ -1735,6 +1731,7 @@ function startGame() {
 
     //Show red victory screen
     if(flagRedWin){
+      scene.remove(circle);
       scene.remove(text_GoalBlue);
       scene.remove(text_Score);
       scene.remove(text_GoalRed);
@@ -1752,6 +1749,9 @@ function startGame() {
       isMoving = false;
       goal_blue += 1;
       flagBlueGoal = true;
+      n_click = 1;
+      n_touch = 0;
+      //nextPlayer();
       if(goal_blue == 3){
         flagBlueWin = true;
       }else{
@@ -1764,12 +1764,17 @@ function startGame() {
       isMoving = false;
       goal_red += 1;
       flagRedGoal = true;
+      n_click = 1;
+      n_touch = 0;
+      //nextPlayer();
       if(goal_red == 3){
         flagRedWin = true;
       }else{
         reset();
       }
     }
+
+    console.log(n_touch);
 
     checkBallCollisions();
     checkRobotCollisions(robot_1);
@@ -1998,8 +2003,12 @@ function startGame() {
 
   var downarms = true;
   var downlegs = true;
+
   var downarms_stand = true;
   var downlegs_stand = true;
+
+  var downarms_exult = true;
+  var downlegs_exult = true;
   var spinelegs = true;
 
   function setForStanding(left_arm, right_arm, left_up_leg, left_leg, right_up_leg, right_leg){
@@ -2186,7 +2195,7 @@ function startGame() {
     right_arm.rotation.z = Math.PI * 0.35;
 
 
-    if(downarms){
+    if(downarms_exult){
       if( left_arm.rotation.z >  -Math.PI * 0.5){
         left_arm.rotation.z -= 0.1;
         right_arm.rotation.z -= 0.1;
@@ -2194,7 +2203,7 @@ function startGame() {
 
       }
       else {
-        downarms = false;
+        downarms_exult = false;
       }
     }else{
       if( left_arm.rotation.z < 0 ){
@@ -2204,7 +2213,7 @@ function startGame() {
 
       }
       else {
-        downarms = true;
+        downarms_exult = true;
       }
     }
 
@@ -2216,11 +2225,9 @@ function startGame() {
       else{
         spinelegs = false;
       }
-
-
     }
     else{
-      if(  spine.rotation.z < 0.15){
+      if(  spine.rotation.z < Math.PI * 0.15){
         spine.rotation.z += 0.02;
       }
       else{
@@ -2228,14 +2235,13 @@ function startGame() {
       }
 
 
-
     }
-    if(downlegs){
+    if(downlegs_exult){
       if(  left_up_leg.rotation.x > Math.PI * -0.15){
         left_up_leg.rotation.x -= 0.02;
       }
       else{
-        downlegs = false;
+        downlegs_exult = false;
       }
       if(  left_leg.rotation.x < Math.PI * 0.3){
         left_leg.rotation.x += 0.08;
@@ -2253,7 +2259,7 @@ function startGame() {
         left_up_leg.rotation.x += 0.02;
       }
       else{
-        downlegs = true;
+        downlegs_exult = true;
       }
       if(  left_leg.rotation.x > 0){
         left_leg.rotation.x -= 0.08;
