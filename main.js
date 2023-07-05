@@ -117,11 +117,6 @@ function startGame() {
   var arrowLength = 10; // Lunghezza della freccia
   var arrowColor = 0xff0000; // Colore della freccia
 
-  // Keyboard input variables
-  var moveForward = false;
-  var moveBackward = false;
-  var moveLeft = false;
-  var moveRight = false;
 
   var clickX = 0;
   var clickY = 0;
@@ -149,6 +144,9 @@ function startGame() {
   var cameraX = 0;
   var cameraY = 15;
   var cameraZ = 10;
+
+  var n_click = 1;
+
   // Handle key down events
   document.addEventListener('keydown', function(event) {
     switch (event.code) {
@@ -290,6 +288,7 @@ function startGame() {
   }
 
   function handleMouseMove(event) {
+    if(n_click == 1){
 
     const normalizedX = (event.clientX / window.innerWidth) * 2 - 1;
     const normalizedY = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -342,105 +341,110 @@ function startGame() {
       createArrow(robot_6, mouseX, mouseZ);
       scene.add(line);
     }
+    }
 
   }
 
   function handleMouseUp(event) {
-    mouseDown = false;
-    // console.log("Not normalized: "+endMouseX+" "+endMouseY);
+    //console.log("click on pre mouse up: "+n_click);
+    if(n_click == 1){
+      n_click += 1;
+      //console.log("click on post mouse up: "+n_click);
+      mouseDown = false;
+      // console.log("Not normalized: "+endMouseX+" "+endMouseY);
 
-    //Convert the viewport coordinates to normalized device coordinates (NDC)
-    const normalizedX = (endMouseX / window.innerWidth) * 2 - 1;
-    const normalizedY = -(endMouseY / window.innerHeight) * 2 + 1;
+      //Convert the viewport coordinates to normalized device coordinates (NDC)
+      const normalizedX = (endMouseX / window.innerWidth) * 2 - 1;
+      const normalizedY = -(endMouseY / window.innerHeight) * 2 + 1;
 
-    //Create a vector with the normalized device coordinates
-    const vector = new THREE.Vector3(normalizedX, normalizedY, 0);
+      //Create a vector with the normalized device coordinates
+      const vector = new THREE.Vector3(normalizedX, normalizedY, 0);
 
-    //Use the unproject method to convert the vector from NDC to world space
-    vector.unproject(camera);
+      //Use the unproject method to convert the vector from NDC to world space
+      vector.unproject(camera);
 
-    //Retrieve the camera's position and direction
-    const cameraPosition = camera.position;
-    const cameraDirection = vector.sub(cameraPosition).normalize();
+      //Retrieve the camera's position and direction
+      const cameraPosition = camera.position;
+      const cameraDirection = vector.sub(cameraPosition).normalize();
 
-    //Calculate the distance along the camera direction to find the 3D position
-    const distance = -cameraPosition.y / cameraDirection.y;
-    const clickPosition = cameraPosition.clone().add(cameraDirection.multiplyScalar(distance));
+      //Calculate the distance along the camera direction to find the 3D position
+      const distance = -cameraPosition.y / cameraDirection.y;
+      const clickPosition = cameraPosition.clone().add(cameraDirection.multiplyScalar(distance));
 
-    //Use the clickPosition vector to access the x, y, and z coordinates
-    clickX = clickPosition.x;
-    clickY = clickPosition.y;
-    clickZ = clickPosition.z;
-    //console.log("Normalized: "+clickX+" "+clickY+" "+clickZ);
+      //Use the clickPosition vector to access the x, y, and z coordinates
+      clickX = clickPosition.x;
+      clickY = clickPosition.y;
+      clickZ = clickPosition.z;
+      //console.log("Normalized: "+clickX+" "+clickY+" "+clickZ);
 
-    if(isRobotMoving && !endgame){
-      scene.remove(circle);
-      //createArrow(robot_1, clickX, clickZ);
-      //createCircle(robot_1);
+      if(isRobotMoving && !endgame){
+        scene.remove(circle);
+        //createArrow(robot_1, clickX, clickZ);
+        //createCircle(robot_1);
+        scene.add(line);
 
-      scene.add(line);
+        moveFrom = new THREE.Vector3(robot_1.position.x, robot_1.position.y, robot_1.position.z);
+        moveTo = new THREE.Vector3(clickX, robot_1.position.y, clickZ);
+        velocity = 0.1;
 
-      moveFrom = new THREE.Vector3(robot_1.position.x, robot_1.position.y, robot_1.position.z);
-      moveTo = new THREE.Vector3(clickX, robot_1.position.y, clickZ);
-      velocity = 0.1;
+      }
+
+      if(isRobotMoving2 && !endgame){
+        scene.remove(circle);
+        //createArrow(robot_2, clickX, clickZ);
+        //createCircle(robot_2);
+
+        scene.add(line);
+
+        moveFrom = new THREE.Vector3(robot_2.position.x, robot_2.position.y, robot_2.position.z);
+        moveTo = new THREE.Vector3(clickX, robot_2.position.y, clickZ);
+        velocity = 0.1;
+      }
+      if(isRobotMoving3 && !endgame){
+        scene.remove(circle);
+        //createArrow(robot_3, clickX, clickZ);
+        //createCircle(robot_3);
+
+        scene.add(line);
+
+        moveFrom = new THREE.Vector3(robot_3.position.x, robot_3.position.y, robot_3.position.z);
+        moveTo = new THREE.Vector3(clickX, robot_3.position.y, clickZ);
+        velocity = 0.1;
+      }
+      if(isRobotMoving4 && !endgame){
+        scene.remove(circle);
+        //createArrow(robot_4, clickX, clickZ);
+        //createCircle(robot_4);
+
+        scene.add(line);
+
+        moveFrom = new THREE.Vector3(robot_4.position.x, robot_4.position.y, robot_4.position.z);
+        moveTo = new THREE.Vector3(clickX, robot_4.position.y, clickZ);
+        velocity = 0.1;
+      }
+      if(isRobotMoving5 && !endgame){
+        scene.remove(circle);
+        //createArrow(robot_5, clickX, clickZ);
+        //createCircle(robot_5);
+
+        scene.add(line);
+
+        moveFrom = new THREE.Vector3(robot_5.position.x, robot_5.position.y, robot_5.position.z);
+        moveTo = new THREE.Vector3(clickX, robot_5.position.y, clickZ);
+        velocity = 0.1;
+      }
+      if(isRobotMoving6 && !endgame){
+        scene.remove(circle);
+        //createArrow(robot_6, clickX, clickZ);
+        //createCircle(robot_6);
+
+        scene.add(line);
+
+        moveFrom = new THREE.Vector3(robot_6.position.x, robot_6.position.y, robot_6.position.z);
+        moveTo = new THREE.Vector3(clickX, robot_6.position.y, clickZ);
+        velocity = 0.1;
+      }
     }
-
-    if(isRobotMoving2 && !endgame){
-      scene.remove(circle);
-      //createArrow(robot_2, clickX, clickZ);
-      //createCircle(robot_2);
-
-      scene.add(line);
-
-      moveFrom = new THREE.Vector3(robot_2.position.x, robot_2.position.y, robot_2.position.z);
-      moveTo = new THREE.Vector3(clickX, robot_2.position.y, clickZ);
-      velocity = 0.1;
-    }
-    if(isRobotMoving3 && !endgame){
-      scene.remove(circle);
-      //createArrow(robot_3, clickX, clickZ);
-      //createCircle(robot_3);
-
-      scene.add(line);
-
-      moveFrom = new THREE.Vector3(robot_3.position.x, robot_3.position.y, robot_3.position.z);
-      moveTo = new THREE.Vector3(clickX, robot_3.position.y, clickZ);
-      velocity = 0.1;
-    }
-    if(isRobotMoving4 && !endgame){
-      scene.remove(circle);
-      //createArrow(robot_4, clickX, clickZ);
-      //createCircle(robot_4);
-
-      scene.add(line);
-
-      moveFrom = new THREE.Vector3(robot_4.position.x, robot_4.position.y, robot_4.position.z);
-      moveTo = new THREE.Vector3(clickX, robot_4.position.y, clickZ);
-      velocity = 0.1;
-    }
-    if(isRobotMoving5 && !endgame){
-      scene.remove(circle);
-      //createArrow(robot_5, clickX, clickZ);
-      //createCircle(robot_5);
-
-      scene.add(line);
-
-      moveFrom = new THREE.Vector3(robot_5.position.x, robot_5.position.y, robot_5.position.z);
-      moveTo = new THREE.Vector3(clickX, robot_5.position.y, clickZ);
-      velocity = 0.1;
-    }
-    if(isRobotMoving6 && !endgame){
-      scene.remove(circle);
-      //createArrow(robot_6, clickX, clickZ);
-      //createCircle(robot_6);
-
-      scene.add(line);
-
-      moveFrom = new THREE.Vector3(robot_6.position.x, robot_6.position.y, robot_6.position.z);
-      moveTo = new THREE.Vector3(clickX, robot_6.position.y, clickZ);
-      velocity = 0.1;
-    }
-
   }
 
 
@@ -663,11 +667,6 @@ function startGame() {
   var leftEdgeBox;
   var rightEdgeBox;
 
-  //Accelleration parameters
-  var accellerationx;
-  var accellerationz;
-  var accellerationballx;
-  var accellerationballz;
 
   //Mesh components robot_1
   var spine_1;
@@ -1471,6 +1470,7 @@ function startGame() {
   var goal_time = 0;
 
 
+
   //Render the Scene; basically, anything you want to move or change
   //while the app is running has to go through the animate loop.
   function animate() {
@@ -1501,46 +1501,49 @@ function startGame() {
       createCircle(robot_1);
       moveRobot(robot_1, box_robot1);
       running(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1);
-
+    }else{
+      standing(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1);
     }
     if(isRobotMoving2){
       scene.remove(circle);
       createCircle(robot_2);
       moveRobot(robot_2, box_robot2);
       running(robot_2, left_arm_2, right_arm_2, left_fore_arm_2, right_fore_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2, neck_2, head_2);
+    }else{
+      standing(robot_2, left_arm_2, right_arm_2, left_fore_arm_2, right_fore_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2, neck_2, head_2);
     }
     if(isRobotMoving3){
       scene.remove(circle);
       createCircle(robot_3);
       moveRobot(robot_3, box_robot3);
       running(robot_3, left_arm_3, right_arm_3, left_fore_arm_3, right_fore_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3, neck_3, head_3);
+    }else{
+      standing(robot_3, left_arm_3, right_arm_3, left_fore_arm_3, right_fore_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3, neck_3, head_3);
     }
     if(isRobotMoving4){
       scene.remove(circle);
       createCircle(robot_4);
       moveRobot(robot_4, box_robot4);
       running(robot_4, left_arm_4, right_arm_4, left_fore_arm_4, right_fore_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4, neck_4, head_4);
+    }else{
+      standing(robot_4, left_arm_4, right_arm_4, left_fore_arm_4, right_fore_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4, neck_4, head_4);
     }
     if(isRobotMoving5){
       scene.remove(circle);
       createCircle(robot_5);
       moveRobot(robot_5, box_robot5);
       running(robot_5, left_arm_5, right_arm_5, left_fore_arm_5, right_fore_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5, neck_5, head_5);
+    }else{
+      standing(robot_5, left_arm_5, right_arm_5, left_fore_arm_5, right_fore_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5, neck_5, head_5);
     }
     if(isRobotMoving6){
       scene.remove(circle);
       createCircle(robot_6);
       moveRobot(robot_6, box_robot6);
       running(robot_6, left_arm_6, right_arm_6, left_fore_arm_6, right_fore_arm_6, left_up_leg_6, left_leg_6, right_up_leg_6, right_leg_6, neck_6, head_6);
+    }else{
+      standing(robot_6, left_arm_6, right_arm_6, left_fore_arm_6, right_fore_arm_6, left_up_leg_6, left_leg_6, right_up_leg_6, right_leg_6, neck_6, head_6);
     }
-
-
-    // Move the robot based on mouse input
-    if (moveForward) robot_1.position.z -= 0.1;
-    if (moveBackward) robot_1.position.z += 0.1;
-    if (moveLeft) robot_1.position.x -= 0.1;
-    if (moveRight) robot_1.position.x += 0.1;
-
 
 
     if(isMoving){
@@ -1576,13 +1579,7 @@ function startGame() {
       box_ball.setFromObject(ball);
     }
 
-    //Update the bounding boxes
-    if(moveForward||moveBackward||moveLeft||moveRight) box_robot1.setFromObject(robot_1);
-    if(moveForward||moveBackward||moveLeft||moveRight) box_robot2.setFromObject(robot_2);
-    if(moveForward||moveBackward||moveLeft||moveRight) box_robot3.setFromObject(robot_3);
-    if(moveForward||moveBackward||moveLeft||moveRight) box_robot4.setFromObject(robot_4);
-    if(moveForward||moveBackward||moveLeft||moveRight) box_robot5.setFromObject(robot_5);
-    if(moveForward||moveBackward||moveLeft||moveRight) box_robot6.setFromObject(robot_6);
+
     // Check for collisions
     if (box_robot1.intersectsBox(box_ball)) {
       //Collision detected, stop or modify the object's movement
@@ -1595,7 +1592,7 @@ function startGame() {
       isMoving = true;
       times = 0;
       n_touch += 1;
-      console.log(n_touch);
+      //console.log(n_touch);
       if(n_touch == 1){
         nextPlayer();
       }
@@ -1613,7 +1610,7 @@ function startGame() {
       isMoving = true;
       times = 0;
       n_touch += 1;
-      console.log(n_touch);
+      //console.log(n_touch);
       if(n_touch == 1){
         nextPlayer();
       }
@@ -1631,7 +1628,7 @@ function startGame() {
       isMoving = true;
       times = 0;
       n_touch += 1;
-      console.log(n_touch);
+      //console.log(n_touch);
       if(n_touch == 1){
         nextPlayer();
       }
@@ -1649,7 +1646,7 @@ function startGame() {
       isMoving = true;
       times = 0;
       n_touch += 1;
-      console.log(n_touch);
+      //console.log(n_touch);
       if(n_touch == 1){
         nextPlayer();
       }
@@ -1667,7 +1664,7 @@ function startGame() {
       isMoving = true;
       times = 0;
       n_touch += 1;
-      console.log(n_touch);
+      //console.log(n_touch);
       if(n_touch == 1){
         nextPlayer();
       }
@@ -1685,7 +1682,7 @@ function startGame() {
       isMoving = true;
       times = 0;
       n_touch += 1;
-      console.log(n_touch);
+      //console.log(n_touch);
       if(n_touch == 1){
         nextPlayer();
       }
@@ -1736,7 +1733,6 @@ function startGame() {
       goal_time += 1;
     }
 
-
     //Show red victory screen
     if(flagRedWin){
       scene.remove(text_GoalBlue);
@@ -1765,7 +1761,7 @@ function startGame() {
 
     //Check red goal
     if(ball.position.z>=-3 && ball.position.z<=3 && ball.position.x <= -10){
-      isMoving=false;
+      isMoving = false;
       goal_red += 1;
       flagRedGoal = true;
       if(goal_red == 3){
@@ -1791,6 +1787,12 @@ function startGame() {
 
 
   function setVictoryBlue(){
+    clickX = 0;
+    clickZ = 10;
+    moveRobot(robot_1, box_robot1);
+    moveRobot(robot_2, box_robot2);
+    moveRobot(robot_5, box_robot5);
+
     ball.position.x = 0;
     ball.position.z = 1;
 
@@ -1831,6 +1833,12 @@ function startGame() {
   }
 
   function setVictoryRed(){
+    clickX = 0;
+    clickZ = 10;
+    moveRobot(robot_3, box_robot3);
+    moveRobot(robot_4, box_robot4);
+    moveRobot(robot_6, box_robot6);
+
     ball.position.x = 0;
     ball.position.z = 1;
 
@@ -1888,7 +1896,8 @@ function startGame() {
 
   function nextTurn(){
     if(next){
-      //console.log(thisrobot);
+      n_click = 1;
+      //console.log(n_click);
       if(thisrobot == 0 || thisrobot == 1 || thisrobot == 4){ //blue team
         turn = 2;
         thisrobot = 2;
@@ -1989,7 +1998,100 @@ function startGame() {
 
   var downarms = true;
   var downlegs = true;
+  var downarms_stand = true;
+  var downlegs_stand = true;
   var spinelegs = true;
+
+  function setForStanding(left_arm, right_arm, left_up_leg, left_leg, right_up_leg, right_leg){
+    left_arm.rotation.x = Math.PI * -0.05;
+    right_arm.rotation.x =  Math.PI * 0.05;
+    left_up_leg.rotation.x = Math.PI * -0.05;
+    left_leg.rotation.x = Math.PI * 0.1;
+    right_up_leg.rotation.x = 0.05;
+    right_leg.rotation.x = 0;
+  }
+
+  function setForRunning(left_arm, right_arm, left_up_leg, left_leg, right_up_leg, right_leg){
+    left_arm.rotation.x = Math.PI * -0.35;
+    right_arm.rotation.x =  Math.PI * 0.35;
+    left_up_leg.rotation.x = Math.PI * -0.15;
+    left_leg.rotation.x = Math.PI * 0.3;
+    right_up_leg.rotation.x = 0.15;
+    right_leg.rotation.x = 0;
+  }
+
+  function standing(object, left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head){
+    var diff_x = ball.position.x-object.position.x;
+    var diff_y = ball.position.z-object.position.z;
+    var angoloRadianti = Math.atan2(diff_x,diff_y);
+    object.rotation.y = angoloRadianti;
+
+    // ARM RUNNING
+    left_arm.rotation.z = Math.PI * -0.4;
+    right_arm.rotation.z = Math.PI * 0.4;
+    left_fore_arm.rotation.y = Math.PI * -0.1;
+    right_fore_arm.rotation.y = Math.PI * 0.1;
+    if(downarms_stand){
+      if( left_arm.rotation.x >  Math.PI * -0.05){
+        left_arm.rotation.x -= 0.01;
+      }
+      else {
+        downarms_stand = false;
+      }
+      if( right_arm.rotation.x <  Math.PI * 0.05){
+        right_arm.rotation.x += 0.01;
+      }
+    }else{
+      if( left_arm.rotation.x <  Math.PI * 0.05){
+        left_arm.rotation.x += 0.01;
+      }
+      else {
+        downarms_stand = true;
+      }
+      if( right_arm.rotation.x >  Math.PI * -0.05){
+        right_arm.rotation.x -= 0.01;
+      }
+    }
+    //LEGS RUNNING
+    if(downlegs_stand){
+      if(  left_up_leg.rotation.x > Math.PI * -0.05){
+        left_up_leg.rotation.x -= 0.005;
+      }
+      else{
+        downlegs_stand = false;
+      }
+      if(  left_leg.rotation.x < Math.PI * 0.1){
+        left_leg.rotation.x += 0.008;
+      }
+
+      if(  right_up_leg.rotation.x < 0.05){
+        right_up_leg.rotation.x += 0.005;
+      }
+      if(  right_leg.rotation.x > 0){
+        right_leg.rotation.x -= 0.008;
+      }
+    }
+    else{
+      if(  left_up_leg.rotation.x < 0.05){
+        left_up_leg.rotation.x += 0.005;
+      }
+      else{
+        downlegs_stand = true;
+      }
+      if(  left_leg.rotation.x > 0){
+        left_leg.rotation.x -= 0.008;
+      }
+
+      if(  right_up_leg.rotation.x > Math.PI * -0.05){
+        right_up_leg.rotation.x -= 0.005;
+      }
+      if(  right_leg.rotation.x < Math.PI * 0.1){
+        right_leg.rotation.x += 0.008;
+      }
+    }
+    neck.rotation.x = Math.PI * 0.35;
+    head.rotation.x = Math.PI * -0.25;
+  }
 
   function running(object, left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head){
     var diff_x = clickX-object.position.x;
@@ -2002,63 +2104,63 @@ function startGame() {
     left_arm.rotation.z = Math.PI * -0.35;
     right_arm.rotation.z = Math.PI * 0.35;
     left_fore_arm.rotation.y = Math.PI * -0.5;
-    right_fore_arm.rotation.y =Math.PI * 0.5;
+    right_fore_arm.rotation.y = Math.PI * 0.5;
     if(downarms){
       if( left_arm.rotation.x >  Math.PI * -0.35){
-        left_arm.rotation.x -=0.08;
+        left_arm.rotation.x -= 0.08;
       }
       else {
         downarms = false;
       }
       if( right_arm.rotation.x <  Math.PI * 0.35){
-        right_arm.rotation.x +=0.08;
+        right_arm.rotation.x += 0.08;
       }
     }else{
       if( left_arm.rotation.x <  Math.PI * 0.35){
-        left_arm.rotation.x +=0.08;
+        left_arm.rotation.x += 0.08;
       }
       else {
         downarms = true;
       }
       if( right_arm.rotation.x >  Math.PI * -0.35){
-        right_arm.rotation.x -=0.08;
+        right_arm.rotation.x -= 0.08;
       }
     }
     //LEGS RUNNING
     if(downlegs){
       if(  left_up_leg.rotation.x > Math.PI * -0.15){
-        left_up_leg.rotation.x -=0.02;
+        left_up_leg.rotation.x -= 0.02;
       }
       else{
         downlegs = false;
       }
       if(  left_leg.rotation.x < Math.PI * 0.3){
-        left_leg.rotation.x +=0.08;
+        left_leg.rotation.x += 0.08;
       }
 
       if(  right_up_leg.rotation.x < 0.15){
-        right_up_leg.rotation.x +=0.02;
+        right_up_leg.rotation.x += 0.02;
       }
       if(  right_leg.rotation.x > 0){
-        right_leg.rotation.x -=0.08;
+        right_leg.rotation.x -= 0.08;
       }
     }
     else{
       if(  left_up_leg.rotation.x < 0.15){
-        left_up_leg.rotation.x +=0.02;
+        left_up_leg.rotation.x += 0.02;
       }
       else{
         downlegs = true;
       }
       if(  left_leg.rotation.x > 0){
-        left_leg.rotation.x -=0.08;
+        left_leg.rotation.x -= 0.08;
       }
 
       if(  right_up_leg.rotation.x > Math.PI * -0.15){
         right_up_leg.rotation.x -=0.02;
       }
       if(  right_leg.rotation.x < Math.PI * 0.3){
-        right_leg.rotation.x +=0.04;
+        right_leg.rotation.x += 0.08;
       }
     }
     neck.rotation.x = Math.PI * 0.35;
@@ -2072,28 +2174,21 @@ function startGame() {
     object.rotation.y = angoloRadianti;
 
 
-    right_fore_arm.rotation.z = Math.PI*0.15;
-    left_fore_arm.rotation.z = -Math.PI*0.15;
+    right_fore_arm.rotation.z = Math.PI * 0.15;
+    left_fore_arm.rotation.z = -Math.PI * 0.15;
     left_arm.rotation.x = Math.PI;
-    right_arm.rotation.x =-Math.PI;
-    left_fore_arm.rotation.y =0;
-    right_fore_arm.rotation.y =0 ;
+    right_arm.rotation.x = -Math.PI;
+    left_fore_arm.rotation.y = 0;
+    right_fore_arm.rotation.y = 0 ;
 
 
-    left_arm.rotation.z = Math.PI*-0.35;
-    right_arm.rotation.z = Math.PI*0.35;
+    left_arm.rotation.z = Math.PI * -0.35;
+    right_arm.rotation.z = Math.PI * 0.35;
 
-    // ARM RUNNING
-
-    //console.log("left "+left_arm.rotation.z);
-    //console.log("right "+right_arm.rotation.z);
-
-    //left_arm.rotation.z = Math.PI*-0.5;
-    //right_arm.rotation.z = Math.PI*0.5;
 
     if(downarms){
-      if( left_arm.rotation.z >  -Math.PI*0.5){
-        left_arm.rotation.z -=0.1;
+      if( left_arm.rotation.z >  -Math.PI * 0.5){
+        left_arm.rotation.z -= 0.1;
         right_arm.rotation.z -= 0.1;
 
 
@@ -2104,7 +2199,7 @@ function startGame() {
     }else{
       if( left_arm.rotation.z < 0 ){
         left_arm.rotation.z += 0.1;
-        right_arm.rotation.z +=0.1;
+        right_arm.rotation.z += 0.1;
 
 
       }
@@ -2116,7 +2211,7 @@ function startGame() {
     //LEGS RUNNING
     if(spinelegs){
       if(  spine.rotation.z > Math.PI * -0.15){
-        spine.rotation.z -=0.02;
+        spine.rotation.z -= 0.02;
       }
       else{
         spinelegs = false;
@@ -2126,7 +2221,7 @@ function startGame() {
     }
     else{
       if(  spine.rotation.z < 0.15){
-        spine.rotation.z +=0.02;
+        spine.rotation.z += 0.02;
       }
       else{
         spinelegs = true;
@@ -2137,38 +2232,38 @@ function startGame() {
     }
     if(downlegs){
       if(  left_up_leg.rotation.x > Math.PI * -0.15){
-        left_up_leg.rotation.x -=0.02;
+        left_up_leg.rotation.x -= 0.02;
       }
       else{
         downlegs = false;
       }
       if(  left_leg.rotation.x < Math.PI * 0.3){
-        left_leg.rotation.x +=0.08;
+        left_leg.rotation.x += 0.08;
       }
 
       if(  right_up_leg.rotation.x < 0.15){
-        right_up_leg.rotation.x +=0.02;
+        right_up_leg.rotation.x += 0.02;
       }
       if(  right_leg.rotation.x > 0){
-        right_leg.rotation.x -=0.08;
+        right_leg.rotation.x -= 0.08;
       }
     }
     else{
       if(  left_up_leg.rotation.x < 0.15){
-        left_up_leg.rotation.x +=0.02;
+        left_up_leg.rotation.x += 0.02;
       }
       else{
         downlegs = true;
       }
       if(  left_leg.rotation.x > 0){
-        left_leg.rotation.x -=0.08;
+        left_leg.rotation.x -= 0.08;
       }
 
       if(  right_up_leg.rotation.x > Math.PI * -0.15){
-        right_up_leg.rotation.x -=0.02;
+        right_up_leg.rotation.x -= 0.02;
       }
       if(  right_leg.rotation.x < Math.PI * 0.3){
-        right_leg.rotation.x +=0.04;
+        right_leg.rotation.x += 0.04;
       }
     }
 
@@ -2180,51 +2275,87 @@ function startGame() {
   function setThisRobot(thisrobot) {
     if(thisrobot == 0){
       isRobotMoving = true;
+      setForRunning(left_arm_1, right_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1);
       isRobotMoving2 = false;
+      setForStanding(left_arm_2, right_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2);
       isRobotMoving3 = false;
+      setForStanding(left_arm_3, right_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3);
       isRobotMoving4 = false;
+      setForStanding(left_arm_4, right_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4);
       isRobotMoving5 = false;
+      setForStanding(left_arm_5, right_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5);
       isRobotMoving6 = false;
+      setForStanding(left_arm_6, right_arm_6, left_up_leg_6, left_leg_6, right_up_leg_6, right_leg_6);
     }
     if(thisrobot == 1){
       isRobotMoving = false;
+      setForStanding(left_arm_1, right_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1);
       isRobotMoving2 = true;
+      setForRunning(left_arm_2, right_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2);
       isRobotMoving3 = false;
+      setForStanding(left_arm_3, right_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3);
       isRobotMoving4 = false;
+      setForStanding(left_arm_4, right_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4);
       isRobotMoving5 = false;
+      setForStanding(left_arm_5, right_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5);
       isRobotMoving6 = false;
+      setForStanding(left_arm_6, right_arm_6, left_up_leg_6, left_leg_6, right_up_leg_6, right_leg_6);
     }
     if(thisrobot == 2){
       isRobotMoving = false;
+      setForStanding(left_arm_1, right_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1);
       isRobotMoving2 = false;
+      setForStanding(left_arm_2, right_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2);
       isRobotMoving3 = true;
+      setForRunning(left_arm_3, right_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3);
       isRobotMoving4 = false;
+      setForStanding(left_arm_4, right_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4);
       isRobotMoving5 = false;
+      setForStanding(left_arm_5, right_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5);
       isRobotMoving6 = false;
+      setForStanding(left_arm_6, right_arm_6, left_up_leg_6, left_leg_6, right_up_leg_6, right_leg_6);
     }
     if(thisrobot == 3){
       isRobotMoving = false;
+      setForStanding(left_arm_1, right_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1);
       isRobotMoving2 = false;
+      setForStanding(left_arm_2, right_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2);
       isRobotMoving3 = false;
+      setForStanding(left_arm_3, right_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3);
       isRobotMoving4 = true;
+      setForRunning(left_arm_4, right_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4);
       isRobotMoving5 = false;
+      setForStanding(left_arm_5, right_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5);
       isRobotMoving6 = false;
+      setForStanding(left_arm_6, right_arm_6, left_up_leg_6, left_leg_6, right_up_leg_6, right_leg_6);
     }
     if(thisrobot == 4){
       isRobotMoving = false;
+      setForStanding(left_arm_1, right_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1);
       isRobotMoving2 = false;
+      setForStanding(left_arm_2, right_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2);
       isRobotMoving3 = false;
+      setForStanding(left_arm_3, right_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3);
       isRobotMoving4 = false;
+      setForStanding(left_arm_4, right_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4);
       isRobotMoving5 = true;
+      setForRunning(left_arm_5, right_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5);
       isRobotMoving6 = false;
+      setForStanding(left_arm_6, right_arm_6, left_up_leg_6, left_leg_6, right_up_leg_6, right_leg_6);
     }
     if(thisrobot == 5){
       isRobotMoving = false;
+      setForStanding(left_arm_1, right_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1);
       isRobotMoving2 = false;
+      setForStanding(left_arm_2, right_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2);
       isRobotMoving3 = false;
+      setForStanding(left_arm_3, right_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3);
       isRobotMoving4 = false;
+      setForStanding(left_arm_4, right_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4);
       isRobotMoving5 = false;
+      setForStanding(left_arm_5, right_arm_5, left_up_leg_5, left_leg_5, right_up_leg_5, right_leg_5);
       isRobotMoving6 = true;
+      setForRunning(left_arm_6, right_arm_6, left_up_leg_6, left_leg_6, right_up_leg_6, right_leg_6);
     }
   }
 
