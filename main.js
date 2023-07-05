@@ -130,6 +130,7 @@ function startGame() {
   var mouseY = 0;
   var mouseZ = 0;
 
+
   var endgame = false;
 
   var thisrobot = 0;
@@ -275,12 +276,9 @@ function startGame() {
   var moveTo;
   var velocity;
 
-  //var mousePos = { x: undefined, y: undefined };
-
   document.addEventListener('mousedown', handleMouseDown);
-  document.addEventListener('mousemove', handleMouseMove, true);
+  document.addEventListener('mousemove', handleMouseMove);
   document.addEventListener('mouseup', handleMouseUp);
-
 
   function handleMouseDown(event) {
     mouseDown = true;
@@ -292,6 +290,58 @@ function startGame() {
   }
 
   function handleMouseMove(event) {
+
+    const normalizedX = (event.clientX / window.innerWidth) * 2 - 1;
+    const normalizedY = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    const vector = new THREE.Vector3(normalizedX, normalizedY, 0);
+
+    //Use the unproject method to convert the vector from NDC to world space
+    vector.unproject(camera);
+
+    //Retrieve the camera's position and direction
+    const cameraPosition = camera.position;
+    const cameraDirection = vector.sub(cameraPosition).normalize();
+
+    //Calculate the distance along the camera direction to find the 3D position
+    const mousedistance = -cameraPosition.y / cameraDirection.y;
+    const mousePosition = cameraPosition.clone().add(cameraDirection.multiplyScalar(mousedistance))
+    mouseX = mousePosition.x;
+    mouseY = mousePosition.y;
+    mouseZ = mousePosition.z;
+
+    //console.log("thisrobot"+thisrobot);
+
+    if(thisrobot == 0){
+      scene.remove(line);
+      createArrow(robot_1, mouseX, mouseZ);
+      scene.add(line);
+    }
+    if(thisrobot == 1){
+      scene.remove(line);
+      createArrow(robot_2, mouseX, mouseZ);
+      scene.add(line);
+    }
+    if(thisrobot == 2){
+      scene.remove(line);
+      createArrow(robot_3, mouseX, mouseZ);
+      scene.add(line);
+    }
+    if(thisrobot == 3){
+      scene.remove(line);
+      createArrow(robot_4, mouseX, mouseZ);
+      scene.add(line);
+    }
+    if(thisrobot == 4){
+      scene.remove(line);
+      createArrow(robot_5, mouseX, mouseZ);
+      scene.add(line);
+    }
+    if(thisrobot == 5){
+      scene.remove(line);
+      createArrow(robot_6, mouseX, mouseZ);
+      scene.add(line);
+    }
 
   }
 
@@ -325,7 +375,7 @@ function startGame() {
 
     if(isRobotMoving && !endgame){
       scene.remove(circle);
-      createArrow(robot_1, clickX, clickZ);
+      //createArrow(robot_1, clickX, clickZ);
       //createCircle(robot_1);
 
       scene.add(line);
@@ -337,7 +387,7 @@ function startGame() {
 
     if(isRobotMoving2 && !endgame){
       scene.remove(circle);
-      createArrow(robot_2, clickX, clickZ);
+      //createArrow(robot_2, clickX, clickZ);
       //createCircle(robot_2);
 
       scene.add(line);
@@ -348,7 +398,7 @@ function startGame() {
     }
     if(isRobotMoving3 && !endgame){
       scene.remove(circle);
-      createArrow(robot_3, clickX, clickZ);
+      //createArrow(robot_3, clickX, clickZ);
       //createCircle(robot_3);
 
       scene.add(line);
@@ -359,7 +409,7 @@ function startGame() {
     }
     if(isRobotMoving4 && !endgame){
       scene.remove(circle);
-      createArrow(robot_4, clickX, clickZ);
+      //createArrow(robot_4, clickX, clickZ);
       //createCircle(robot_4);
 
       scene.add(line);
@@ -370,7 +420,7 @@ function startGame() {
     }
     if(isRobotMoving5 && !endgame){
       scene.remove(circle);
-      createArrow(robot_5, clickX, clickZ);
+      //createArrow(robot_5, clickX, clickZ);
       //createCircle(robot_5);
 
       scene.add(line);
@@ -381,7 +431,7 @@ function startGame() {
     }
     if(isRobotMoving6 && !endgame){
       scene.remove(circle);
-      createArrow(robot_6, clickX, clickZ);
+      //createArrow(robot_6, clickX, clickZ);
       //createCircle(robot_6);
 
       scene.add(line);
@@ -392,6 +442,7 @@ function startGame() {
     }
 
   }
+
 
   function createArrow(object, endPointX, endPointZ) {
     // Create the start and end points for the line
@@ -1417,8 +1468,6 @@ function startGame() {
   var flagBlueWin = false;
   var flagRedWin = false;
 
-  var exultationBlue = false;
-
   var goal_time = 0;
 
 
@@ -1452,6 +1501,7 @@ function startGame() {
       createCircle(robot_1);
       moveRobot(robot_1, box_robot1);
       running(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1);
+
     }
     if(isRobotMoving2){
       scene.remove(circle);
@@ -1502,10 +1552,11 @@ function startGame() {
         if (times == 0){
           var positionx= clickX-ballvx;
           var positiony= clickZ-ballvy;
+          /*
           console.log("Position X: "+positionx+" Position Y"+positiony);
           console.log("CLICK X: "+clickX+" CLICK Z"+clickZ);
           console.log("BALL X: "+ballvx+" BALL Z"+ballvy);
-          console.log("NORMBALL X: "+normball+" NORMBALL Z"+normball2);
+          console.log("NORMBALL X: "+normball+" NORMBALL Z"+normball2);*/
         }
         if(isNaN(normball)){
           normball = 0;
@@ -1513,11 +1564,12 @@ function startGame() {
         if(isNaN(normball2)){
           normball2 = 0;
         }
-        ball.position.x += normball;
-        ball.position.z += normball2;
+        ball.position.x += normball*2;
+        ball.position.z += normball2*2;
         times += 1;
       }else{
         isMoving = false;
+        n_touch = 0;
       }
       ball.rotation.z += normball2;
       ball.rotation.x += normball;
@@ -1542,7 +1594,12 @@ function startGame() {
       //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
       isMoving = true;
       times = 0;
-      nextPlayer();
+      n_touch += 1;
+      console.log(n_touch);
+      if(n_touch == 1){
+        nextPlayer();
+      }
+      stop();
     }
 
     if (box_robot2.intersectsBox(box_ball)) {
@@ -1555,7 +1612,12 @@ function startGame() {
       //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
       isMoving = true;
       times = 0;
-      nextPlayer();
+      n_touch += 1;
+      console.log(n_touch);
+      if(n_touch == 1){
+        nextPlayer();
+      }
+      stop();
     }
 
     if (box_robot3.intersectsBox(box_ball)) {
@@ -1568,7 +1630,12 @@ function startGame() {
       //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
       isMoving = true;
       times = 0;
-      nextPlayer();
+      n_touch += 1;
+      console.log(n_touch);
+      if(n_touch == 1){
+        nextPlayer();
+      }
+      stop();
     }
 
     if (box_robot4.intersectsBox(box_ball)) {
@@ -1581,7 +1648,12 @@ function startGame() {
       //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
       isMoving = true;
       times = 0;
-      nextPlayer();
+      n_touch += 1;
+      console.log(n_touch);
+      if(n_touch == 1){
+        nextPlayer();
+      }
+      stop();
     }
 
     if (box_robot5.intersectsBox(box_ball)) {
@@ -1594,7 +1666,12 @@ function startGame() {
       //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
       isMoving = true;
       times = 0;
-      nextPlayer();
+      n_touch += 1;
+      console.log(n_touch);
+      if(n_touch == 1){
+        nextPlayer();
+      }
+      stop();
     }
 
     if (box_robot6.intersectsBox(box_ball)) {
@@ -1607,7 +1684,12 @@ function startGame() {
       //console.log("Velocità urto in z: "+ballvx+"Velocità urto in z:"+ballvy);
       isMoving = true;
       times = 0;
-      nextPlayer();
+      n_touch += 1;
+      console.log(n_touch);
+      if(n_touch == 1){
+        nextPlayer();
+      }
+      stop();
     }
 
     //Show blue goal screen and update score
@@ -1709,8 +1791,6 @@ function startGame() {
 
 
   function setVictoryBlue(){
-    scene.remove(circle);
-
     ball.position.x = 0;
     ball.position.z = 1;
 
@@ -1740,6 +1820,10 @@ function startGame() {
     robot_6.position.z = -3;
     robot_6.rotation.y = 0 * (Math.PI / 180.0);
 
+    isRobotMoving3 = false;
+    isRobotMoving4 = false;
+    isRobotMoving6 = false;
+
     //Exultation animation
     exultation(robot_1, left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1, spine_1);
     exultation(robot_2, left_arm_2, right_arm_2, left_fore_arm_2, right_fore_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2, neck_2, head_2, spine_2);
@@ -1747,8 +1831,6 @@ function startGame() {
   }
 
   function setVictoryRed(){
-    scene.remove(circle);
-
     ball.position.x = 0;
     ball.position.z = 1;
 
@@ -1778,6 +1860,10 @@ function startGame() {
     robot_5.position.z = -3;
     robot_5.rotation.y = 0 * (Math.PI / 180.0);
 
+    isRobotMoving = false;
+    isRobotMoving2 = false;
+    isRobotMoving5 = false;
+
     //Exultation animation
     exultation(robot_3, left_arm_3, right_arm_3, left_fore_arm_3, right_fore_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3, neck_3, head_3, spine_3);
     exultation(robot_4, left_arm_4, right_arm_4, left_fore_arm_4, right_fore_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4, neck_4, head_4, spine_4);
@@ -1788,12 +1874,14 @@ function startGame() {
 
   var next = false;
 
-
-  function nextPlayer(){
-    scene.remove(line);
+  function stop(){
     clickX = 0;
     clickY = 0;
     clickZ = 0;
+  }
+
+  function nextPlayer(){
+    scene.remove(line);
     next = true;
     nextTurn();
   }
@@ -1984,11 +2072,22 @@ function startGame() {
     object.rotation.y = angoloRadianti;
 
 
-    // ARM RUNNING
     right_fore_arm.rotation.z = Math.PI*0.15;
     left_fore_arm.rotation.z = -Math.PI*0.15;
     left_arm.rotation.x = Math.PI;
     right_arm.rotation.x =-Math.PI;
+    left_fore_arm.rotation.y =0;
+    right_fore_arm.rotation.y =0 ;
+
+
+    left_arm.rotation.z = Math.PI*-0.35;
+    right_arm.rotation.z = Math.PI*0.35;
+
+    // ARM RUNNING
+
+    //console.log("left "+left_arm.rotation.z);
+    //console.log("right "+right_arm.rotation.z);
+
     //left_arm.rotation.z = Math.PI*-0.5;
     //right_arm.rotation.z = Math.PI*0.5;
 
@@ -2135,21 +2234,25 @@ function startGame() {
       isMoving = false;
       ball.position.z += 1;
       box_ball.setFromObject(ball);
+      n_touch = 0;
     }
     if(ball.position.z > 6.5){
       isMoving = false;
       ball.position.z -= 1;
       box_ball.setFromObject(ball);
+      n_touch = 0;
     }
     if(ball.position.x < -10){
       isMoving = false;
       ball.position.x += 1;
       box_ball.setFromObject(ball);
+      n_touch = 0;
     }
     if(ball.position.x > 10){
       isMoving = false;
       ball.position.x -= 1;
       box_ball.setFromObject(ball);
+      n_touch = 0;
     }
   }
 
