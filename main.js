@@ -6,10 +6,10 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 //Import orbit controls
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-//Import tween.js for smooth animation
-import * as TWEEN from '@tweenjs/tween.js';
-
+//Import font loader
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+
+//Import TextGeometry for 3D text
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 // Get references to the menu elements
