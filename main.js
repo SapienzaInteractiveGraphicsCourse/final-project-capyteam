@@ -164,10 +164,12 @@ function startGame() {
         moveCameraRight = true;
         break;
       case 'KeyQ':
+        if(n_click == 1){
         clickX = 0;
         clickZ = 0;
         scene.remove(line);
-scene.remove(cone);        if ( turn == 1){
+        scene.remove(cone);
+        if ( turn == 1){
           if(thisrobot ==0){
             scene.remove(circle);
             createCircle(robot_5);
@@ -201,12 +203,15 @@ scene.remove(cone);        if ( turn == 1){
           }
         }
         setThisRobot(thisrobot);
+        }
         break;
       case 'KeyE':
+        if(n_click == 1){
         clickX = 0;
         clickZ = 0;
         scene.remove(line);
-scene.remove(cone);        if ( turn == 1){
+        scene.remove(cone);
+        if ( turn == 1){
           if(thisrobot ==4){
             scene.remove(circle);
             createCircle(robot_1);
@@ -241,6 +246,7 @@ scene.remove(cone);        if ( turn == 1){
 
         }
         setThisRobot(thisrobot);
+        }
         break;
 
     }
@@ -724,10 +730,11 @@ scene.remove(cone);        if ( turn == 1){
   var box_robot6;
   var box_ball;
 
+  /*
   var bottomEdgeBox;
   var topEdgeBox;
   var leftEdgeBox;
-  var rightEdgeBox;
+  var rightEdgeBox;*/
 
 
   //Mesh components robot_1
@@ -1204,7 +1211,7 @@ scene.remove(cone);        if ( turn == 1){
     });
 
     football_pitch.position.y = -0.05;
-
+    /*
     // Create bounding boxes for the edges
     const pitchSize = new THREE.Box3().setFromObject(football_pitch).getSize(new THREE.Vector3());
 
@@ -1237,6 +1244,7 @@ scene.remove(cone);        if ( turn == 1){
       new THREE.Vector3(pitchSize.x, pitchSize.y, 0.1)
     ), edgeMaterial);
     scene.add(bottomEdgeBox);
+    */
 
   }, undefined, function (error) {
     console.error(error);
@@ -1262,6 +1270,41 @@ scene.remove(cone);        if ( turn == 1){
     box_ball = new THREE.Box3().setFromObject(ball);
     const size_ball = box_ball.getSize(new THREE.Vector3()).length();
     const center_ball = box_ball.getCenter(new THREE.Vector3());
+
+  }, undefined, function (error) {
+    console.error(error);
+  });
+
+  loader.load('models/blueBot/blueBot.gltf', function (gltf8) {
+    scene.add(gltf8.scene);
+    gltf8.scene.traverse(function (child) {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+
+    gltf8.scene.position.x = 0;
+    gltf8.scene.position.y = 0;
+    gltf8.scene.position.z = 0;
+    gltf8.scene.rotation.y = 0 * (Math.PI / 180.0);
+    gltf8.scene.scale.set(1.7, 1.7, 1.7);
+
+    //NECK AND HEAD
+    gltf8.scene.getObjectByName('mixamorigNeck');
+    gltf8.scene.getObjectByName('mixamorigHead');
+    // LEFT ARM
+    gltf8.scene.getObjectByName('mixamorigLeftArm').rotation.set(0,0,Math.PI*-0.5);
+    gltf8.scene.getObjectByName('mixamorigLeftForeArm');
+    // RIGHT ARM
+    gltf8.scene.getObjectByName('mixamorigRightArm').rotation.set(0,0,Math.PI*0.5);
+    gltf8.scene.getObjectByName('mixamorigRightForeArm');
+    // LEFT LEG
+    gltf8.scene.getObjectByName('mixamorigLeftUpLeg').rotation.set(Math.PI*-0.5,0,0);
+    gltf8.scene.getObjectByName('mixamorigLeftLeg').rotation.set(Math.PI*0.5,0,0);
+    // RIGHT LEG
+    gltf8.scene.getObjectByName('mixamorigRightUpLeg').rotation.set(Math.PI*-0.5,0,0);
+    gltf8.scene.getObjectByName('mixamorigRightLeg').rotation.set(Math.PI*0.5,0,0);
 
   }, undefined, function (error) {
     console.error(error);
@@ -1784,7 +1827,7 @@ scene.remove(cone);        if ( turn == 1){
       scene.remove(text_GoalRed);
       scene.add(text_VictoryBlue);
       setVictoryBlue();
-      confetti();
+      //confetti();
       endgame = true;
       if(goal_time > 300){
         location.reload();
@@ -1799,7 +1842,7 @@ scene.remove(cone);        if ( turn == 1){
       scene.remove(text_Score);
       scene.remove(text_GoalRed);
       scene.add(text_VictoryRed);
-      confetti();
+      //confetti();
       setVictoryRed();
       endgame = true;
       if(goal_time > 300){
@@ -1959,7 +2002,8 @@ scene.remove(cone);        if ( turn == 1){
 
   function nextPlayer(){
     scene.remove(line);
-scene.remove(cone);    next = true;
+    scene.remove(cone);
+    next = true;
     nextTurn();
   }
 
