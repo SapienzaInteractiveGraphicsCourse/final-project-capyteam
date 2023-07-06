@@ -1784,6 +1784,7 @@ scene.add(cone);
       scene.remove(text_GoalRed);
       scene.add(text_VictoryBlue);
       setVictoryBlue();
+      confetti();
       endgame = true;
       if(goal_time > 300){
         location.reload();
@@ -1798,6 +1799,7 @@ scene.add(cone);
       scene.remove(text_Score);
       scene.remove(text_GoalRed);
       scene.add(text_VictoryRed);
+      confetti();
       setVictoryRed();
       endgame = true;
       if(goal_time > 300){
