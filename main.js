@@ -23,6 +23,7 @@ const instructionsContainer = document.getElementById('instructionsContainer');
 startButton.addEventListener('click', startGame);
 instructionsButton.addEventListener('click', showInstructions);
 modelsButton.addEventListener('click', showModels);
+var cone;
 
 
 
@@ -66,7 +67,7 @@ function showModels() {
   const fontLoader = new FontLoader();
 
   // Load the font file
-  fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+  fontLoader.load('fonts/helvetiker_regular.typeface.json', function (font) {
     const textGeometry = new TextGeometry('Hello, 3D World!', {
       font: font,
       size: 80,
@@ -166,7 +167,7 @@ function startGame() {
         clickX = 0;
         clickZ = 0;
         scene.remove(line);
-        if ( turn == 1){
+scene.remove(cone);        if ( turn == 1){
           if(thisrobot ==0){
             scene.remove(circle);
             createCircle(robot_5);
@@ -205,7 +206,7 @@ function startGame() {
         clickX = 0;
         clickZ = 0;
         scene.remove(line);
-        if ( turn == 1){
+scene.remove(cone);        if ( turn == 1){
           if(thisrobot ==4){
             scene.remove(circle);
             createCircle(robot_1);
@@ -270,6 +271,7 @@ function startGame() {
   var endMouseY = 0;
   var line;
 
+
   var moveFrom;
   var moveTo;
   var velocity;
@@ -282,7 +284,7 @@ function startGame() {
     mouseDown = true;
 
     scene.remove(line);
-
+    scene.remove(cone);
     endMouseX = event.clientX;
     endMouseY = event.clientY;
   }
@@ -313,34 +315,40 @@ function startGame() {
 
     if(thisrobot == 0){
       scene.remove(line);
-      createArrow(robot_1, mouseX, mouseZ);
+      scene.remove(cone);      
+  createArrow(robot_1, mouseX, mouseZ);
       scene.add(line);
+      //scene.add(cone);
     }
     if(thisrobot == 1){
       scene.remove(line);
-      createArrow(robot_2, mouseX, mouseZ);
+scene.remove(cone);      createArrow(robot_2, mouseX, mouseZ);
       scene.add(line);
-    }
+//scene.add(cone);  
+  }
     if(thisrobot == 2){
       scene.remove(line);
-      createArrow(robot_3, mouseX, mouseZ);
+scene.remove(cone);      createArrow(robot_3, mouseX, mouseZ);
       scene.add(line);
-    }
+//scene.add(cone); 
+   }
     if(thisrobot == 3){
       scene.remove(line);
-      createArrow(robot_4, mouseX, mouseZ);
+scene.remove(cone);      createArrow(robot_4, mouseX, mouseZ);
       scene.add(line);
-    }
+//scene.add(cone);   
+ }
     if(thisrobot == 4){
       scene.remove(line);
-      createArrow(robot_5, mouseX, mouseZ);
+scene.remove(cone);      createArrow(robot_5, mouseX, mouseZ);
       scene.add(line);
-    }
+//scene.add(cone);  
+  }
     if(thisrobot == 5){
       scene.remove(line);
-      createArrow(robot_6, mouseX, mouseZ);
+scene.remove(cone);      createArrow(robot_6, mouseX, mouseZ);
       scene.add(line);
-    }
+scene.add(cone);    }
     }
 
   }
@@ -382,7 +390,7 @@ function startGame() {
         //createArrow(robot_1, clickX, clickZ);
         //createCircle(robot_1);
         scene.add(line);
-
+scene.add(cone);
         moveFrom = new THREE.Vector3(robot_1.position.x, robot_1.position.y, robot_1.position.z);
         moveTo = new THREE.Vector3(clickX, robot_1.position.y, clickZ);
         velocity = 0.1;
@@ -395,7 +403,7 @@ function startGame() {
         //createCircle(robot_2);
 
         scene.add(line);
-
+scene.add(cone);
         moveFrom = new THREE.Vector3(robot_2.position.x, robot_2.position.y, robot_2.position.z);
         moveTo = new THREE.Vector3(clickX, robot_2.position.y, clickZ);
         velocity = 0.1;
@@ -406,7 +414,7 @@ function startGame() {
         //createCircle(robot_3);
 
         scene.add(line);
-
+scene.add(cone);
         moveFrom = new THREE.Vector3(robot_3.position.x, robot_3.position.y, robot_3.position.z);
         moveTo = new THREE.Vector3(clickX, robot_3.position.y, clickZ);
         velocity = 0.1;
@@ -417,7 +425,7 @@ function startGame() {
         //createCircle(robot_4);
 
         scene.add(line);
-
+scene.add(cone);
         moveFrom = new THREE.Vector3(robot_4.position.x, robot_4.position.y, robot_4.position.z);
         moveTo = new THREE.Vector3(clickX, robot_4.position.y, clickZ);
         velocity = 0.1;
@@ -428,7 +436,7 @@ function startGame() {
         //createCircle(robot_5);
 
         scene.add(line);
-
+scene.add(cone);
         moveFrom = new THREE.Vector3(robot_5.position.x, robot_5.position.y, robot_5.position.z);
         moveTo = new THREE.Vector3(clickX, robot_5.position.y, clickZ);
         velocity = 0.1;
@@ -439,7 +447,7 @@ function startGame() {
         //createCircle(robot_6);
 
         scene.add(line);
-
+scene.add(cone);
         moveFrom = new THREE.Vector3(robot_6.position.x, robot_6.position.y, robot_6.position.z);
         moveTo = new THREE.Vector3(clickX, robot_6.position.y, clickZ);
         velocity = 0.1;
@@ -450,25 +458,79 @@ function startGame() {
 
   function createArrow(object, endPointX, endPointZ) {
     // Create the start and end points for the line
-    const startPoint = new THREE.Vector3(object.position.x, object.position.y, object.position.z);
-    const endPoint = new THREE.Vector3(endPointX, object.position.y, endPointZ);
+    scene.remove(cone);
+    const start = new THREE.Vector3(object.position.x, object.position.y, object.position.z);
+    const end = new THREE.Vector3(endPointX, object.position.y, endPointZ);
+    const connection = end.clone().sub(start);
+    const distance = connection.length()*0.5;
+    const direction = connection.clone().normalize();
+    const midpoint = start.clone().add(connection.multiplyScalar(0.5));
+    var cymaterial;
+    var material;
+    const cygeometry = new THREE. CylinderGeometry(0.05, 0.05, distance);
+    if(turn == 1){
+       cymaterial = new THREE.MeshBasicMaterial ({color: 0x24AADF});
+      }
+      if(turn == 2){
+        cymaterial = new THREE.MeshBasicMaterial ({color: 0xFFADA3});
+      }
 
-    // Create a buffer geometry for the line
-    const lineGeometry = new THREE.BufferGeometry().setFromPoints([startPoint, endPoint]);
+    const cylinder = new THREE.Mesh(cygeometry, cymaterial );
 
-    // Create a material for the line
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+     // Create the triangle
+     const geometry = new THREE.ConeGeometry( 0.25, 0.5, 32 ); 
+     if(turn == 1){
+      material = new THREE.MeshBasicMaterial ({color: 0x24AADF,
+        side: THREE.DoubleSide,
+        wireframe: false,});
+     }
+     if(turn == 2){
+       material = new THREE.MeshBasicMaterial ({color: 0xFFADA3,
+        side: THREE.DoubleSide,
+        wireframe: false,});
+     }
+      cone = new THREE.Mesh(geometry, material );
+    
+     //cone.position.add(end);
 
-    // Create the line using the geometry and material
-    line = new THREE.Line(lineGeometry, lineMaterial);
+    line = new THREE.Group();
+    line.add(cylinder);
+    //line.add(cone);
+    cone.position.copy(midpoint); 
+    cone.position.copy(midpoint);
+
+  const coneDirection = end.clone().sub(midpoint).normalize();
+  const coneRotationY = Math.atan2(coneDirection.x, coneDirection.z);
+  const coneRotationZ = Math.asin(coneDirection.y);
+
+  cone.rotation.set(0, coneRotationY+ Math.PI / 2.0, coneRotationZ + Math.PI / 2.0);
+
+    const halfDistance = direction.clone().multiplyScalar(distance / 2.0);
+
+
+    line.position.copy(start);
+    line.position.add(halfDistance);
+    //cone.position.add(halfDistance);
+   // cone.lookAt(end);
+    // cone.rotation.y = Math.PI/ 2.0;
+    //cone.rotation.x = Math.PI;
+
+    //scene.add(line);
+    scene.add(cone);
+    line.lookAt(end);
+
+
+    cylinder.rotation.x = Math.PI / 2.0;
+
   }
+
 
   function createCircle(object) {
     const circleGeometry = new THREE.CircleGeometry(0.5, 32);
     var circleMaterial;
     if(turn == 1){
       circleMaterial = new THREE.MeshBasicMaterial({
-        color: 0x00008B ,
+        color: 0x24AADF ,
         side: THREE.DoubleSide,
         wireframe: false,
         //linewidth: 5
@@ -476,7 +538,7 @@ function startGame() {
     }
     if(turn == 2){
       circleMaterial = new THREE.MeshBasicMaterial({
-        color: 0x8B0000 ,
+        color: 0xFFADA3 ,
         side: THREE.DoubleSide,
         wireframe: false,
         //linewidth: 5
@@ -1226,10 +1288,10 @@ function startGame() {
 
   function writeScore(){
     // Create the 3D text for Blue score
-    fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+    fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
       const textGeometry = new TextGeometry(goal_blue.toString(), {
         font: font,
-        size: 4,
+        size: 3,
         height: 0.1,
         curveSegments: 12,
         bevelEnabled: true,
@@ -1245,7 +1307,7 @@ function startGame() {
       const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
       textGeometry.translate(-textWidth*1.5, 5, 0);
 
-      const textMaterial = new THREE.MeshBasicMaterial({ color: 0x00008B });
+      const textMaterial = new THREE.MeshBasicMaterial({ color: 0x24AADF });
       text_GoalBlue = new THREE.Mesh(textGeometry, textMaterial);
 
       // Rotate the text to face the camera
@@ -1258,10 +1320,10 @@ function startGame() {
     });
 
     // Create the 3D text for - symbol
-    fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+    fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
       const textGeometry = new TextGeometry('-', {
         font: font,
-        size: 4,
+        size: 3,
         height: 0.1,
         curveSegments: 12,
         bevelEnabled: true,
@@ -1290,10 +1352,10 @@ function startGame() {
     });
 
     // Create the 3D text for Red score
-    fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+    fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
       const textGeometry = new TextGeometry(goal_red.toString(), {
         font: font,
-        size: 4,
+        size: 3,
         height: 0.1,
         curveSegments: 12,
         bevelEnabled: true,
@@ -1309,7 +1371,7 @@ function startGame() {
       const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
       textGeometry.translate(textWidth*0.5, 5, 0);
 
-      const textMaterial = new THREE.MeshBasicMaterial({ color: 0x8B0000 });
+      const textMaterial = new THREE.MeshBasicMaterial({ color: 0xFFADA3 });
       text_GoalRed = new THREE.Mesh(textGeometry, textMaterial);
 
       // Rotate the text to face the camera
@@ -1325,7 +1387,7 @@ function startGame() {
   writeScore();
 
   // Create the 3D text for blue goal
-  fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+  fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
     const textGeometry = new TextGeometry('GOAL!', {
       font: font,
       size: 4,
@@ -1344,7 +1406,7 @@ function startGame() {
     const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
     textGeometry.translate(-textWidth / 2, 5, 0);
 
-    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x00008B });
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x24AADF });
     text_ExultationBlue = new THREE.Mesh(textGeometry, textMaterial);
 
     // Rotate the text to face the camera
@@ -1356,7 +1418,7 @@ function startGame() {
   });
 
   // Create the 3D text for red goal
-  fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+  fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
     const textGeometry = new TextGeometry('GOAL!', {
       font: font,
       size: 4,
@@ -1375,7 +1437,7 @@ function startGame() {
     const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
     textGeometry.translate(-textWidth / 2, 5, 0);
 
-    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x8B0000 });
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0xFFADA3 });
     text_ExultationRed = new THREE.Mesh(textGeometry, textMaterial);
 
     // Rotate the text to face the camera
@@ -1387,7 +1449,7 @@ function startGame() {
   });
 
   // Create the 3D text for blue victory
-  fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+  fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
     const textGeometry = new TextGeometry('BLUE WINS!', {
       font: font,
       size: 4,
@@ -1406,7 +1468,7 @@ function startGame() {
     const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
     textGeometry.translate(-textWidth / 2, 5, 0);
 
-    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x00008B });
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x24AADF });
     text_VictoryBlue = new THREE.Mesh(textGeometry, textMaterial);
 
     // Rotate the text to face the camera
@@ -1418,7 +1480,7 @@ function startGame() {
   });
 
   // Create the 3D text for red victory
-  fontLoader.load('fonts/optimer_regular.typeface.json', function (font) {
+  fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
     const textGeometry = new TextGeometry('RED WINS!', {
       font: font,
       size: 4,
@@ -1437,7 +1499,7 @@ function startGame() {
     const textWidth = textBoundingBox.max.x - textBoundingBox.min.x;
     textGeometry.translate(-textWidth / 2, 5, 0);
 
-    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x8B0000 });
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0xFFADA3 });
     text_VictoryRed = new THREE.Mesh(textGeometry, textMaterial);
 
     // Rotate the text to face the camera
@@ -1551,7 +1613,7 @@ function startGame() {
       normball2=0;
       if(times < 8){
         normball =  Math.sign(ballvx)*(Math.sqrt(ballvx*ballvx - 0.1*0.1) * (0.4) / 9);
-        normball2 = Math.sign(ballvy)*Math.sqrt(ballvy*ballvy - 0.1*0.1) * (0.4) / 9;
+        normball2 = Math.sign(ballvy)*(Math.sqrt(ballvy*ballvy - 0.1*0.1) * (0.4) / 9);
         if (times == 0){
           var positionx= clickX-ballvx;
           var positiony= clickZ-ballvy;
@@ -1567,8 +1629,8 @@ function startGame() {
         if(isNaN(normball2)){
           normball2 = 0;
         }
-        ball.position.x += normball*2;
-        ball.position.z += normball2*2;
+        ball.position.x += normball*1.5;
+        ball.position.z += normball2*1.5;
         times += 1;
       }else{
         isMoving = false;
@@ -1895,7 +1957,7 @@ function startGame() {
 
   function nextPlayer(){
     scene.remove(line);
-    next = true;
+scene.remove(cone);    next = true;
     nextTurn();
   }
 
@@ -1918,7 +1980,7 @@ function startGame() {
 
   function reset(){
     scene.remove(line);
-
+scene.remove(cone);
     robot_1.position.x = -5;
     robot_1.position.z = 3;
     robot_1.rotation.y = 90 * (Math.PI / 180.0);
@@ -1960,7 +2022,7 @@ function startGame() {
 
       //console.log(diff_x+" "+diff_y+" "+clickX+" "+clickZ+" "+object.position.x+" "+object.position.z);
 
-      j = Math.sqrt((Math.pow(diff_y, 2)) / (Math.pow(diff_x, 2) + Math.pow(diff_y, 2))) * Math.sign(diff_y)*0.05;
+      j = Math.sqrt((Math.pow(diff_y, 2)) / (Math.pow(diff_x, 2) + Math.pow(diff_y, 2))) * Math.sign(diff_y)*0.05*2.5;
       k = (diff_x / diff_y) * j;
 
       if( object.position.x < clickX ){
@@ -1991,7 +2053,7 @@ function startGame() {
 
       if(object.position.x == clickX && object.position.z == clickZ){
         scene.remove(line);
-        clickX = 0;
+scene.remove(cone);        clickX = 0;
         clickY = 0;
         clickZ = 0;
         next = true;
@@ -2098,8 +2160,8 @@ function startGame() {
         right_leg.rotation.x += 0.008;
       }
     }
-    neck.rotation.x = Math.PI * 0.35;
-    head.rotation.x = Math.PI * -0.25;
+   // neck.rotation.x = Math.PI * 0.35;
+    //head.rotation.x = Math.PI * -0.25;
   }
 
   function running(object, left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head){
