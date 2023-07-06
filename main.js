@@ -315,40 +315,40 @@ scene.remove(cone);        if ( turn == 1){
 
     if(thisrobot == 0){
       scene.remove(line);
-      scene.remove(cone);      
-  createArrow(robot_1, mouseX, mouseZ);
+      scene.remove(cone);
+      createArrow(robot_1, mouseX, mouseZ);
       scene.add(line);
-      //scene.add(cone);
     }
     if(thisrobot == 1){
       scene.remove(line);
-scene.remove(cone);      createArrow(robot_2, mouseX, mouseZ);
+      scene.remove(cone);
+      createArrow(robot_2, mouseX, mouseZ);
       scene.add(line);
-//scene.add(cone);  
-  }
+    }
     if(thisrobot == 2){
       scene.remove(line);
-scene.remove(cone);      createArrow(robot_3, mouseX, mouseZ);
+      scene.remove(cone);
+      createArrow(robot_3, mouseX, mouseZ);
       scene.add(line);
-//scene.add(cone); 
-   }
+    }
     if(thisrobot == 3){
       scene.remove(line);
-scene.remove(cone);      createArrow(robot_4, mouseX, mouseZ);
+      scene.remove(cone);
+      createArrow(robot_4, mouseX, mouseZ);
       scene.add(line);
-//scene.add(cone);   
- }
+    }
     if(thisrobot == 4){
       scene.remove(line);
-scene.remove(cone);      createArrow(robot_5, mouseX, mouseZ);
+      scene.remove(cone);
+      createArrow(robot_5, mouseX, mouseZ);
       scene.add(line);
-//scene.add(cone);  
-  }
+    }
     if(thisrobot == 5){
       scene.remove(line);
-scene.remove(cone);      createArrow(robot_6, mouseX, mouseZ);
+      scene.remove(cone);
+      createArrow(robot_6, mouseX, mouseZ);
       scene.add(line);
-scene.add(cone);    }
+    }
     }
 
   }
@@ -390,7 +390,7 @@ scene.add(cone);    }
         //createArrow(robot_1, clickX, clickZ);
         //createCircle(robot_1);
         scene.add(line);
-scene.add(cone);
+        scene.add(cone);
         moveFrom = new THREE.Vector3(robot_1.position.x, robot_1.position.y, robot_1.position.z);
         moveTo = new THREE.Vector3(clickX, robot_1.position.y, clickZ);
         velocity = 0.1;
@@ -403,7 +403,7 @@ scene.add(cone);
         //createCircle(robot_2);
 
         scene.add(line);
-scene.add(cone);
+        scene.add(cone);
         moveFrom = new THREE.Vector3(robot_2.position.x, robot_2.position.y, robot_2.position.z);
         moveTo = new THREE.Vector3(clickX, robot_2.position.y, clickZ);
         velocity = 0.1;
@@ -414,7 +414,7 @@ scene.add(cone);
         //createCircle(robot_3);
 
         scene.add(line);
-scene.add(cone);
+        scene.add(cone);
         moveFrom = new THREE.Vector3(robot_3.position.x, robot_3.position.y, robot_3.position.z);
         moveTo = new THREE.Vector3(clickX, robot_3.position.y, clickZ);
         velocity = 0.1;
@@ -425,7 +425,7 @@ scene.add(cone);
         //createCircle(robot_4);
 
         scene.add(line);
-scene.add(cone);
+        scene.add(cone);
         moveFrom = new THREE.Vector3(robot_4.position.x, robot_4.position.y, robot_4.position.z);
         moveTo = new THREE.Vector3(clickX, robot_4.position.y, clickZ);
         velocity = 0.1;
@@ -436,7 +436,7 @@ scene.add(cone);
         //createCircle(robot_5);
 
         scene.add(line);
-scene.add(cone);
+        scene.add(cone);
         moveFrom = new THREE.Vector3(robot_5.position.x, robot_5.position.y, robot_5.position.z);
         moveTo = new THREE.Vector3(clickX, robot_5.position.y, clickZ);
         velocity = 0.1;
@@ -447,7 +447,7 @@ scene.add(cone);
         //createCircle(robot_6);
 
         scene.add(line);
-scene.add(cone);
+        scene.add(cone);
         moveFrom = new THREE.Vector3(robot_6.position.x, robot_6.position.y, robot_6.position.z);
         moveTo = new THREE.Vector3(clickX, robot_6.position.y, clickZ);
         velocity = 0.1;
@@ -478,7 +478,7 @@ scene.add(cone);
     const cylinder = new THREE.Mesh(cygeometry, cymaterial );
 
      // Create the triangle
-     const geometry = new THREE.ConeGeometry( 0.25, 0.5, 32 ); 
+     const geometry = new THREE.ConeGeometry( 0.25, 0.5, 32 );
      if(turn == 1){
       material = new THREE.MeshBasicMaterial ({color: 0x24AADF,
         side: THREE.DoubleSide,
@@ -490,13 +490,13 @@ scene.add(cone);
         wireframe: false,});
      }
       cone = new THREE.Mesh(geometry, material );
-    
+
      //cone.position.add(end);
 
     line = new THREE.Group();
     line.add(cylinder);
     //line.add(cone);
-    cone.position.copy(midpoint); 
+    cone.position.copy(midpoint);
     cone.position.copy(midpoint);
 
   const coneDirection = end.clone().sub(midpoint).normalize();
