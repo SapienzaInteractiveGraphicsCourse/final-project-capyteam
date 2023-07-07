@@ -863,7 +863,6 @@ function startGame() {
   var right_leg_6;
   var right_foot_6;
 
-
   //sinistra in basso
   loader.load('models/blueBot/blueBot.gltf', function (gltf) {
     robot_1 = gltf.scene;
@@ -1274,6 +1273,7 @@ function startGame() {
   }, undefined, function (error) {
     console.error(error);
   });
+
 function caricaModello(x,y,z){
 
 
@@ -1307,18 +1307,34 @@ function caricaModello(x,y,z){
     // RIGHT LEG
     gltf8.scene.getObjectByName('mixamorigRightUpLeg').rotation.set(Math.PI*-0.5,0,0);
     gltf8.scene.getObjectByName('mixamorigRightLeg').rotation.set(Math.PI*0.5,0,0);
+    console.log(gltf8.scene);
 
   }, undefined, function (error) {
     console.error(error);
   });
 }
 
+
+
+
+
 for (let y = -1; y <2; y++) {
   for (let x = -9; x <= -2; x+=2.5) {
-    const z = -10 + (y * -1.5); // Calcolo del valore di z in base a y
+    const z = -11 + (y * -2); // Calcolo del valore di z in base a y
     caricaModello(x, y-0.25, z-0.5);
   }
 }
+
+
+function animateHead(object){
+  var diff_x = ball.position.x-object.position.x;
+  var diff_y = ball.position.z-object.position.z;
+  var angoloRadianti = Math.atan2(diff_x,diff_y);
+  object.getElementById("mixamorigHead").rotation.y = angoloRadianti;
+}
+
+
+
   //GENERATE 3D TEXT FOR GOAL AND WIN
 
   // Create the text geometry
@@ -1583,12 +1599,16 @@ for (let y = -1; y <2; y++) {
 
   var goal_time = 0;
 
+  var load_time = 0;
+
+  var confetti_time = 0;
 
 
   //Render the Scene; basically, anything you want to move or change
   //while the app is running has to go through the animate loop.
   function animate() {
     requestAnimationFrame(animate);
+    if(load_time > 100){
 
     // Moving the camera
     if (moveCameraForward) {
@@ -1836,8 +1856,10 @@ for (let y = -1; y <2; y++) {
       scene.remove(text_GoalRed);
       scene.add(text_VictoryBlue);
       setVictoryBlue();
-      
-      confetti();
+      if(confetti_time < 30){
+        confetti();
+        confetti_time++;
+      }
       endgame = true;
       if(goal_time > 300){
         location.reload();
@@ -1852,7 +1874,10 @@ for (let y = -1; y <2; y++) {
       scene.remove(text_Score);
       scene.remove(text_GoalRed);
       scene.add(text_VictoryRed);
-      confetti();
+      if(confetti_time < 30){
+        confetti();
+        confetti_time++;
+      }
       setVictoryRed();
       endgame = true;
       if(goal_time > 300){
@@ -1891,7 +1916,7 @@ for (let y = -1; y <2; y++) {
       }
     }
 
-    console.log(n_touch);
+    //console.log(n_touch);
 
     checkBallCollisions();
     checkRobotCollisions(robot_1);
@@ -1902,10 +1927,16 @@ for (let y = -1; y <2; y++) {
     checkRobotCollisions(robot_6);
 
 
+
+  }else{
+    load_time++;
+  }
+
     renderer.render(scene, camera);
   }
 
   animate();
+
 
 
   function setVictoryBlue(){
