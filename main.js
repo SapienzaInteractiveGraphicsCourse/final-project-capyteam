@@ -1274,40 +1274,116 @@ function startGame() {
     console.error(error);
   });
 
-function caricaModello(x,y,z){
-
+function loadBlueModel(x,y,z){
 
   loader.load('models/blueBot/blueBot.gltf', function (gltf8) {
-    scene.add(gltf8.scene);
-    gltf8.scene.traverse(function (child) {
+    const model = gltf8.scene;
+    scene.add(model);
+    model.traverse(function (child) {
       if (child.isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
       }
     });
 
-    gltf8.scene.position.x = x;
-    gltf8.scene.position.y = y;
-    gltf8.scene.position.z = z;
-    gltf8.scene.rotation.y = 0 * (Math.PI / 180.0);
-    gltf8.scene.scale.set(1.7, 1.7, 1.7);
+    model.position.x = x;
+    model.position.y = y;
+    model.position.z = z;
+    model.rotation.y = 0 * (Math.PI / 180.0);
+    model.scale.set(1.7, 1.7, 1.7);
 
     //NECK AND HEAD
-    gltf8.scene.getObjectByName('mixamorigNeck');
-    gltf8.scene.getObjectByName('mixamorigHead');
+    model.getObjectByName('mixamorigNeck');
+    model.getObjectByName('mixamorigHead');
     // LEFT ARM
-    gltf8.scene.getObjectByName('mixamorigLeftArm').rotation.set(0,0,Math.PI*-0.5);
-    gltf8.scene.getObjectByName('mixamorigLeftForeArm');
+    model.getObjectByName('mixamorigLeftArm').rotation.set(0,0,Math.PI*-0.5);
+    model.getObjectByName('mixamorigLeftForeArm');
     // RIGHT ARM
-    gltf8.scene.getObjectByName('mixamorigRightArm').rotation.set(0,0,Math.PI*0.5);
-    gltf8.scene.getObjectByName('mixamorigRightForeArm');
+    model.getObjectByName('mixamorigRightArm').rotation.set(0,0,Math.PI*0.5);
+    model.getObjectByName('mixamorigRightForeArm');
     // LEFT LEG
-    gltf8.scene.getObjectByName('mixamorigLeftUpLeg').rotation.set(Math.PI*-0.5,0,0);
-    gltf8.scene.getObjectByName('mixamorigLeftLeg').rotation.set(Math.PI*0.5,0,0);
+    model.getObjectByName('mixamorigLeftUpLeg').rotation.set(Math.PI*-0.5,0,0);
+    model.getObjectByName('mixamorigLeftLeg').rotation.set(Math.PI*0.5,0,0);
     // RIGHT LEG
-    gltf8.scene.getObjectByName('mixamorigRightUpLeg').rotation.set(Math.PI*-0.5,0,0);
-    gltf8.scene.getObjectByName('mixamorigRightLeg').rotation.set(Math.PI*0.5,0,0);
-    console.log(gltf8.scene);
+    model.getObjectByName('mixamorigRightUpLeg').rotation.set(Math.PI*-0.5,0,0);
+    model.getObjectByName('mixamorigRightLeg').rotation.set(Math.PI*0.5,0,0);
+
+
+    // Create an AnimationMixer
+    const mixer = new THREE.AnimationMixer(model);
+
+    // Get the animation clips from the gltf.animations array
+    const clips = gltf8.animations;
+
+    // Create a rotation animation for the head
+    const rotationAnimation = new THREE.AnimationClip('headRotation', -1, [
+      new THREE.QuaternionKeyframeTrack('mixamorigHead.quaternion', [0, 2], [
+        new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0),
+        new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI * 2)
+      ])
+    ]);
+
+    // Add the rotation animation to the clips array
+    clips.push(rotationAnimation);
+
+    console.log(clips.length);
+    // Play the animation
+    const action = mixer.clipAction(clips[1]);
+    action.play();
+
+    // Create a clock
+    const clock = new THREE.Clock();
+
+    // Update the animation in each frame
+    function updateAnimation() {
+      const deltaTimeInSeconds = clock.getDelta();
+      mixer.update(deltaTimeInSeconds);
+
+      // Call the updateAnimation function recursively on the next frame
+      requestAnimationFrame(updateAnimation);
+    }
+
+    // Start the animation loop
+    updateAnimation();
+
+  }, undefined, function (error) {
+    console.error(error);
+  });
+}
+
+function loadRedModel(x,y,z){
+
+
+  loader.load('models/redBot/redBot.gltf', function (gltf9) {
+    scene.add(gltf9.scene);
+    gltf9.scene.traverse(function (child) {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+
+    gltf9.scene.position.x = x;
+    gltf9.scene.position.y = y;
+    gltf9.scene.position.z = z;
+    gltf9.scene.rotation.y = 0 * (Math.PI / 180.0);
+    gltf9.scene.scale.set(1.7, 1.7, 1.7);
+
+    //NECK AND HEAD
+    gltf9.scene.getObjectByName('mixamorigNeck');
+    gltf9.scene.getObjectByName('mixamorigHead');
+    // LEFT ARM
+    gltf9.scene.getObjectByName('mixamorigLeftArm').rotation.set(0,0,Math.PI*-0.5);
+    gltf9.scene.getObjectByName('mixamorigLeftForeArm');
+    // RIGHT ARM
+    gltf9.scene.getObjectByName('mixamorigRightArm').rotation.set(0,0,Math.PI*0.5);
+    gltf9.scene.getObjectByName('mixamorigRightForeArm');
+    // LEFT LEG
+    gltf9.scene.getObjectByName('mixamorigLeftUpLeg').rotation.set(Math.PI*-0.5,0,0);
+    gltf9.scene.getObjectByName('mixamorigLeftLeg').rotation.set(Math.PI*0.5,0,0);
+    // RIGHT LEG
+    gltf9.scene.getObjectByName('mixamorigRightUpLeg').rotation.set(Math.PI*-0.5,0,0);
+    gltf9.scene.getObjectByName('mixamorigRightLeg').rotation.set(Math.PI*0.5,0,0);
 
   }, undefined, function (error) {
     console.error(error);
@@ -1317,11 +1393,17 @@ function caricaModello(x,y,z){
 
 
 
+for (let y = -1; y <2; y++) {
+  for (let x = -8.5; x <= -2.5; x+=2) {
+    const z = -11 + (y * -2); // Calcolo del valore di z in base a y
+    loadBlueModel(x, y-0.2, z-0.5);
+  }
+}
 
 for (let y = -1; y <2; y++) {
-  for (let x = -9; x <= -2; x+=2.5) {
+  for (let x = 3; x <= 9; x+=2) {
     const z = -11 + (y * -2); // Calcolo del valore di z in base a y
-    caricaModello(x, y-0.25, z-0.5);
+    loadRedModel(x, y-0.2, z-0.5);
   }
 }
 
