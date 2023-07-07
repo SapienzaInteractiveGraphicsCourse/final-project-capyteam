@@ -1274,6 +1274,8 @@ function startGame() {
   }, undefined, function (error) {
     console.error(error);
   });
+function caricaModello(x,y,z){
+
 
   loader.load('models/blueBot/blueBot.gltf', function (gltf8) {
     scene.add(gltf8.scene);
@@ -1284,9 +1286,9 @@ function startGame() {
       }
     });
 
-    gltf8.scene.position.x = 0;
-    gltf8.scene.position.y = 0;
-    gltf8.scene.position.z = 0;
+    gltf8.scene.position.x = x;
+    gltf8.scene.position.y = y;
+    gltf8.scene.position.z = z;
     gltf8.scene.rotation.y = 0 * (Math.PI / 180.0);
     gltf8.scene.scale.set(1.7, 1.7, 1.7);
 
@@ -1309,7 +1311,14 @@ function startGame() {
   }, undefined, function (error) {
     console.error(error);
   });
+}
 
+for (let y = -1; y <2; y++) {
+  for (let x = -9; x <= -2; x+=2.5) {
+    const z = -10 + (y * -1.5); // Calcolo del valore di z in base a y
+    caricaModello(x, y-0.25, z-0.5);
+  }
+}
   //GENERATE 3D TEXT FOR GOAL AND WIN
 
   // Create the text geometry
@@ -1790,7 +1799,7 @@ function startGame() {
     }
 
     //Show blue goal screen and update score
-    if(flagBlueGoal && goal_blue != 3){
+    if(flagBlueGoal && goal_blue != 2){
       scene.remove(text_GoalBlue);
       scene.remove(text_Score);
       scene.remove(text_GoalRed);
@@ -1805,7 +1814,7 @@ function startGame() {
     }
 
     //Show red goal screen and update score
-    if(flagRedGoal && goal_red != 3){
+    if(flagRedGoal && goal_red != 2){
       scene.remove(text_GoalBlue);
       scene.remove(text_Score);
       scene.remove(text_GoalRed);
@@ -1827,7 +1836,8 @@ function startGame() {
       scene.remove(text_GoalRed);
       scene.add(text_VictoryBlue);
       setVictoryBlue();
-      //confetti();
+      
+      confetti();
       endgame = true;
       if(goal_time > 300){
         location.reload();
@@ -1842,7 +1852,7 @@ function startGame() {
       scene.remove(text_Score);
       scene.remove(text_GoalRed);
       scene.add(text_VictoryRed);
-      //confetti();
+      confetti();
       setVictoryRed();
       endgame = true;
       if(goal_time > 300){
@@ -1859,7 +1869,7 @@ function startGame() {
       n_click = 1;
       n_touch = 0;
       //nextPlayer();
-      if(goal_blue == 3){
+      if(goal_blue == 2){
         flagBlueWin = true;
       }else{
         reset();
@@ -1874,7 +1884,7 @@ function startGame() {
       n_click = 1;
       n_touch = 0;
       //nextPlayer();
-      if(goal_red == 3){
+      if(goal_red == 2){
         flagRedWin = true;
       }else{
         reset();
