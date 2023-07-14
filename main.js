@@ -1064,7 +1064,7 @@ function startGame() {
 
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.outputColorSpace = THREE.sRGBEncoding;
+  //renderer.outputColorSpace = THREE.sRGBEncoding; 
 
   renderer.setSize(window.innerWidth, window.innerHeight);
 
