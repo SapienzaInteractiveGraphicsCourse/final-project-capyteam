@@ -3002,7 +3002,7 @@ function palleggio(object, left_arm, right_arm, left_fore_arm, right_fore_arm, l
     ball2.rotation.x +=0.05;
   
   if(balltrue){
-    ball2.position.y +=0.005;
+    ball2.position.y +=0.02;
     console.log(ball2.position.y);
     if(ball2.position.y > -1.2){
       console.log(balltrue);
@@ -3011,15 +3011,15 @@ function palleggio(object, left_arm, right_arm, left_fore_arm, right_fore_arm, l
   }
   else{
     console.log("sono negativo");
-    ball2.position.y -=0.005;
-    if(ball2.position.y < -1.5){
+    ball2.position.y -=0.02;
+    if(ball2.position.y < -1.65){
       balltrue= true;
     }
   }
   if(downlegs_exult){
    
     if(  left_up_leg.rotation.x > Math.PI * -0.20){
-      left_up_leg.rotation.x -= 0.01;  
+      left_up_leg.rotation.x -= 0.02;  
     }
    
 
@@ -3034,7 +3034,7 @@ function palleggio(object, left_arm, right_arm, left_fore_arm, right_fore_arm, l
     }
 
     if(  right_up_leg.rotation.x < 0.15){
-      right_up_leg.rotation.x += 0.01;
+      right_up_leg.rotation.x += 0.02;
     }
     if(  right_leg.rotation.x > 0){
       right_leg.rotation.x -= 0.08;
@@ -3042,7 +3042,7 @@ function palleggio(object, left_arm, right_arm, left_fore_arm, right_fore_arm, l
   }
   else{
     if(  left_up_leg.rotation.x < 0.15){
-      left_up_leg.rotation.x += 0.01;
+      left_up_leg.rotation.x += 0.02;
     }
     else{
 
@@ -3055,7 +3055,7 @@ function palleggio(object, left_arm, right_arm, left_fore_arm, right_fore_arm, l
     }
 
     if(  right_up_leg.rotation.x > Math.PI * -0.20){
-      right_up_leg.rotation.x -= 0.01;
+      right_up_leg.rotation.x -= 0.02;
     }
     if(  right_leg.rotation.x < Math.PI * 0.3){
       right_leg.rotation.x += 0.04;
