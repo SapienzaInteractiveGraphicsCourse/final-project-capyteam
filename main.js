@@ -329,25 +329,11 @@ function showModels() {
   const loader = new GLTFLoader();
 
   var robot = [];
-  var spine;
-  var spine1;
-  var spine2;
-  var neck;
-  var head;
-  var left_shoulder;
-  var left_arm;
-  var left_fore_arm;
-  var left_hand;
-  var right_shoulder;
-  var right_arm;
-  var right_fore_arm;
-  var right_hand;
-  var left_up_leg;
-  var left_leg;
-  var left_foot;
-  var right_up_leg;
-  var right_leg;
-  var right_foot;
+
+  const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+  const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+  ball = new THREE.Mesh( geometry, material );
+  ball.position.set(0,0,0);
 
   loader.load('models/blueBot/blueBot.gltf', function (gltf) {
     robot[0] = gltf.scene;
@@ -365,33 +351,33 @@ function showModels() {
     robot[0].scale.set(1.7, 1.7, 1.7);
 
     //SPINE
-    spine = robot[0].getObjectByName('mixamorigSpine');
-    spine1 = robot[0].getObjectByName('mixamorigSpine1');
-    spine2 = robot[0].getObjectByName('mixamorigSpine2');
+    spine_1 = robot[0].getObjectByName('mixamorigSpine');
+    spine1_1 = robot[0].getObjectByName('mixamorigSpine1');
+    spine2_1 = robot[0].getObjectByName('mixamorigSpine2');
     //NECK AND HEAD
-    neck = robot[0].getObjectByName('mixamorigNeck');
-    head = robot[0].getObjectByName('mixamorigHead');
+    neck_1 = robot[0].getObjectByName('mixamorigNeck');
+    head_1 = robot[0].getObjectByName('mixamorigHead');
     // LEFT ARM
-    left_shoulder = robot[0].getObjectByName('mixamorigLeftShoulder');
-    left_arm = robot[0].getObjectByName('mixamorigLeftArm');
-    left_fore_arm = robot[0].getObjectByName('mixamorigLeftForeArm');
-    left_hand = robot[0].getObjectByName('mixamorigLeftHand');
+    left_shoulder_1 = robot[0].getObjectByName('mixamorigLeftShoulder');
+    left_arm_1 = robot[0].getObjectByName('mixamorigLeftArm');
+    left_fore_arm_1 = robot[0].getObjectByName('mixamorigLeftForeArm');
+    left_hand_1 = robot[0].getObjectByName('mixamorigLeftHand');
     // RIGHT ARM
-    right_shoulder = robot[0].getObjectByName('mixamorigRightShoulder');
-    right_arm = robot[0].getObjectByName('mixamorigRightArm');
-    right_fore_arm = robot[0].getObjectByName('mixamorigRightForeArm');
-    right_hand = robot[0].getObjectByName('mixamorigRightHand');
+    right_shoulder_1 = robot[0].getObjectByName('mixamorigRightShoulder');
+    right_arm_1 = robot[0].getObjectByName('mixamorigRightArm');
+    right_fore_arm_1 = robot[0].getObjectByName('mixamorigRightForeArm');
+    right_hand_1 = robot[0].getObjectByName('mixamorigRightHand');
     // LEFT LEG
-    left_up_leg = robot[0].getObjectByName('mixamorigLeftUpLeg');
-    left_leg = robot[0].getObjectByName('mixamorigLeftLeg');
-    left_foot = robot[0].getObjectByName('mixamorigLeftFoot');
+    left_up_leg_1 = robot[0].getObjectByName('mixamorigLeftUpLeg');
+    left_leg_1 = robot[0].getObjectByName('mixamorigLeftLeg');
+    left_foot_1 = robot[0].getObjectByName('mixamorigLeftFoot');
     // RIGHT LEG
-    right_up_leg = robot[0].getObjectByName('mixamorigRightUpLeg');
-    right_leg = robot[0].getObjectByName('mixamorigRightLeg');
-    right_foot = robot[0].getObjectByName('mixamorigRightFoot');
+    right_up_leg_1 = robot[0].getObjectByName('mixamorigRightUpLeg');
+    right_leg_1 = robot[0].getObjectByName('mixamorigRightLeg');
+    right_foot_1 = robot[0].getObjectByName('mixamorigRightFoot');
 
-    left_arm.rotation.z = Math.PI * -0.35;
-    right_arm.rotation.z = Math.PI * 0.35;
+    left_arm_1.rotation.z = Math.PI * -0.35;
+    right_arm_1.rotation.z = Math.PI * 0.35;
 
   }, undefined, function (error) {
     console.error(error);
@@ -412,25 +398,121 @@ function showModels() {
     robot[1].rotation.y = 0 * (Math.PI / 180.0);
     robot[1].scale.set(1.7, 1.7, 1.7);
 
+    //SPINE
+    spine_2 = robot[1].getObjectByName('mixamorigSpine');
+    spine1_2 = robot[1].getObjectByName('mixamorigSpine1');
+    spine2_2 = robot[1].getObjectByName('mixamorigSpine2');
     //NECK AND HEAD
-    robot[1].getObjectByName('mixamorigNeck');
-    robot[1].getObjectByName('mixamorigHead');
+    neck_2 = robot[1].getObjectByName('mixamorigNeck');
+    head_2 = robot[1].getObjectByName('mixamorigHead');
     // LEFT ARM
-    robot[1].getObjectByName('mixamorigLeftArm').rotation.set(0,0,Math.PI*-0.4);
-    robot[1].getObjectByName('mixamorigLeftForeArm');
+    left_shoulder_2 = robot[1].getObjectByName('mixamorigLeftShoulder');
+    left_arm_2 = robot[1].getObjectByName('mixamorigLeftArm');
+    left_fore_arm_2 = robot[1].getObjectByName('mixamorigLeftForeArm');
+    left_hand_2 = robot[1].getObjectByName('mixamorigLeftHand');
     // RIGHT ARM
-    robot[1].getObjectByName('mixamorigRightArm').rotation.set(0,0,Math.PI*0.4);
-    robot[1].getObjectByName('mixamorigRightForeArm');
+    right_shoulder_2 = robot[1].getObjectByName('mixamorigRightShoulder');
+    right_arm_2 = robot[1].getObjectByName('mixamorigRightArm');
+    right_fore_arm_2 = robot[1].getObjectByName('mixamorigRightForeArm');
+    right_hand_2 = robot[1].getObjectByName('mixamorigRightHand');
     // LEFT LEG
-    robot[1].getObjectByName('mixamorigLeftUpLeg').rotation.set(Math.PI*-0.5,0,0);
-    robot[1].getObjectByName('mixamorigLeftLeg').rotation.set(Math.PI*0.5,0,0);
+    left_up_leg_2 = robot[1].getObjectByName('mixamorigLeftUpLeg');
+    left_leg_2 = robot[1].getObjectByName('mixamorigLeftLeg');
+    left_foot_2 = robot[1].getObjectByName('mixamorigLeftFoot');
     // RIGHT LEG
-    robot[1].getObjectByName('mixamorigRightUpLeg').rotation.set(Math.PI*-0.5,0,0);
-    robot[1].getObjectByName('mixamorigRightLeg').rotation.set(Math.PI*0.5,0,0);
+    right_up_leg_2 = robot[1].getObjectByName('mixamorigRightUpLeg');
+    right_leg_2 = robot[1].getObjectByName('mixamorigRightLeg');
+    right_foot_2 = robot[1].getObjectByName('mixamorigRightFoot');
+
+    left_arm_2.rotation.z = Math.PI * -0.35;
+    right_arm_2.rotation.z = Math.PI * 0.35;
+
+  }, undefined, function (error) {
+    console.error(error);
+  });
+
+  loader.load('models/blueBot/blueBot.gltf', function (gltf) {
+    robot[2] = gltf.scene;
+    robot[2].traverse(function (child) {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+
+    robot[2].position.x = 0;
+    robot[2].position.y = -2;
+    robot[2].position.z = 0;
+    robot[2].rotation.y = 0 * (Math.PI / 180.0);
+    robot[2].scale.set(1.7, 1.7, 1.7);
+
+    //SPINE
+    spine_3 = robot[2].getObjectByName('mixamorigSpine');
+    spine1_3 = robot[2].getObjectByName('mixamorigSpine1');
+    spine2_3 = robot[2].getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
+    neck_3 = robot[2].getObjectByName('mixamorigNeck');
+    head_3 = robot[2].getObjectByName('mixamorigHead');
+    // LEFT ARM
+    left_shoulder_3 = robot[2].getObjectByName('mixamorigLeftShoulder');
+    left_arm_3 = robot[2].getObjectByName('mixamorigLeftArm');
+    left_fore_arm_3 = robot[2].getObjectByName('mixamorigLeftForeArm');
+    left_hand_3 = robot[2].getObjectByName('mixamorigLeftHand');
+    // RIGHT ARM
+    right_shoulder_3 = robot[2].getObjectByName('mixamorigRightShoulder');
+    right_arm_3 = robot[2].getObjectByName('mixamorigRightArm');
+    right_fore_arm_3 = robot[2].getObjectByName('mixamorigRightForeArm');
+    right_hand_3 = robot[2].getObjectByName('mixamorigRightHand');
+    // LEFT LEG
+    left_up_leg_3 = robot[2].getObjectByName('mixamorigLeftUpLeg');
+    left_leg_3 = robot[2].getObjectByName('mixamorigLeftLeg');
+    left_foot_3 = robot[2].getObjectByName('mixamorigLeftFoot');
+    // RIGHT LEG
+    right_up_leg_3 = robot[2].getObjectByName('mixamorigRightUpLeg');
+    right_leg_3 = robot[2].getObjectByName('mixamorigRightLeg');
+    right_foot_3 = robot[2].getObjectByName('mixamorigRightFoot');
+
+    left_arm_3.rotation.z = Math.PI * -0.35;
+    right_arm_3.rotation.z = Math.PI * 0.35;
+
+  }, undefined, function (error) {
+    console.error(error);
+  });
+
+  loader.load('models/blueBot/blueBot.gltf', function (gltf) {
+    robot[3] = gltf.scene;
+    robot[3].traverse(function (child) {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+
+    robot[3].position.x = 0;
+    robot[3].position.y = -2;
+    robot[3].position.z = 0;
+    robot[3].rotation.y = 0 * (Math.PI / 180.0);
+    robot[3].scale.set(1.7, 1.7, 1.7);
+
+    //NECK AND HEAD
+    robot[3].getObjectByName('mixamorigNeck');
+    robot[3].getObjectByName('mixamorigHead');
+    // LEFT ARM
+    robot[3].getObjectByName('mixamorigLeftArm').rotation.set(0,0,Math.PI*-0.4);
+    robot[3].getObjectByName('mixamorigLeftForeArm');
+    // RIGHT ARM
+    robot[3].getObjectByName('mixamorigRightArm').rotation.set(0,0,Math.PI*0.4);
+    robot[3].getObjectByName('mixamorigRightForeArm');
+    // LEFT LEG
+    robot[3].getObjectByName('mixamorigLeftUpLeg').rotation.set(Math.PI*-0.5,0,0);
+    robot[3].getObjectByName('mixamorigLeftLeg').rotation.set(Math.PI*0.5,0,0);
+    // RIGHT LEG
+    robot[3].getObjectByName('mixamorigRightUpLeg').rotation.set(Math.PI*-0.5,0,0);
+    robot[3].getObjectByName('mixamorigRightLeg').rotation.set(Math.PI*0.5,0,0);
 
 
     // Create an AnimationMixer
-    const mixer = new THREE.AnimationMixer(robot[1]);
+    const mixer = new THREE.AnimationMixer(robot[3]);
 
     // Get the animation clips from the gltf.animations array
     const clips = gltf.animations;
@@ -494,6 +576,7 @@ function showModels() {
   });
 
 
+
   const gui = new GUI()
   const lightFolder = gui.addFolder('Light')
   lightFolder.add(light.position, "x", -100, 100, 1);
@@ -515,15 +598,34 @@ function showModels() {
      switch(robot_to_show){
        case 0:
         scene.remove(robot[1]);
+        scene.remove(robot[2]);
+        scene.remove(robot[3]);
         scene.add(robot[0]);
-        exultation(robot[0], left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head, spine);
+        running(robot[0], left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1);
         break;
        case 1:
         scene.remove(robot[0]);
+        scene.remove(robot[2]);
+        scene.remove(robot[3]);
         scene.add(robot[1]);
+        standing(robot[1], left_arm_2, right_arm_2, left_fore_arm_2, right_fore_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2, neck_2, head_2);
+        break;
+       case 2:
+        scene.remove(robot[0]);
+        scene.remove(robot[1]);
+        scene.remove(robot[3]);
+        scene.add(robot[2]);
+        exultation(robot[2], left_arm_3, right_arm_3, left_fore_arm_3, right_fore_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3, neck_3, head_3, spine_3);
+        break;
+       case 3:
+        scene.remove(robot[0]);
+        scene.remove(robot[1]);
+        scene.remove(robot[2]);
+        scene.add(robot[3]);
         break;
      }
      controls.update();
+
      renderer.render( scene, camera );
   }
   animate();
@@ -1064,7 +1166,7 @@ function startGame() {
 
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  //renderer.outputColorSpace = THREE.sRGBEncoding; 
+  //renderer.outputColorSpace = THREE.sRGBEncoding;
 
   renderer.setSize(window.innerWidth, window.innerHeight);
 
