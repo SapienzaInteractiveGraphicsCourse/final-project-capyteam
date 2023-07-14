@@ -264,17 +264,24 @@ function showModels() {
   //Setup the scene
   const scene = new THREE.Scene();
 
-  var forward;
-  var backward;
+  var robot_to_show = 0;
 
   // Handle key down events
   document.addEventListener('keydown', function(event) {
     switch (event.code) {
       case 'ArrowLeft':
-        backward = true;
+        if(robot_to_show == 0){
+          robot_to_show = 3;
+        }else{
+          robot_to_show -= 1;
+        }
         break;
       case 'ArrowRight':
-        forward = true;
+        if(robot_to_show == 3){
+          robot_to_show = 0;
+        }else{
+          robot_to_show += 1;
+        }
         break;
     }
   });
@@ -344,7 +351,6 @@ function showModels() {
 
   loader.load('models/blueBot/blueBot.gltf', function (gltf) {
     robot[0] = gltf.scene;
-    scene.add(robot[0]);
     robot[0].traverse(function (child) {
       if (child.isMesh) {
         child.castShadow = true;
@@ -506,9 +512,19 @@ function showModels() {
 
   function animate() {
 	   requestAnimationFrame( animate );
+     switch(robot_to_show){
+       case 0:
+        scene.remove(robot[1]);
+        scene.add(robot[0]);
+        exultation(robot[0], left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head, spine);
+        break;
+       case 1:
+        scene.remove(robot[0]);
+        scene.add(robot[1]);
+        break;
+     }
      controls.update();
-     standing(robot[0], left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head);
-	   renderer.render( scene, camera );
+     renderer.render( scene, camera );
   }
   animate();
 }
@@ -1048,7 +1064,7 @@ function startGame() {
 
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.outputColorSpace = THREE.sRGBEncoding;
 
   renderer.setSize(window.innerWidth, window.innerHeight);
 
