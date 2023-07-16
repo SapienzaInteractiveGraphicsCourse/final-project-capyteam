@@ -12,8 +12,6 @@ import { FontLoader } from './libs/three/examples/jsm/loaders/FontLoader.js';
 //Import TextGeometry for 3D text
 import { TextGeometry } from './libs/three/examples/jsm/geometries/TextGeometry.js';
 
-//Import gui
-import { GUI } from './libs/three/examples/jsm/dat.gui'
 
 //Camera Keyboard
 // Keyboard input variables
