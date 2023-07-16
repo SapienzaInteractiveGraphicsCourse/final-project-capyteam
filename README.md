@@ -8,3 +8,7 @@ Click here to play the demo of the game [Game demo link](https://sapienzainterac
 
 - Branca Max 2061432
 - John Mark Alexis Marcelo 1850518
+
+## Browsers
+
+We **recommend** to play the game on Chrome for better performances.
