@@ -106,6 +106,7 @@ var robot_6;
 
 var football_pitch;
 var ball;
+var ball2;
 
 //Bounding boxes
 var box_robot1;
@@ -271,13 +272,13 @@ function showModels() {
     switch (event.code) {
       case 'ArrowLeft':
         if(robot_to_show == 0){
-          robot_to_show = 3;
+          robot_to_show = 4;
         }else{
           robot_to_show -= 1;
         }
         break;
       case 'ArrowRight':
-        if(robot_to_show == 3){
+        if(robot_to_show == 4){
           robot_to_show = 0;
         }else{
           robot_to_show += 1;
@@ -305,6 +306,19 @@ function showModels() {
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
+
+  // Add a skybox
+  const t_loader = new THREE.CubeTextureLoader();
+  const skyboxTextures = [
+    'textures/skybox/lightblue/left.png',
+    'textures/skybox/lightblue/right.png',
+    'textures/skybox/lightblue/top.png',
+    'textures/skybox/lightblue/bot.png',
+    'textures/skybox/lightblue/back.png',
+    'textures/skybox/lightblue/front.png',
+  ];
+  const skyboxTexture = t_loader.load(skyboxTextures);
+  scene.background = skyboxTexture;
 
 
   //lighting
@@ -575,6 +589,77 @@ function showModels() {
     console.error(error);
   });
 
+  loader.load('models/blueBot/blueBot.gltf', function (gltf) {
+    robot[4] = gltf.scene;
+    robot[4].traverse(function (child) {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+
+    robot[4].position.x = 0;
+    robot[4].position.y = -2;
+    robot[4].position.z = 0;
+    robot[4].rotation.y = 0 * (Math.PI / 180.0);
+    robot[4].scale.set(1.7, 1.7, 1.7);
+
+    //SPINE
+    spine_4 = robot[4].getObjectByName('mixamorigSpine');
+    spine1_4 = robot[4].getObjectByName('mixamorigSpine1');
+    spine2_4 = robot[4].getObjectByName('mixamorigSpine2');
+    //NECK AND HEAD
+    neck_4 = robot[4].getObjectByName('mixamorigNeck');
+    head_4 = robot[4].getObjectByName('mixamorigHead');
+    // LEFT ARM
+    left_shoulder_4 = robot[4].getObjectByName('mixamorigLeftShoulder');
+    left_arm_4 = robot[4].getObjectByName('mixamorigLeftArm');
+    left_fore_arm_4 = robot[4].getObjectByName('mixamorigLeftForeArm');
+    left_hand_4 = robot[4].getObjectByName('mixamorigLeftHand');
+    // RIGHT ARM
+    right_shoulder_4 = robot[4].getObjectByName('mixamorigRightShoulder');
+    right_arm_4 = robot[4].getObjectByName('mixamorigRightArm');
+    right_fore_arm_4 = robot[4].getObjectByName('mixamorigRightForeArm');
+    right_hand_4 = robot[4].getObjectByName('mixamorigRightHand');
+    // LEFT LEG
+    left_up_leg_4 = robot[4].getObjectByName('mixamorigLeftUpLeg');
+    left_leg_4 = robot[4].getObjectByName('mixamorigLeftLeg');
+    left_foot_4 = robot[4].getObjectByName('mixamorigLeftFoot');
+    // RIGHT LEG
+    right_up_leg_4 = robot[4].getObjectByName('mixamorigRightUpLeg');
+    right_leg_4 = robot[4].getObjectByName('mixamorigRightLeg');
+    right_foot_4 = robot[4].getObjectByName('mixamorigRightFoot');
+
+    left_arm_4.rotation.z = Math.PI * -0.35;
+    right_arm_4.rotation.z = Math.PI * 0.35;
+
+  }, undefined, function (error) {
+    console.error(error);
+  });
+
+  loader.load('models/football_ball/scene.gltf', function (gltf7) {
+    ball2 = gltf7.scene;
+
+    ball2.traverse(function (child) {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+
+    ball2.position.x = 0;
+    ball2.position.y = -1.5;
+    ball2.position.z = 0.7;
+    ball2.scale.set(0.2, 0.2, 0.2);
+
+    //Setup a bounding sphere around ball
+    box_ball2 = new THREE.Box3().setFromObject(ball2);
+    const size_ball = box_ball2.getSize(new THREE.Vector3()).length();
+    const center_ball = box_ball2.getCenter(new THREE.Vector3());
+
+  }, undefined, function (error) {
+    console.error(error);
+  });
 
 
   const gui = new GUI()
@@ -600,6 +685,8 @@ function showModels() {
         scene.remove(robot[1]);
         scene.remove(robot[2]);
         scene.remove(robot[3]);
+        scene.remove(robot[4]);
+        scene.remove(ball2);
         scene.add(robot[0]);
         running(robot[0], left_arm_1, right_arm_1, left_fore_arm_1, right_fore_arm_1, left_up_leg_1, left_leg_1, right_up_leg_1, right_leg_1, neck_1, head_1);
         break;
@@ -607,6 +694,8 @@ function showModels() {
         scene.remove(robot[0]);
         scene.remove(robot[2]);
         scene.remove(robot[3]);
+        scene.remove(robot[4]);
+        scene.remove(ball2);
         scene.add(robot[1]);
         standing(robot[1], left_arm_2, right_arm_2, left_fore_arm_2, right_fore_arm_2, left_up_leg_2, left_leg_2, right_up_leg_2, right_leg_2, neck_2, head_2);
         break;
@@ -614,6 +703,8 @@ function showModels() {
         scene.remove(robot[0]);
         scene.remove(robot[1]);
         scene.remove(robot[3]);
+        scene.remove(robot[4]);
+        scene.remove(ball2);
         scene.add(robot[2]);
         exultation(robot[2], left_arm_3, right_arm_3, left_fore_arm_3, right_fore_arm_3, left_up_leg_3, left_leg_3, right_up_leg_3, right_leg_3, neck_3, head_3, spine_3);
         break;
@@ -621,8 +712,19 @@ function showModels() {
         scene.remove(robot[0]);
         scene.remove(robot[1]);
         scene.remove(robot[2]);
+        scene.remove(robot[4]);
+        scene.remove(ball2);
         scene.add(robot[3]);
         break;
+      case 4:
+       scene.remove(robot[0]);
+       scene.remove(robot[1]);
+       scene.remove(robot[2]);
+       scene.remove(robot[3]);
+       scene.add(robot[4]);
+       scene.add(ball2);
+       palleggio(robot[4], left_arm_4, right_arm_4, left_fore_arm_4, right_fore_arm_4, left_up_leg_4, left_leg_4, right_up_leg_4, right_leg_4, neck_4, head_4, ball2);
+       break;
      }
      controls.update();
 
@@ -2778,7 +2880,10 @@ var downarms_stand = true;
 var downlegs_stand = true;
 var downarms_exult = true;
 var downlegs_exult = true;
+var downarms_ball = true;
+var downlegs_ball = true;
 var spinelegs = true;
+var balltrue = true;
 
 function setForStanding(left_arm, right_arm, left_up_leg, left_leg, right_up_leg, right_leg){
   left_arm.rotation.x = Math.PI * -0.05;
@@ -3027,6 +3132,97 @@ function exultation(object, left_arm, right_arm, left_fore_arm, right_fore_arm, 
     }
 
     if(  right_up_leg.rotation.x > Math.PI * -0.15){
+      right_up_leg.rotation.x -= 0.02;
+    }
+    if(  right_leg.rotation.x < Math.PI * 0.3){
+      right_leg.rotation.x += 0.04;
+    }
+  }
+
+}
+
+function palleggio(object, left_arm, right_arm, left_fore_arm, right_fore_arm, left_up_leg, left_leg, right_up_leg, right_leg, neck, head, ball2){
+  var diff_x = clickX-object.position.x;
+  var diff_y = clickZ-object.position.z;
+  var angoloRadianti = Math.atan2(diff_x,diff_y);
+  object.rotation.y = angoloRadianti;
+
+  neck.rotation.x = Math.PI * 0.25;
+  head.rotation.x = Math.PI * -0.15;
+   left_fore_arm.rotation.y = Math.PI * -0.1;
+   right_fore_arm.rotation.y = Math.PI * 0.1;
+
+    if(downarms_ball){
+      if( left_arm.rotation.x >  Math.PI * -0.1){
+        left_arm.rotation.x -= 0.015;
+      }
+      else {
+
+      downarms_ball = false;
+      }
+      if( right_arm.rotation.x <  Math.PI * 0.1){
+        right_arm.rotation.x += 0.015;
+      }
+    }else{
+      if( left_arm.rotation.x <  Math.PI * 0.1){
+        left_arm.rotation.x += 0.015;
+      }
+      else {
+        downarms_ball = true;
+      }
+      if( right_arm.rotation.x >  Math.PI * -0.1){
+        right_arm.rotation.x -= 0.015;
+      }
+    }
+
+    ball2.rotation.x +=0.05;
+
+  if(balltrue){
+    ball2.position.y +=0.02;
+    console.log(ball2.position.y);
+    if(ball2.position.y > -1.2){
+      //console.log(balltrue);
+      balltrue = false;
+    }
+  }
+  else{
+    //console.log("sono negativo");
+    ball2.position.y -=0.02;
+    if(ball2.position.y < -1.65){
+      balltrue= true;
+    }
+  }
+  if(downlegs_ball){
+
+    if(  left_up_leg.rotation.x > Math.PI * -0.20){
+      left_up_leg.rotation.x -= 0.02;
+    }
+    else{
+        downlegs_ball = false;
+    }
+    if(  left_leg.rotation.x < Math.PI * 0.3){
+      left_leg.rotation.x += 0.08;
+    }
+
+    if(  right_up_leg.rotation.x < 0.15){
+      right_up_leg.rotation.x += 0.02;
+    }
+    if(  right_leg.rotation.x > 0){
+      right_leg.rotation.x -= 0.08;
+    }
+  }
+  else{
+    if(  left_up_leg.rotation.x < 0.15){
+      left_up_leg.rotation.x += 0.02;
+    }
+    else{
+        downlegs_ball = true;
+    }
+    if(  left_leg.rotation.x > 0){
+      left_leg.rotation.x -= 0.08;
+    }
+
+    if(  right_up_leg.rotation.x > Math.PI * -0.20){
       right_up_leg.rotation.x -= 0.02;
     }
     if(  right_leg.rotation.x < Math.PI * 0.3){
