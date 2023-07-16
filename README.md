@@ -12,3 +12,7 @@ Click here to play the demo of the game [Game demo link](https://sapienzainterac
 ## Browsers
 
 We **recommend** to play the game on Chrome for better performances.
+
+## Animations
+
+Use **left** arrow and **right** arrow to navigate between animations.
