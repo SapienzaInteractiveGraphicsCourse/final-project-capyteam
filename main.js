@@ -1,16 +1,16 @@
-import * as THREE from 'https://sapienzainteractivegraphicscourse.github.io/final-project-capyteam/libs/three/build/three.module.js';
+import * as THREE from './libs/three/build/three.module.js';
 
 //Import GLTFLoader
-import { GLTFLoader } from 'https://sapienzainteractivegraphicscourse.github.io/final-project-capyteam/libs/three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from './libs/three/examples/jsm/loaders/GLTFLoader.js';
 
 //Import orbit controls
-import { OrbitControls } from 'https://sapienzainteractivegraphicscourse.github.io/final-project-capyteam/libs/three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from './libs/three/examples/jsm/controls/OrbitControls.js';
 
 //Import font loader
-import { FontLoader } from 'https://sapienzainteractivegraphicscourse.github.io/final-project-capyteam/libs/three/examples/jsm/loaders/FontLoader.js';
+import { FontLoader } from './libs/three/examples/jsm/loaders/FontLoader.js';
 
 //Import TextGeometry for 3D text
-import { TextGeometry } from 'https://sapienzainteractivegraphicscourse.github.io/final-project-capyteam/libs/three/examples/jsm/geometries/TextGeometry.js';
+import { TextGeometry } from './libs/three/examples/jsm/geometries/TextGeometry.js';
 
 
 //Camera Keyboard
@@ -308,12 +308,12 @@ function showModels() {
   // Add a skybox
   const t_loader = new THREE.CubeTextureLoader();
   const skyboxTextures = [
-    'textures/skybox/lightblue/left.png',
-    'textures/skybox/lightblue/right.png',
-    'textures/skybox/lightblue/top.png',
-    'textures/skybox/lightblue/bot.png',
-    'textures/skybox/lightblue/back.png',
-    'textures/skybox/lightblue/front.png',
+    './textures/skybox/lightblue/left.png',
+    './textures/skybox/lightblue/right.png',
+    './textures/skybox/lightblue/top.png',
+    './textures/skybox/lightblue/bot.png',
+    './textures/skybox/lightblue/back.png',
+    './textures/skybox/lightblue/front.png',
   ];
   const skyboxTexture = t_loader.load(skyboxTextures);
   scene.background = skyboxTexture;
@@ -347,7 +347,7 @@ function showModels() {
   ball = new THREE.Mesh( geometry, material );
   ball.position.set(0,0,0);
 
-  loader.load('/models/blueBot/blueBot.gltf', function (gltf) {
+  loader.load('./models/blueBot/blueBot.gltf', function (gltf) {
     robot[0] = gltf.scene;
     robot[0].traverse(function (child) {
       if (child.isMesh) {
@@ -395,7 +395,7 @@ function showModels() {
     console.error(error);
   });
 
-  loader.load('/models/blueBot/blueBot.gltf', function (gltf) {
+  loader.load('./models/blueBot/blueBot.gltf', function (gltf) {
     robot[1] = gltf.scene;
     robot[1].traverse(function (child) {
       if (child.isMesh) {
@@ -443,7 +443,7 @@ function showModels() {
     console.error(error);
   });
 
-  loader.load('/models/blueBot/blueBot.gltf', function (gltf) {
+  loader.load('./models/blueBot/blueBot.gltf', function (gltf) {
     robot[2] = gltf.scene;
     robot[2].traverse(function (child) {
       if (child.isMesh) {
@@ -491,7 +491,7 @@ function showModels() {
     console.error(error);
   });
 
-  loader.load('/models/blueBot/blueBot.gltf', function (gltf) {
+  loader.load('./models/blueBot/blueBot.gltf', function (gltf) {
     robot[3] = gltf.scene;
     robot[3].traverse(function (child) {
       if (child.isMesh) {
@@ -587,7 +587,7 @@ function showModels() {
     console.error(error);
   });
 
-  loader.load('/models/blueBot/blueBot.gltf', function (gltf) {
+  loader.load('./models/blueBot/blueBot.gltf', function (gltf) {
     robot[4] = gltf.scene;
     robot[4].traverse(function (child) {
       if (child.isMesh) {
@@ -635,7 +635,7 @@ function showModels() {
     console.error(error);
   });
 
-  loader.load('/models/football_ball/scene.gltf', function (gltf7) {
+  loader.load('./models/football_ball/scene.gltf', function (gltf7) {
     ball2 = gltf7.scene;
 
     ball2.traverse(function (child) {
@@ -1141,12 +1141,12 @@ function startGame() {
   // Add a skybox
   const t_loader = new THREE.CubeTextureLoader();
   const skyboxTextures = [
-    '/textures/skybox/lightblue/left.png',
-    '/textures/skybox/lightblue/right.png',
-    '/textures/skybox/lightblue/top.png',
-    '/textures/skybox/lightblue/bot.png',
-    '/textures/skybox/lightblue/back.png',
-    '/textures/skybox/lightblue/front.png',
+    './textures/skybox/lightblue/left.png',
+    './textures/skybox/lightblue/right.png',
+    './textures/skybox/lightblue/top.png',
+    './textures/skybox/lightblue/bot.png',
+    './textures/skybox/lightblue/back.png',
+    './textures/skybox/lightblue/front.png',
   ];
   const skyboxTexture = t_loader.load(skyboxTextures);
   scene.background = skyboxTexture;
@@ -1282,7 +1282,7 @@ function startGame() {
 
 
   //sinistra in basso
-  loader.load('models/blueBot/blueBot.gltf', function (gltf) {
+  loader.load('./models/blueBot/blueBot.gltf', function (gltf) {
     robot_1 = gltf.scene;
     scene.add(robot_1);
     robot_1.traverse(function (child) {
@@ -1338,7 +1338,7 @@ function startGame() {
   });
 
   //sinistra in alto
-  loader.load('models/blueBot/blueBot.gltf', function (gltf1) {
+  loader.load('./models/blueBot/blueBot.gltf', function (gltf1) {
     robot_2 = gltf1.scene;
     scene.add(robot_2);
 
@@ -1394,7 +1394,7 @@ function startGame() {
   });
 
   //destra in alto
-  loader.load('models/redBot/redBot.gltf', function (gltf2) {
+  loader.load('./models/redBot/redBot.gltf', function (gltf2) {
     robot_3 = gltf2.scene;
     scene.add(robot_3);
 
@@ -1450,7 +1450,7 @@ function startGame() {
   });
 
   //destra in basso
-  loader.load('models/redBot/redBot.gltf', function (gltf3) {
+  loader.load('./models/redBot/redBot.gltf', function (gltf3) {
     robot_4 = gltf3.scene;
     scene.add(robot_4);
 
@@ -1506,7 +1506,7 @@ function startGame() {
   });
 
   //sinistra al centro
-  loader.load('models/blueBot/blueBot.gltf', function (gltf4) {
+  loader.load('./models/blueBot/blueBot.gltf', function (gltf4) {
     robot_5 = gltf4.scene;
     scene.add(robot_5);
 
@@ -1562,7 +1562,7 @@ function startGame() {
   });
 
   //destra al centro
-  loader.load('models/redBot/redBot.gltf', function (gltf5) {
+  loader.load('./models/redBot/redBot.gltf', function (gltf5) {
     robot_6 = gltf5.scene;
     scene.add(robot_6);
 
@@ -1617,7 +1617,7 @@ function startGame() {
     console.error(error);
   });
 
-  loader.load('models/football_pitch/pitch.gltf', function (gltf6) {
+  loader.load('./models/football_pitch/pitch.gltf', function (gltf6) {
     football_pitch = gltf6.scene;
     scene.add(football_pitch);
 
@@ -1634,7 +1634,7 @@ function startGame() {
     console.error(error);
   });
 
-  loader.load('models/football_ball/scene.gltf', function (gltf7) {
+  loader.load('./models/football_ball/scene.gltf', function (gltf7) {
     ball = gltf7.scene;
     scene.add(ball);
 
@@ -1661,7 +1661,7 @@ function startGame() {
 
 function loadBlueModel(x,y,z){
 
-  loader.load('models/blueBot/blueBot.gltf', function (gltf8) {
+  loader.load('./models/blueBot/blueBot.gltf', function (gltf8) {
     const model = gltf8.scene;
     scene.add(model);
     model.traverse(function (child) {
@@ -1761,7 +1761,7 @@ function loadBlueModel(x,y,z){
 function loadRedModel(x,y,z){
 
 
-  loader.load('models/redBot/redBot.gltf', function (gltf9) {
+  loader.load('./models/redBot/redBot.gltf', function (gltf9) {
     const model = gltf9.scene;
     scene.add(model);
     model.traverse(function (child) {
@@ -1894,7 +1894,7 @@ for (let y = -1; y <2; y++) {
 
   function writeScore(){
     // Create the 3D text for Blue score
-    fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
+    fontLoader.load('./fonts/KG HAPPY_Regular.json', function (font) {
       const textGeometry = new TextGeometry(goal_blue.toString(), {
         font: font,
         size: 3,
@@ -1926,7 +1926,7 @@ for (let y = -1; y <2; y++) {
     });
 
     // Create the 3D text for - symbol
-    fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
+    fontLoader.load('./fonts/KG HAPPY_Regular.json', function (font) {
       const textGeometry = new TextGeometry('-', {
         font: font,
         size: 3,
@@ -1958,7 +1958,7 @@ for (let y = -1; y <2; y++) {
     });
 
     // Create the 3D text for Red score
-    fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
+    fontLoader.load('./fonts/KG HAPPY_Regular.json', function (font) {
       const textGeometry = new TextGeometry(goal_red.toString(), {
         font: font,
         size: 3,
@@ -1993,7 +1993,7 @@ for (let y = -1; y <2; y++) {
   writeScore();
 
   // Create the 3D text for blue goal
-  fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
+  fontLoader.load('./fonts/KG HAPPY_Regular.json', function (font) {
     const textGeometry = new TextGeometry('GOAL!', {
       font: font,
       size: 4,
@@ -2024,7 +2024,7 @@ for (let y = -1; y <2; y++) {
   });
 
   // Create the 3D text for red goal
-  fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
+  fontLoader.load('./fonts/KG HAPPY_Regular.json', function (font) {
     const textGeometry = new TextGeometry('GOAL!', {
       font: font,
       size: 4,
@@ -2055,7 +2055,7 @@ for (let y = -1; y <2; y++) {
   });
 
   // Create the 3D text for blue victory
-  fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
+  fontLoader.load('./fonts/KG HAPPY_Regular.json', function (font) {
     const textGeometry = new TextGeometry('BLUE WINS!', {
       font: font,
       size: 4,
@@ -2086,7 +2086,7 @@ for (let y = -1; y <2; y++) {
   });
 
   // Create the 3D text for red victory
-  fontLoader.load('fonts/KG HAPPY_Regular.json', function (font) {
+  fontLoader.load('./fonts/KG HAPPY_Regular.json', function (font) {
     const textGeometry = new TextGeometry('RED WINS!', {
       font: font,
       size: 4,
