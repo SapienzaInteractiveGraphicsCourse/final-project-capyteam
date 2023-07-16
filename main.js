@@ -564,7 +564,7 @@ function showModels() {
     // Add the rotation animation to the clips array
     clips.push(sportFanAnimation);
 
-    console.log(clips);
+    //console.log(clips);
     // Play the animation
     const action = mixer.clipAction(clips[7]);
     action.play();
@@ -1737,7 +1737,7 @@ function loadBlueModel(x,y,z){
     // Add the rotation animation to the clips array
     clips.push(sportFanAnimation);
 
-    console.log(clips);
+    //console.log(clips);
     // Play the animation
     const action = mixer.clipAction(clips[7]);
     action.play();
