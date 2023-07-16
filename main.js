@@ -650,17 +650,13 @@ function showModels() {
     ball2.position.z = 0.7;
     ball2.scale.set(0.2, 0.2, 0.2);
 
-    //Setup a bounding sphere around ball
-    box_ball2 = new THREE.Box3().setFromObject(ball2);
-    const size_ball = box_ball2.getSize(new THREE.Vector3()).length();
-    const center_ball = box_ball2.getCenter(new THREE.Vector3());
 
   }, undefined, function (error) {
     console.error(error);
   });
 
 
-  const gui = new dat.GUI();
+  const gui = new dat.GUI()
   const lightFolder = gui.addFolder('Light')
   lightFolder.add(light.position, "x", -100, 100, 1);
   lightFolder.add(light.position, "y", -100, 100, 1);
@@ -1145,12 +1141,12 @@ function startGame() {
   // Add a skybox
   const t_loader = new THREE.CubeTextureLoader();
   const skyboxTextures = [
-    'textures/skybox/lightblue/left.png',
-    'textures/skybox/lightblue/right.png',
-    'textures/skybox/lightblue/top.png',
-    'textures/skybox/lightblue/bot.png',
-    'textures/skybox/lightblue/back.png',
-    'textures/skybox/lightblue/front.png',
+    '/textures/skybox/lightblue/left.png',
+    '/textures/skybox/lightblue/right.png',
+    '/textures/skybox/lightblue/top.png',
+    '/textures/skybox/lightblue/bot.png',
+    '/textures/skybox/lightblue/back.png',
+    '/textures/skybox/lightblue/front.png',
   ];
   const skyboxTexture = t_loader.load(skyboxTextures);
   scene.background = skyboxTexture;
