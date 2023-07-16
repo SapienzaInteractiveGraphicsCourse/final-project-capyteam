@@ -1,4 +1,4 @@
-import * as THREE from './libs/three/build/three.module.js';
+import * as THREE from 'three';
 
 //Import GLTFLoader
 import { GLTFLoader } from './libs/three/examples/jsm/loaders/GLTFLoader.js';
@@ -304,6 +304,7 @@ function showModels() {
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
+  renderer.outputEncoding = THREE.sRGBEncoding;
 
   // Add a skybox
   const t_loader = new THREE.CubeTextureLoader();
@@ -1262,7 +1263,7 @@ function startGame() {
 
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  //renderer.outputColorSpace = THREE.sRGBEncoding;
+  renderer.outputEncoding = THREE.sRGBEncoding;
 
   renderer.setSize(window.innerWidth, window.innerHeight);
 
