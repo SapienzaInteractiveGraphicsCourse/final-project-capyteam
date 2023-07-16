@@ -1,16 +1,16 @@
-import * as THREE from './libs/three/build/three.module.js';
+import * as THREE from 'https://sapienzainteractivegraphicscourse.github.io/final-project-capyteam/libs/three/build/three.module.js';
 
 //Import GLTFLoader
-import { GLTFLoader } from './libs/three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'https://sapienzainteractivegraphicscourse.github.io/final-project-capyteam/libs/three/examples/jsm/loaders/GLTFLoader.js';
 
 //Import orbit controls
-import { OrbitControls } from './libs/three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from 'https://sapienzainteractivegraphicscourse.github.io/final-project-capyteam/libs/three/examples/jsm/controls/OrbitControls.js';
 
 //Import font loader
-import { FontLoader } from './libs/three/examples/jsm/loaders/FontLoader.js';
+import { FontLoader } from 'https://sapienzainteractivegraphicscourse.github.io/final-project-capyteam/libs/three/examples/jsm/loaders/FontLoader.js';
 
 //Import TextGeometry for 3D text
-import { TextGeometry } from './libs/three/examples/jsm/geometries/TextGeometry.js';
+import { TextGeometry } from 'https://sapienzainteractivegraphicscourse.github.io/final-project-capyteam/libs/three/examples/jsm/geometries/TextGeometry.js';
 
 
 //Camera Keyboard
