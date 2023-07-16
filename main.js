@@ -1182,7 +1182,7 @@ function startGame() {
       "ambientColor": 0xffffff,
       "ambientIntensity": 0.1,
       "lightColor": 0xffffff,
-      "lightIntensity": 0.5,
+      "lightIntensity": 0.4,
       "distance": 100,
   }
 
