@@ -675,7 +675,7 @@ function showModels() {
 
   function animate() {
 	   requestAnimationFrame( animate );
-     if(load_time > 100){
+     if(load_time > 200){
      switch(robot_to_show){
        case 0:
         scene.remove(robot[1]);
@@ -2125,7 +2125,7 @@ for (let y = -1; y <2; y++) {
   //while the app is running has to go through the animate loop.
   function animate() {
     requestAnimationFrame(animate);
-    if(load_time > 100){
+    if(load_time > 200){
 
     // Moving the camera
     if (moveCameraForward) {
