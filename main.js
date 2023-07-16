@@ -1,19 +1,19 @@
-import * as THREE from 'three';
+import * as THREE from './node_modules/three';
 
 //Import GLTFLoader
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFLoader } from './node_modules/three/addons/loaders/GLTFLoader.js';
 
 //Import orbit controls
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 
 //Import font loader
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { FontLoader } from './node_modules/three/addons/loaders/FontLoader.js';
 
 //Import TextGeometry for 3D text
-import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import { TextGeometry } from './node_modules/three/addons/geometries/TextGeometry.js';
 
 //Import gui
-import { GUI } from 'dat.gui'
+import { GUI } from './node_modules/dat.gui'
 
 //Camera Keyboard
 // Keyboard input variables
