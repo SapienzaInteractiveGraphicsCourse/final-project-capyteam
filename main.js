@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from './libs/three/build/three.module.js';
 
 //Import GLTFLoader
 import { GLTFLoader } from './libs/three/examples/jsm/loaders/GLTFLoader.js';
