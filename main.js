@@ -1,19 +1,19 @@
-import * as THREE from 'three';
+import * as THREE from '/node_modules/three';
 
 //Import GLTFLoader
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFLoader } from '/node_modules/three/addons/loaders/GLTFLoader.js';
 
 //Import orbit controls
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from '/node_modules/three/examples/jsm/controls/OrbitControls.js';
 
 //Import font loader
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { FontLoader } from '/node_modules/three/addons/loaders/FontLoader.js';
 
 //Import TextGeometry for 3D text
-import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import { TextGeometry } from '/node_modules/three/addons/geometries/TextGeometry.js';
 
 //Import gui
-import { GUI } from 'dat.gui'
+import { GUI } from '/node_modules/dat.gui'
 
 //Camera Keyboard
 // Keyboard input variables
@@ -349,7 +349,7 @@ function showModels() {
   ball = new THREE.Mesh( geometry, material );
   ball.position.set(0,0,0);
 
-  loader.load('models/blueBot/blueBot.gltf', function (gltf) {
+  loader.load('/models/blueBot/blueBot.gltf', function (gltf) {
     robot[0] = gltf.scene;
     robot[0].traverse(function (child) {
       if (child.isMesh) {
@@ -397,7 +397,7 @@ function showModels() {
     console.error(error);
   });
 
-  loader.load('models/blueBot/blueBot.gltf', function (gltf) {
+  loader.load('/models/blueBot/blueBot.gltf', function (gltf) {
     robot[1] = gltf.scene;
     robot[1].traverse(function (child) {
       if (child.isMesh) {
@@ -445,7 +445,7 @@ function showModels() {
     console.error(error);
   });
 
-  loader.load('models/blueBot/blueBot.gltf', function (gltf) {
+  loader.load('/models/blueBot/blueBot.gltf', function (gltf) {
     robot[2] = gltf.scene;
     robot[2].traverse(function (child) {
       if (child.isMesh) {
@@ -493,7 +493,7 @@ function showModels() {
     console.error(error);
   });
 
-  loader.load('models/blueBot/blueBot.gltf', function (gltf) {
+  loader.load('/models/blueBot/blueBot.gltf', function (gltf) {
     robot[3] = gltf.scene;
     robot[3].traverse(function (child) {
       if (child.isMesh) {
@@ -589,7 +589,7 @@ function showModels() {
     console.error(error);
   });
 
-  loader.load('models/blueBot/blueBot.gltf', function (gltf) {
+  loader.load('/models/blueBot/blueBot.gltf', function (gltf) {
     robot[4] = gltf.scene;
     robot[4].traverse(function (child) {
       if (child.isMesh) {
@@ -637,7 +637,7 @@ function showModels() {
     console.error(error);
   });
 
-  loader.load('models/football_ball/scene.gltf', function (gltf7) {
+  loader.load('/models/football_ball/scene.gltf', function (gltf7) {
     ball2 = gltf7.scene;
 
     ball2.traverse(function (child) {
