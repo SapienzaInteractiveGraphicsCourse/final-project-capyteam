@@ -660,7 +660,7 @@ function showModels() {
   });
 
 
-  const gui = new GUI()
+  const gui = new dat.GUI();
   const lightFolder = gui.addFolder('Light')
   lightFolder.add(light.position, "x", -100, 100, 1);
   lightFolder.add(light.position, "y", -100, 100, 1);
