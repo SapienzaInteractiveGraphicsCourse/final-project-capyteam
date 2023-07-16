@@ -675,6 +675,7 @@ function showModels() {
 
   function animate() {
 	   requestAnimationFrame( animate );
+     if(load_time > 100){
      switch(robot_to_show){
        case 0:
         scene.remove(robot[1]);
@@ -722,7 +723,9 @@ function showModels() {
        break;
      }
      controls.update();
-
+     }else{
+       load_time++;
+     }
      renderer.render( scene, camera );
   }
   animate();
